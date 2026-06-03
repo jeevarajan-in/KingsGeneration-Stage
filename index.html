@@ -938,7 +938,7 @@ tbody td {
 .att-tier-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;}
 
 /* Mark Attendance */
-.mark-att-modal{background:var(--surface);border-radius:20px;width:100%;max-width:560px;max-height:85vh;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .2s ease;border:1px solid var(--border-strong);display:flex;flex-direction:column;}
+.mark-att-modal{background:var(--surface);border-radius:0;width:100%;max-width:100%;height:100vh;max-height:100vh;box-shadow:none;overflow:hidden;animation:popIn .2s ease;border:none;display:flex;flex-direction:column;}
 .mark-att-body{padding:1rem 1.5rem;overflow-y:auto;flex:1;}
 .mark-att-search{width:100%;padding:.5rem .75rem .5rem 2.2rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;margin-bottom:.75rem;}
 .mark-att-search:focus{border-color:var(--gold);background:var(--surface3);}
@@ -1151,6 +1151,17 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
   .page-title{font-size:1.1rem;}
   .summary-row{grid-template-columns:repeat(2,1fr);}
   .att-hero{grid-template-columns:repeat(2,1fr);}
+  /* Filters: scroll horizontally on mobile */
+  .filters{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
+  .filters::-webkit-scrollbar{display:none;}
+  .chip{flex-shrink:0;}
+  /* Ministry column dropdown */
+  #ministry-col-filter{max-width:120px;font-size:.65rem !important;}
+  /* Mark attendance modal padding for bottom nav */
+  .mark-att-modal .modal-actions{padding-bottom:calc(1.5rem + env(safe-area-inset-bottom));}
+  /* Table horizontal scroll */
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:700px;}
 }
 /* ════════════════════════════════════════════
    ✦ NEEDS FOLLOW-UP SECTION
@@ -1208,25 +1219,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 .trend-dot{cursor:pointer;transition:r .12s;}
 .trend-dot:hover{r:6;}
 
-/* volunteers */
-.vol-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-.vol-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;box-shadow:var(--shadow);}
-.vol-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.vol-name{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--text-primary);}
-.vol-count{font-size:.72rem;font-weight:700;color:var(--gold);background:var(--gold-light);padding:3px 10px;border-radius:20px;}
-.vol-members{display:flex;flex-direction:column;gap:2px;}
-.vol-member{display:flex;align-items:center;gap:9px;padding:5px 4px;border-radius:8px;cursor:pointer;transition:background .12s;}
-.vol-member:hover{background:var(--gold-pale);}
-.vol-member-name{font-size:.82rem;font-weight:500;color:var(--text-primary);}
 
-/* schedules */
-.sched-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
-.sched-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-lg);padding:1.25rem;box-shadow:var(--shadow);}
-.sched-day{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);}
-.sched-name{font-family:'Lora',serif;font-size:1.05rem;font-weight:600;color:var(--text-primary);margin-top:3px;}
-.sched-time{font-size:.82rem;color:var(--text-secondary);margin-top:4px;}
-.sched-next{font-size:.72rem;color:var(--slate-light);margin-top:8px;}
-.sched-del{margin-top:10px;}
 
 /* bulk action bar */
 .bulk-bar{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(140%);z-index:300;display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border-strong);border-radius:14px;padding:.7rem 1rem;box-shadow:var(--shadow-lg);transition:transform .25s cubic-bezier(.2,.7,.3,1);min-width:min(560px,92vw);}
@@ -1294,6 +1287,19 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 .assim-step-input:focus{border-color:var(--gold);}
 .assim-due{font-size:.66rem;color:var(--slate-light);margin-top:5px;}
 .assim-due.overdue{color:var(--red);font-weight:700;}
+.ro-status{display:flex;align-items:center;gap:5px;cursor:pointer;padding:2px 8px 2px 0;border:none;background:none;font-family:inherit;font-size:.68rem;font-weight:600;}
+.ro-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-strong);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.ro-check.done{background:var(--green);border-color:var(--green);}
+.ro-check svg{width:10px;height:10px;}
+.ro-pending{color:var(--gold);}
+.ro-done{color:var(--green);}
+.dash-item.ro-completed{opacity:.5;}
+.dash-item.ro-completed .dash-item-name{text-decoration:line-through;}
+.assim-contact{display:flex;gap:6px;margin-top:7px;}
+.assim-contact-btn{display:inline-flex;align-items:center;gap:4px;padding:.3rem .65rem;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);color:var(--text-secondary);font-family:inherit;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none;}
+.assim-contact-btn:hover{border-color:var(--gold);color:var(--gold);}
+.assim-contact-btn svg{width:13px;height:13px;flex-shrink:0;}
+.assim-contact-btn.whatsapp:hover{border-color:#25D366;color:#25D366;}
 .assim-actions{display:flex;gap:6px;margin-top:8px;}
 .assim-advance{flex:1;padding:.4rem;border:1px solid var(--gold);background:var(--gold-light);color:var(--gold);border-radius:7px;font-family:inherit;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .15s;}
 .assim-advance:hover{background:var(--gold);color:#0D0F14;}
@@ -1445,7 +1451,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 .user-avatar-btn:hover{border-color:rgba(255,255,255,.2);box-shadow:0 2px 12px rgba(0,0,0,.4);}
 .user-avatar-btn.ro{background:var(--blue);}
 .user-avatar-btn.ad{background:var(--green);}
-.user-avatar-btn.sa{background:var(--gold);}
+.user-avatar-btn.sa{background:linear-gradient(135deg,#FFD700,#FF8C00);box-shadow:0 2px 12px rgba(255,140,0,.5);}
 .user-dropdown{
   display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:220px;
   background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;
@@ -1464,7 +1470,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 }
 .user-dropdown-av.ro{background:var(--blue);}
 .user-dropdown-av.ad{background:var(--green);}
-.user-dropdown-av.sa{background:var(--gold);}
+.user-dropdown-av.sa{background:linear-gradient(135deg,#FFD700,#FF8C00);}
 .user-dropdown-name{font-size:.84rem;font-weight:600;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .user-dropdown-role{font-size:.7rem;color:var(--text-secondary);margin-top:1px;}
 .user-dropdown-item{
@@ -1567,20 +1573,8 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M3 16c0-3 2.5-4.5 4-4.5s4 1.5 4 4.5M9 6.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM13 11l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Assimilation
     </button>
-    <div class="nav-section">Ministry</div>
-    <button class="nav-item" id="nav-schedules" onclick="showPage('schedules')">
-      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      Schedules
-    </button>
-    <button class="nav-item" id="nav-volunteers" onclick="showPage('volunteers')">
-      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M4 6h12M4 10h8M4 14h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      Volunteers
-    </button>
+
     <div class="nav-section">Reports</div>
-    <button class="nav-item" id="nav-analytics" onclick="showPage('overview')">
-      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M6 13l3-3 2 2 3-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Analytics
-    </button>
     <button class="nav-item" id="nav-reports" onclick="showPage('reports')">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M5 2h7l4 4v12a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 2v4h4M7 11h6M7 14h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       Reports &amp; PDF
@@ -1606,7 +1600,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
     <div class="page-title">Members</div>
     <div class="search-wrap">
       <svg width="14" height="14" fill="none" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M14 14l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input type="text" id="search" placeholder="Search name, ID, skill, household…" oninput="render()">
+      <input type="text" id="search" placeholder="Search name, ID, skill…" oninput="render()">
       <button class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Clear search">
         <svg width="9" height="9" fill="none" viewBox="0 0 10 10"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
@@ -1638,12 +1632,9 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
     <button class="chip" data-f="Inactive" onclick="setFilter(this)">Inactive<span class="chip-count" data-cf="Inactive">0</span></button>
     <button class="chip" id="chip-archived" data-f="Archived" onclick="setFilter(this)" style="display:none;">Archived<span class="chip-count" data-cf="Archived">0</span></button>
     <div style="flex:1"></div>
-    <select id="saved-filter-select" class="trend-select" style="max-width:none;" onchange="applySavedFilter(this.value)"><option value="">Saved views…</option></select>
-    <button class="chip" onclick="saveCurrentFilter()" title="Save current filter + search">＋ Save view</button>
   </div>
 
   <div class="content">
-    <div id="followup-section"></div>
     <div class="summary-row" id="summary"></div>
 
     <div class="table-wrap">
@@ -1668,7 +1659,11 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
           <thead>
             <tr>
               <th class="sortable" data-sort="name" onclick="sortBy('name')">Member<span class="sort-ind"></span></th>
-              <th class="sortable" data-sort="ministry" onclick="sortBy('ministry')">Ministry / Role<span class="sort-ind"></span></th>
+              <th data-sort="ministry">
+                <select id="ministry-col-filter" onchange="setMinistryFilter(this.value)" style="background:transparent;border:none;color:inherit;font:inherit;font-size:.75rem;font-weight:700;letter-spacing:.04em;cursor:pointer;outline:none;padding:0;appearance:none;-webkit-appearance:none;text-transform:none;">
+                  <option value="" style="color:#0D0F14;">Ministry / Role ▾</option>
+                </select>
+              </th>
               <th class="sortable" data-sort="status" onclick="sortBy('status')">Status<span class="sort-ind"></span></th>
               <th class="sortable" data-sort="attendance" onclick="sortBy('attendance')">Attendance<span class="sort-ind"></span></th>
               <th class="sortable" data-sort="joined" onclick="sortBy('joined')">Joined<span class="sort-ind"></span></th>
@@ -1866,10 +1861,6 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
         <div class="dash-card-head"><div class="dash-card-title">🎂 Upcoming Dates</div><div class="dash-card-sub">next 45 days</div></div>
         <div id="ov-birthdays" class="dash-list"></div>
       </div>
-      <div class="dash-card">
-        <div class="dash-card-head"><div class="dash-card-title">⚑ Needs Follow-up</div></div>
-        <div id="ov-followup" class="dash-list"></div>
-      </div>
     </div>
     <div class="dash-grid">
       <div class="dash-card">
@@ -1881,6 +1872,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
         <div id="ov-recent" class="dash-list"></div>
       </div>
     </div>
+    <div id="followup-section"></div>
   </div>
 </div>
 
@@ -1952,28 +1944,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
   </div>
 </div>
 
-<!-- VOLUNTEERS PAGE -->
-<div id="volunteers-page" class="main" style="display:none;flex-direction:column;min-width:0;">
-  <div class="topbar"><div class="page-title">Volunteers &amp; Teams</div><div style="flex:1"></div></div>
-  <div class="content" style="padding-top:1.5rem;">
-    <div class="att-section-subtitle" style="margin-bottom:1rem;">Members grouped by their ministry / serving team.</div>
-    <div id="vol-teams" class="vol-grid"></div>
-  </div>
-</div>
 
-<!-- SCHEDULES PAGE -->
-<div id="schedules-page" class="main" style="display:none;flex-direction:column;min-width:0;">
-  <div class="topbar"><div class="page-title">Service Schedule</div><div style="flex:1"></div>
-    <button class="top-btn primary admin-only" onclick="addSchedule()">
-      <svg width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-      Add Service
-    </button>
-  </div>
-  <div class="content" style="padding-top:1.5rem;">
-    <div class="att-section-subtitle" style="margin-bottom:1rem;">Your weekly recurring services, sorted by the next time they occur. Saved on this device.</div>
-    <div id="sched-list" class="sched-grid"></div>
-  </div>
-</div>
 
 <!-- ACCESS PAGE -->
 <div id="access-page" class="main" style="display:none;flex-direction:column;min-width:0;">
@@ -2125,7 +2096,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       </div>
       <div style="position:relative;margin-bottom:.5rem;">
         <svg width="14" height="14" fill="none" viewBox="0 0 20 20" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--slate-light);pointer-events:none;"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M14 14l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <input class="mark-att-search" id="mark-att-search" placeholder="Search members…" oninput="renderMarkAttList()">
+        <input class="mark-att-search" id="mark-att-search" placeholder="Search by name, ID or family…" oninput="renderMarkAttList()">
       </div>
     </div>
     <div class="mark-att-body">
@@ -2201,11 +2172,11 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
     <div class="modal-section" style="padding-top:1rem;">
       <div class="modal-section-label">Additional Details</div>
       <div class="field-row">
-        <div class="field"><label>Date of Birth</label><input id="f-dob" type="date"></div>
-        <div class="field"><label>Age <span style="font-weight:500;color:var(--slate-light);text-transform:none;letter-spacing:0;">(auto from DOB)</span></label><input id="f-age" type="number" placeholder="34"></div>
+        <div class="field"><label>Date of Birth</label><input id="f-dob" type="date" oninput="const a=ageFromDob(this.value);if(a!=null)document.getElementById('f-age').value=a;" onchange="const a=ageFromDob(this.value);if(a!=null)document.getElementById('f-age').value=a;"></div>
+        <div class="field"><label>Age <span style="font-weight:500;color:var(--slate-light);text-transform:none;letter-spacing:0;">(auto from DOB)</span></label><input id="f-age" type="number" placeholder="34" readonly style="opacity:.7;cursor:default;"></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Household / Family</label><input id="f-household" placeholder="e.g. Jeberaj Family" list="household-list"><datalist id="household-list"></datalist></div>
+        <div class="field"><label>Family Tag</label><input id="f-household" placeholder="e.g. John Jebaraj" list="household-list"><datalist id="household-list"></datalist></div>
         <div class="field"><label>Address / Area</label><input id="f-address" placeholder="Coimbatore"></div>
       </div>
       <div class="field"><label>Additional Skills / Gifts</label><input id="f-skills" placeholder="e.g. Keyboard, Teaching, Counselling"></div>
@@ -2243,13 +2214,14 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 
 <!-- GROUP MESSAGE MODAL -->
 <div class="overlay" id="gm-overlay" onclick="if(event.target===this)closeGroupMessage()">
-  <div class="modal" style="max-width:460px;">
+  <div class="modal" style="max-width:500px;">
     <div class="modal-head">
       <span class="modal-head-title">Message Members</span>
       <button class="modal-close" onclick="closeGroupMessage()"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     </div>
     <div style="padding:1.25rem 1.5rem;">
       <div id="gm-summary" style="font-size:.85rem;color:var(--text-secondary);margin-bottom:1rem;"></div>
+      <div class="field" style="margin-bottom:1rem;"><label>Message</label><textarea id="gm-message" rows="4" placeholder="Type your message here…" style="width:100%;padding:.6rem .8rem;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--text-primary);font-family:inherit;font-size:.85rem;resize:vertical;outline:none;"></textarea></div>
       <div id="gm-actions" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
@@ -2311,6 +2283,7 @@ const db = getFirestore(app);
 const membersCol = collection(db, 'members');
 const attendanceCol = collection(db, 'attendance_records');
 const auditCol = collection(db, 'audit_log');
+const accessCol = collection(db, 'access_users');
 
 // App runs in open mode (no sign-in).
 let currentRole = 'admin';
@@ -2318,6 +2291,7 @@ let currentRole = 'admin';
 const AV_CLASSES = ['av-a','av-b','av-c','av-d','av-e','av-f'];
 let members = [];
 let filter = 'All';
+let ministryFilter = '';
 let view = 'table';
 let editId = null;
 let editDocId = null;
@@ -2533,11 +2507,12 @@ function live(){ return members.filter(m=>!m.archived); }
 function filtered(){
   const q = document.getElementById('search').value.toLowerCase();
   const base = filter==='Archived' ? members.filter(m=>m.archived) : members.filter(m=>!m.archived && (filter==='All' || m.status===filter));
-  const list = base.filter(m => {
+  const filtered1 = ministryFilter ? base.filter(m=>(m.ministry||'')===ministryFilter) : base;
+  const list = filtered1.filter(m => {
     if(!q) return true;
     const skills=(m.skills||[]).join(' ').toLowerCase();
     return m.name.toLowerCase().includes(q) || (m.id||'').toLowerCase().includes(q) || (m.ministry||'').toLowerCase().includes(q)
-      || (m.address||'').toLowerCase().includes(q) || (m.household||'').toLowerCase().includes(q) || skills.includes(q);
+      || (m.address||'').toLowerCase().includes(q) || skills.includes(q);
   });
   const k = sortState.key, dir = sortState.dir;
   list.sort((a,b)=>{
@@ -2588,6 +2563,21 @@ function setFilter(btn){
   render();
 }
 
+function setMinistryFilter(val){
+  ministryFilter = val;
+  render();
+}
+function updateMinistryFilter(){
+  const ministries=[...new Set(live().map(m=>m.ministry).filter(Boolean))].sort();
+  const opts='<option value="" style="color:#0D0F14;">All Ministries</option>'+ministries.map(m=>`<option value="${escapeHtml(m)}" style="color:#0D0F14;"${m===ministryFilter?' selected':''}>${escapeHtml(m)}</option>`).join('');
+  const sel=document.getElementById('ministry-filter'); if(sel){ sel.innerHTML=opts; }
+  const col=document.getElementById('ministry-col-filter');
+  if(col){
+    const colOpts='<option value="" style="color:#0D0F14;">Ministry / Role ▾</option>'+ministries.map(m=>`<option value="${escapeHtml(m)}" style="color:#0D0F14;"${m===ministryFilter?' selected':''}>${escapeHtml(m)}</option>`).join('');
+    col.innerHTML=colOpts;
+  }
+}
+
 function setView(v){
   view = v;
   document.getElementById('vt-table').classList.toggle('active', v==='table');
@@ -2599,13 +2589,15 @@ function setView(v){
 
 function render(){
   const list = filtered();
-  const label = filter==='All'?'All Members':`${filter} Members`;
+  let label = filter==='All'?'All Members':`${filter} Members`;
+  if(ministryFilter) label += ` · ${ministryFilter}`;
   document.getElementById('result-label').textContent = `${label} (${list.length})`;
   renderSummary();
   renderFollowUp();
   updateChipCounts();
   updateSearchClear();
   updateSortIndicators();
+  updateMinistryFilter();
   if(view==='table') renderTable(list);
   else renderGrid(list);
 }
@@ -2711,8 +2703,9 @@ function renderSummary(){
     return;
   }
   const active = all.filter(m=>m.status==='Active').length;
-  const newM = all.filter(m=>m.status==='New').length;
   const now = new Date();
+  const thisYear = String(now.getFullYear());
+  const newThisYear = all.filter(m=>m.joined&&m.joined.startsWith(thisYear)).length;
   const thisMonth = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   const newThisMonth = all.filter(m=>m.joined&&m.joined.startsWith(thisMonth)).length;
   const avgAtt = Math.round(all.reduce((s,m)=>s+(m.attendance||0),0)/all.length);
@@ -2734,8 +2727,8 @@ function renderSummary(){
     </div>
     <div class="stat-card">
       <div class="stat-card-label">New This Year</div>
-      <div class="stat-card-val">${newM}</div>
-      <div class="stat-card-sub">Recently joined</div>
+      <div class="stat-card-val">${newThisYear}</div>
+      <div class="stat-card-sub">${thisYear}</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Avg Attendance</div>
@@ -2850,7 +2843,7 @@ function renderGrid(list){
         <div class="card-row"><span class="card-row-label">Phone</span><span class="card-row-val">${m.phone||'—'}</span></div>
         <div class="card-row"><span class="card-row-label">Age</span><span class="card-row-val">${m.age?m.age+' yrs':'—'}</span></div>
         <div class="card-row"><span class="card-row-label">Area</span><span class="card-row-val">${m.address||'—'}</span></div>
-        ${m.household?`<div class="card-row"><span class="card-row-label">Household</span><span class="card-row-val">${m.household}</span></div>`:''}
+        ${m.household?`<div class="card-row"><span class="card-row-label">Family Tag</span><span class="card-row-val">${m.household}</span></div>`:''}
         <div class="contact-row">${contactButtons(m)}</div>
         <div style="margin-top:8px"><div class="exp-block-label" style="font-size:0.65rem">Skills / Gifts</div>
         <div class="skills-row">${(m.skills||[]).map(s=>`<span class="skill-tag">${s}</span>`).join('')||'<span style="color:var(--slate-light);font-size:0.75rem">None on file</span>'}</div></div>
@@ -2930,7 +2923,7 @@ function closeModal(){ document.getElementById('modal-overlay').classList.remove
 function closeOutside(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
 
 function exportCSV(){
-  const rows = [['ID','Name','Phone','Email','Ministry','Status','DOB','Age','Household','Address','Skills','Joined','Attendance%','Baptism','Membership','Anniversary','NextStep']];
+  const rows = [['ID','Name','Phone','Email','Ministry','Status','DOB','Age','Family Tag','Address','Skills','Joined','Attendance%','Baptism','Membership','Anniversary','NextStep']];
   members.forEach(m=>rows.push([m.id,m.name,m.phone||'',m.email||'',m.ministry||'',m.status,m.dob||'',m.age||'',m.household||'',m.address||'',(m.skills||[]).join('; '),m.joined||'',m.attendance||'',m.baptismDate||'',m.membershipDate||'',m.weddingAnniversary||'',m.nextStep||'']));
   const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a = document.createElement('a');
@@ -2996,10 +2989,11 @@ function updateThemeUI(theme){
   document.addEventListener('DOMContentLoaded',()=>updateThemeUI(saved));
 })();
 window.toggleTheme=toggleTheme;
+window.ageFromDob=ageFromDob;
 
 // ── Page routing ──
-const PAGES = ['overview','members','attendance','assimilation','volunteers','schedules','reports','access'];
-const NAV_MAP = {overview:'nav-overview', members:'nav-members', attendance:'nav-attendance', assimilation:'nav-assimilation', volunteers:'nav-volunteers', schedules:'nav-schedules', reports:'nav-reports', access:'nav-access'};
+const PAGES = ['overview','members','attendance','assimilation','reports','access'];
+const NAV_MAP = {overview:'nav-overview', members:'nav-members', attendance:'nav-attendance', assimilation:'nav-assimilation', reports:'nav-reports', access:'nav-access'};
 const MNAV_MAP = {overview:'mnav-overview', members:'mnav-members', attendance:'mnav-attendance'};
 let attTierFilter = 'all';
 function showPage(page) {
@@ -3008,15 +3002,14 @@ function showPage(page) {
   PAGES.forEach(p=>{ const el=document.getElementById(p+'-page'); if(el) el.style.display=(p===page)?'flex':'none'; });
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const nb=document.getElementById(NAV_MAP[page]); if(nb) nb.classList.add('active');
-  if(page==='overview'){ const an=document.getElementById('nav-analytics'); if(an) an.classList.add('active'); }
+
   document.querySelectorAll('.mnav-item').forEach(n=>n.classList.remove('active'));
   const mb=document.getElementById(MNAV_MAP[page]); if(mb) mb.classList.add('active');
   applyRoleVisibility();
   if(page==='overview') renderOverview();
   else if(page==='attendance') renderAttendance();
   else if(page==='assimilation') renderAssimilation();
-  else if(page==='volunteers') renderVolunteers();
-  else if(page==='schedules') renderSchedules();
+
   else if(page==='reports') renderReports();
   else if(page==='access') renderAccessPage();
   else render();
@@ -3245,8 +3238,17 @@ const MARK_CHECK_SVG='<svg width="12" height="12" fill="none" viewBox="0 0 12 12
 let markAttGrouped=(()=>{ try{ return localStorage.getItem('kg-markatt-grouped')==='1'; }catch(e){ return false; } })();
 
 function markFilteredList(){
-  const q=document.getElementById('mark-att-search').value.toLowerCase();
-  return live().filter(m=>!q||m.name.toLowerCase().includes(q)||(m.id||'').toLowerCase().includes(q));
+  const q=document.getElementById('mark-att-search').value.toLowerCase().trim();
+  if(!q) return live();
+  const all=live();
+  const direct=all.filter(m=>m.name.toLowerCase().includes(q)||(m.id||'').toLowerCase().includes(q)||(m.household||'').toLowerCase().includes(q));
+  // Collect household names from matched members, then pull in all family members
+  const hhSet=new Set();
+  direct.forEach(m=>{ const h=(m.household||'').trim(); if(h) hhSet.add(h); });
+  if(!hhSet.size) return direct;
+  const ids=new Set(direct.map(m=>m._docId));
+  all.forEach(m=>{ const h=(m.household||'').trim(); if(h&&hhSet.has(h)&&!ids.has(m._docId)){ ids.add(m._docId); direct.push(m); } });
+  return direct;
 }
 function markFamilyKeys(list){
   const groups=new Map();
@@ -3256,10 +3258,11 @@ function markFamilyKeys(list){
 }
 function markMemberRow(m){
   const checked=markAttPresent.has(m._docId);
+  const hhTag=m.household?`<span style="background:var(--surface3);padding:1px 6px;border-radius:4px;font-size:.66rem;color:var(--gold);margin-left:4px;">🏠 ${escapeHtml(m.household)}</span>`:'';
   return `<div class="mark-att-item ${checked?'checked':''}" onclick="toggleAttMember('${m._docId}')">
       <div class="mark-att-check">${checked?MARK_CHECK_SVG:''}</div>
       ${avatarHtml(m, 32)}
-      <div style="flex:1"><div style="font-weight:600;font-size:.85rem;">${m.name}</div><div style="font-size:.72rem;color:var(--slate-light);">${m.id||''} ${m.ministry?'· '+m.ministry:''}</div></div>
+      <div style="flex:1"><div style="font-weight:600;font-size:.85rem;">${m.name}${hhTag}</div><div style="font-size:.72rem;color:var(--slate-light);">${m.id||''} ${m.ministry?'· '+m.ministry:''}</div></div>
       <span class="badge ${checked?'badge-active':'badge-inactive'}" style="font-size:.68rem;">${checked?'Present':'Absent'}</span>
     </div>`;
 }
@@ -3269,12 +3272,23 @@ function renderMarkAttList(){
   const host=document.getElementById('mark-att-list');
   const empty='<div style="text-align:center;padding:1.5rem;color:var(--slate-light);font-size:.82rem;">No members match.</div>';
 
-  if(!markAttGrouped){
+  // Auto-group when search matches a household/family name
+  const q=document.getElementById('mark-att-search').value.toLowerCase().trim();
+  const familyMatch=q&&list.some(m=>(m.household||'').toLowerCase().includes(q));
+  const useGrouped=markAttGrouped||familyMatch;
+
+  if(!useGrouped){
     host.innerHTML=list.map(markMemberRow).join('')||empty;
     updateMarkAttStats(); return;
   }
 
+  // When auto-grouped by family search, include even single-member household matches
   const {groups, keys}=markFamilyKeys(list);
+  if(familyMatch){
+    // Also show single-member households that match the search
+    list.forEach(m=>{ const h=(m.household||'').trim(); if(h && !keys.includes(h) && h.toLowerCase().includes(q)){ keys.push(h); if(!groups.has(h)) groups.set(h,[m]); } });
+    keys.sort((a,b)=>a.localeCompare(b));
+  }
   const inFamily=new Set(); keys.forEach(h=>groups.get(h).forEach(m=>inFamily.add(m._docId)));
   const singles=list.filter(m=>!inFamily.has(m._docId)).sort((a,b)=>a.name.localeCompare(b.name));
 
@@ -3323,8 +3337,21 @@ function updateMarkGroupBtn(){
 }
 
 function toggleAttMember(docId){
-  if(markAttPresent.has(docId)) markAttPresent.delete(docId);
+  const wasPresent=markAttPresent.has(docId);
+  if(wasPresent) markAttPresent.delete(docId);
   else markAttPresent.add(docId);
+
+  // When marking present, if member has a family, auto-show family group
+  if(!wasPresent){
+    const m=members.find(x=>x._docId===docId);
+    const hh=(m&&m.household||'').trim();
+    if(hh){
+      const search=document.getElementById('mark-att-search');
+      if(!search.value.trim()){
+        search.value=hh;
+      }
+    }
+  }
   renderMarkAttList();
 }
 function markAllPresent(){ markFilteredList().forEach(m=>markAttPresent.add(m._docId)); renderMarkAttList(); }
@@ -3589,8 +3616,7 @@ function refreshActive(){
   const vis=id=>{ const el=document.getElementById(id); return el && el.style.display!=='none'; };
   if(vis('overview-page')) renderOverview();
   else if(vis('assimilation-page')) renderAssimilation();
-  else if(vis('volunteers-page')) renderVolunteers();
-  else if(vis('schedules-page')) renderSchedules();
+
   else if(vis('reports-page')) renderReports();
 }
 
@@ -3766,25 +3792,49 @@ function renderOverview(){
     <div class="stat-card"><div class="stat-card-label">Need Follow-up</div><div class="stat-card-val" style="color:${atRiskList().length?'var(--red)':'var(--text-primary)'}">${atRiskList().length}</div><div class="stat-card-sub">members</div></div>`;
   const trend=document.getElementById('ov-trend'); if(trend) renderTrend();
 
-  // reach out this week (next 7 days, all date types)
-  const week=upcomingDates(7);
+  // reach out this week (nextStepDue within 7 days or overdue)
   const roEl=document.getElementById('ov-reachout');
-  if(roEl) roEl.innerHTML=week.length?week.slice(0,8).map(dateEventItem).join(''):'<div class="dash-empty">Nothing in the next 7 days. Add key dates to members.</div>';
+  if(roEl){
+    const today=new Date(); today.setHours(0,0,0,0);
+    const weekEnd=new Date(today); weekEnd.setDate(weekEnd.getDate()+7);
+    const reachList=live().filter(m=>{
+      if(!m.nextStepDue) return false;
+      const d=new Date(m.nextStepDue+'T23:59:59');
+      return !isNaN(d) && d<=weekEnd;
+    }).sort((a,b)=>{
+      const aDone=a.nextStepDone?1:0, bDone=b.nextStepDone?1:0;
+      if(aDone!==bDone) return aDone-bDone;
+      return a.nextStepDue.localeCompare(b.nextStepDue);
+    });
+    roEl.innerHTML=reachList.length?reachList.slice(0,10).map(m=>{
+      const dueDate=new Date(m.nextStepDue+'T23:59:59');
+      const overdue=dueDate<new Date();
+      const dLabel=fmtDate(m.nextStepDue);
+      const done=!!m.nextStepDone;
+      const phoneDigits=m.phone?(m.phone+'').replace(/[^0-9]/g,''):'';
+      return `<div class="dash-item ${done?'ro-completed':''}" style="flex-wrap:wrap;gap:6px;" onclick="viewMemberHistory('${m._docId}')">
+        <button class="ro-status" onclick="event.stopPropagation();toggleReachOutDone('${m._docId}')" title="${done?'Mark pending':'Mark done'}">
+          <span class="ro-check ${done?'done':''}"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${done?'':' style="display:none"'}><path d="M2.5 6l2.5 2.5 4.5-5"/></svg></span>
+          <span class="${done?'ro-done':'ro-pending'}">${done?'Done':'Pending'}</span>
+        </button>
+        ${avatarHtml(m,34)}
+        <div class="dash-item-main"><div class="dash-item-name">${escapeHtml(m.name)}</div><div class="dash-item-sub">${escapeHtml(m.nextStep||'Follow up')} · ${m.status}</div></div>
+        <div class="dash-item-tag" style="color:${done?'var(--green)':overdue?'var(--red)':'var(--slate-light)'}; font-size:.68rem;">${done?'✓ Done':overdue?'overdue':dLabel}</div>
+        ${!done&&m.phone?`<div style="display:flex;gap:6px;width:100%;padding-left:70px;">
+          <a class="assim-contact-btn" href="tel:${encodeURIComponent(m.phone)}" onclick="event.stopPropagation()" title="Call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
+          <a class="assim-contact-btn whatsapp" href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp</a>
+        </div>`:``}
+      </div>`;
+    }).join(''):'<div class="dash-empty">No follow-ups due this week.</div>';
+  }
 
   // upcoming dates (next 45 days, all types)
   const bdays=upcomingDates(45);
   const bEl=document.getElementById('ov-birthdays');
-  if(bEl) bEl.innerHTML=bdays.length?bdays.slice(0,10).map(dateEventItem).join(''):'<div class="dash-empty">No key dates on file yet. Add birthdays, baptisms or anniversaries.</div>';
+  if(bEl) bEl.innerHTML=bdays.length?bdays.slice(0,10).map(dateEventItem).join(''):'<div class="dash-empty">No key dates on file yet. Add birthdays or anniversaries.</div>';
 
-  // followup
-  const risk=atRiskList();
-  const fEl=document.getElementById('ov-followup');
-  if(fEl) fEl.innerHTML=risk.length?risk.slice(0,8).map(({m,info})=>`
-    <div class="dash-item" onclick="viewMemberHistory('${m._docId}')">
-      ${avatarHtml(m,34)}
-      <div class="dash-item-main"><div class="dash-item-name">${m.name}</div><div class="dash-item-sub">missed last ${info.consec} · ${info.lastSeen?'seen '+fmtDate(info.lastSeen):'never seen'}</div></div>
-      <div class="dash-item-tag" style="color:var(--red)">!</div>
-    </div>`).join(''):'<div class="dash-empty">Everyone\u2019s attending well 🎉</div>';
+  // followup (full card grid)
+  renderFollowUp();
 
   // open prayer requests
   const prayers=openPrayerList();
@@ -3855,10 +3905,14 @@ function renderAssimilation(){
           <div class="assim-step">
             <input class="assim-step-input" value="${escapeHtml(m.nextStep||'')}" placeholder="Set next step…" list="nextstep-list" onclick="event.stopPropagation()" onchange="saveNextStep('${m._docId}', this.value)">
           </div>
+          ${m.phone?`<div class="assim-contact">
+            <a class="assim-contact-btn" href="tel:${encodeURIComponent(m.phone)}" onclick="event.stopPropagation()" title="Call ${escapeHtml(m.name)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
+            <a class="assim-contact-btn whatsapp" href="https://wa.me/${m.phone.replace(/[^0-9]/g,'')}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="WhatsApp ${escapeHtml(m.name)}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp</a>
+          </div>`:``}
           ${m.nextStepDue?`<div class="assim-due ${dueOver?'overdue':''}">Due ${fmtDate(m.nextStepDue)}${dueOver?' · overdue':''}</div>`:''}
-          <div class="assim-actions">
-            ${ns?`<button class="assim-advance" onclick="advanceStage('${m._docId}')">Advance to ${ns} →</button>`:`<button class="assim-advance" style="border-color:var(--green);background:var(--green-bg);color:var(--green);cursor:default" onclick="event.stopPropagation()">✓ Connected</button>`}
-          </div>
+          ${ns?`<div class="assim-actions">
+            <button class="assim-advance" onclick="advanceStage('${m._docId}')">Move to ${ns} →</button>
+          </div>`:``}
         </div>`;
       }).join(''):'<div class="assim-empty">No one here right now.</div>'}
     </div>`;
@@ -3868,6 +3922,7 @@ async function advanceStage(docId){
   if(!requireAdmin()) return;
   const m=members.find(x=>x._docId===docId); if(!m) return;
   const ns=nextStage(m.status); if(!ns) return;
+  if(ns==='Active'){ openModal(m); document.getElementById('f-status').value='Active'; return; }
   try{
     await setDoc(doc(membersCol,docId),{status:ns, stageSince:new Date().toISOString(), updatedAt:new Date().toISOString()},{merge:true});
     logAudit('Advanced pipeline stage', m.name+': '+m.status+' → '+ns);
@@ -3883,59 +3938,17 @@ async function saveNextStep(docId, value){
   try{ await setDoc(doc(membersCol,docId),{nextStep:v, updatedAt:new Date().toISOString()},{merge:true}); showToast('Next step saved','success'); }
   catch(e){ showToast('Could not save next step','error'); }
 }
-
-// ---- volunteers (ministry teams) ----
-function renderVolunteers(){
-  const host=document.getElementById('vol-teams'); if(!host) return;
-  const teams={};
-  live().forEach(m=>{ const k=m.ministry||'No Ministry'; (teams[k]=teams[k]||[]).push(m); });
-  const keys=Object.keys(teams).sort((a,b)=>teams[b].length-teams[a].length);
-  host.innerHTML=keys.map(k=>`
-    <div class="vol-card">
-      <div class="vol-head"><div class="vol-name">${k}</div><span class="vol-count">${teams[k].length}</span></div>
-      <div class="vol-members">${teams[k].sort((a,b)=>a.name.localeCompare(b.name)).map(m=>`
-        <div class="vol-member" onclick="viewMemberHistory('${m._docId}')">${avatarHtml(m,28)}<span class="vol-member-name">${m.name}</span></div>`).join('')}</div>
-    </div>`).join('')||'<div class="dash-empty">No members yet.</div>';
+async function toggleReachOutDone(docId){
+  const m=members.find(x=>x._docId===docId); if(!m) return;
+  const newVal=!m.nextStepDone;
+  m.nextStepDone=newVal;
+  try{
+    await setDoc(doc(membersCol,docId),{nextStepDone:newVal, updatedAt:new Date().toISOString()},{merge:true});
+    renderOverview();
+  }catch(e){ showToast('Could not update status','error'); }
 }
 
-// ---- schedules (local) ----
-const DAYNAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-function loadSchedules(){ try{ return JSON.parse(localStorage.getItem('kg-schedules')||'[]'); }catch(e){ return []; } }
-function saveSchedules(s){ try{ localStorage.setItem('kg-schedules', JSON.stringify(s)); }catch(e){} }
-function nextOccurrence(dow, time){
-  const now=new Date(); const [hh,mm]=(time||'10:00').split(':').map(Number);
-  for(let i=0;i<8;i++){ const d=new Date(now); d.setDate(now.getDate()+i); d.setHours(hh,mm||0,0,0); if(d.getDay()===dow && d>now) return d; }
-  const d=new Date(now); d.setDate(now.getDate()+((dow-now.getDay()+7)%7||7)); d.setHours(hh,mm||0,0,0); return d;
-}
-function renderSchedules(){
-  const host=document.getElementById('sched-list'); if(!host) return;
-  let list=loadSchedules();
-  if(!list.length){
-    list=[{id:'1',name:'Sunday Service',dow:0,time:'10:00'},{id:'2',name:'Midweek Service',dow:3,time:'19:00'},{id:'3',name:'Prayer Meeting',dow:5,time:'18:30'}];
-    saveSchedules(list);
-  }
-  const withNext=list.map(s=>({...s, next:nextOccurrence(s.dow, s.time)})).sort((a,b)=>a.next-b.next);
-  host.innerHTML=withNext.map(s=>`
-    <div class="sched-card">
-      <div class="sched-day">${DAYNAMES[s.dow]}</div>
-      <div class="sched-name">${escapeHtml(s.name)}</div>
-      <div class="sched-time">${s.next.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}</div>
-      <div class="sched-next">Next: ${s.next.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}</div>
-      <div class="sched-del"><button class="action-btn" style="color:var(--red)" onclick="deleteSchedule('${s.id}')">Remove</button></div>
-    </div>`).join('');
-}
-async function addSchedule(){
-  if(!requireAdmin()) return;
-  const name=prompt('Service name (e.g. Sunday Service):'); if(!name) return;
-  const dayStr=prompt('Day of week (0=Sun,1=Mon,…,6=Sat):','0'); const dow=parseInt(dayStr); if(isNaN(dow)||dow<0||dow>6){ showToast('Invalid day','error'); return; }
-  const time=prompt('Time (HH:MM, 24h):','10:00')||'10:00';
-  const list=loadSchedules(); list.push({id:String(Date.now()),name:name.trim(),dow,time}); saveSchedules(list); renderSchedules(); showToast('Service added','success');
-}
-async function deleteSchedule(id){
-  if(!requireAdmin()) return;
-  const ok=await confirmDialog('Remove this service from the schedule?',{title:'Remove service',danger:true,confirmText:'Remove'}); if(!ok) return;
-  saveSchedules(loadSchedules().filter(s=>s.id!==id)); renderSchedules();
-}
+
 
 // ---- CSV import ----
 function parseCSV(text){
@@ -4002,18 +4015,40 @@ function openGroupMessage(){
   const list=filtered();
   const withEmail=list.filter(m=>m.email);
   const withPhone=list.filter(m=>m.phone);
-  document.getElementById('gm-summary').innerHTML=`Messaging the <b style="color:var(--text-primary)">${filter==='All'?'all':filter.toLowerCase()}</b> view — <b style="color:var(--text-primary)">${list.length}</b> member${list.length!==1?'s':''} (${withEmail.length} with email, ${withPhone.length} with phone).`;
+  document.getElementById('gm-summary').innerHTML=`Messaging <b style="color:var(--text-primary)">${list.length}</b> member${list.length!==1?'s':''} (${withEmail.length} with email, ${withPhone.length} with phone).`;
+  document.getElementById('gm-message').value='';
   const acts=document.getElementById('gm-actions');
-  const emails=withEmail.map(m=>m.email).join(',');
-  const phones=withPhone.map(m=>m.phone).join(', ');
-  const emailList=withEmail.map(m=>m.email).join('\n');
   acts.innerHTML=`
-    ${withEmail.length?`<a class="top-btn primary" style="justify-content:center" href="mailto:?bcc=${encodeURIComponent(emails)}" onclick="closeGroupMessage()">✉ Email all ${withEmail.length} (BCC)</a>`:''}
-    ${withPhone.length?`<button class="top-btn" style="justify-content:center" onclick="copyText(${JSON.stringify(phones)},'Phone numbers copied')">Copy ${withPhone.length} phone numbers</button>`:''}
-    ${withEmail.length?`<button class="top-btn" style="justify-content:center" onclick="copyText(${JSON.stringify(emailList)},'Emails copied')">Copy ${withEmail.length} email addresses</button>`:''}
-    ${!list.length?'<div class="dash-empty">No members in the current view.</div>':''}
-    <div style="font-size:.72rem;color:var(--slate-light);margin-top:4px;">Tip: for WhatsApp, copy the numbers into a Broadcast List in the app.</div>`;
+    ${withPhone.length?`<button class="top-btn" style="justify-content:center;gap:6px;border-color:#25D366;color:#25D366;" onclick="sendGroupWhatsApp()"><svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp (${withPhone.length} members)</button>`:''}
+    ${withPhone.length?`<button class="top-btn" style="justify-content:center;gap:6px;border-color:#3B82F6;color:#3B82F6;" onclick="sendGroupSMS()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>SMS (${withPhone.length} members)</button>`:''}
+    ${withEmail.length?`<button class="top-btn" style="justify-content:center;gap:6px;border-color:#F59E0B;color:#F59E0B;" onclick="sendGroupEmail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email (${withEmail.length} members)</button>`:''}
+    ${!list.length?'<div class="dash-empty">No members in the current view.</div>':''}`;
   document.getElementById('gm-overlay').classList.add('open');
+}
+function sendGroupWhatsApp(){
+  const msg=encodeURIComponent(document.getElementById('gm-message').value);
+  const list=filtered().filter(m=>m.phone);
+  if(!list.length) return;
+  const phone=list[0].phone.replace(/[^0-9]/g,'');
+  window.open('https://wa.me/'+phone+'?text='+msg,'_blank');
+  if(list.length>1){
+    copyText(list.map(m=>m.phone).join(', '),'Remaining phone numbers copied — paste into WhatsApp Broadcast');
+    showToast('Opened WhatsApp for first contact. '+list.length+' numbers copied for Broadcast.','success');
+  }
+}
+function sendGroupSMS(){
+  const msg=document.getElementById('gm-message').value;
+  const list=filtered().filter(m=>m.phone);
+  if(!list.length) return;
+  const phones=list.map(m=>m.phone.replace(/[^\d+]/g,'')).join(',');
+  window.open('sms:'+phones+'?body='+encodeURIComponent(msg));
+}
+function sendGroupEmail(){
+  const msg=document.getElementById('gm-message').value;
+  const list=filtered().filter(m=>m.email);
+  if(!list.length) return;
+  const emails=list.map(m=>m.email).join(',');
+  window.open('mailto:?bcc='+encodeURIComponent(emails)+'&body='+encodeURIComponent(msg));
 }
 function closeGroupMessage(){ document.getElementById('gm-overlay').classList.remove('open'); }
 function copyText(t,msg){ navigator.clipboard?.writeText(t).then(()=>showToast(msg||'Copied','success'),()=>showToast('Copy failed','error')); }
@@ -4353,12 +4388,12 @@ function applyRoleVisibility(){
   }
 }
 
-function handleLogin(){
+async function handleLogin(){
   const uname=document.getElementById('login-username').value.trim();
   const pwd=document.getElementById('login-password').value;
   const errEl=document.getElementById('login-error');
   if(!uname||!pwd){ errEl.textContent='Please enter username and password.'; return; }
-  const users=getAccessUsers();
+  const users=await getAccessUsers();
   const match=users.find(u=>u.username.toLowerCase()===uname.toLowerCase()&&u.password===pwd);
   if(!match){ errEl.textContent='Invalid username or password.'; return; }
   errEl.textContent='';
@@ -4389,11 +4424,11 @@ function handleLogout(){
   if(dd) dd.classList.remove('open');
 }
 
-function restoreSession(){
+async function restoreSession(){
   try{
     const s=JSON.parse(sessionStorage.getItem('kg_session'));
     if(!s) return false;
-    const users=getAccessUsers();
+    const users=await getAccessUsers();
     const match=users.find(u=>u.id===s.id&&u.username===s.username);
     if(!match) return false;
     loggedInUser=match;
@@ -4426,61 +4461,35 @@ async function loadAuditLog(){
   }catch(e){ host.innerHTML='<div class="dash-empty">Could not load activity.</div>'; }
 }
 
-// ---- saved filter views ----
-function loadSavedFilters(){ try{ return JSON.parse(localStorage.getItem('kg-saved-filters')||'[]'); }catch(e){ return []; } }
-function persistSavedFilters(a){ try{ localStorage.setItem('kg-saved-filters', JSON.stringify(a)); }catch(e){} }
-function renderSavedFilterOptions(){
-  const sel=document.getElementById('saved-filter-select'); if(!sel) return;
-  const arr=loadSavedFilters();
-  sel.innerHTML='<option value="">Saved views…</option>'+arr.map((f,i)=>`<option value="${i}">${escapeHtml(f.name)}</option>`).join('')+(arr.length?'<option value="__del">✕ Delete a view…</option>':'');
-}
-function saveCurrentFilter(){
-  const name=prompt('Name this view (saves the current filter + search):'); if(!name) return;
-  const arr=loadSavedFilters();
-  arr.push({name:name.trim(), filter, search:document.getElementById('search').value});
-  persistSavedFilters(arr); renderSavedFilterOptions(); showToast('View saved','success');
-}
-function applySavedFilter(v){
-  const sel=document.getElementById('saved-filter-select');
-  if(v==='') return;
-  const arr=loadSavedFilters();
-  if(v==='__del'){
-    if(sel) sel.value='';
-    if(!arr.length) return;
-    const name=prompt('Type the exact name of the view to delete:'); if(!name) return;
-    const idx=arr.findIndex(f=>f.name===name.trim());
-    if(idx<0){ showToast('No view by that name','error'); return; }
-    arr.splice(idx,1); persistSavedFilters(arr); renderSavedFilterOptions(); showToast('View deleted','success'); return;
-  }
-  const f=arr[+v]; if(!f) return;
-  filter=f.filter||'All';
-  document.getElementById('search').value=f.search||'';
-  document.querySelectorAll('.chip[data-f]').forEach(b=>b.classList.toggle('active', b.dataset.f===filter));
-  render();
-  if(sel) sel.value='';
+// ════════ ACCESS MANAGEMENT (Firestore) ════════
+let accessUsersCache = [];
+
+async function getAccessUsers(){
+  try{
+    const snap = await getDocs(accessCol);
+    accessUsersCache = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+    return accessUsersCache;
+  }catch(e){ return accessUsersCache; }
 }
 
-// ════════ ACCESS MANAGEMENT ════════
-const ACCESS_KEY = 'kg_access_users';
-function getAccessUsers(){
-  try{ return JSON.parse(localStorage.getItem(ACCESS_KEY))||[]; }catch(e){ return []; }
-}
-function persistAccessUsers(arr){ localStorage.setItem(ACCESS_KEY, JSON.stringify(arr)); }
-
-// Seed defaults if empty
-(function seedDefaults(){
-  const u=getAccessUsers();
-  if(u.length) return;
+// Seed defaults if Firestore collection is empty
+async function seedDefaults(){
+  const users = await getAccessUsers();
+  if(users.length) return;
   const now=new Date().toISOString();
-  persistAccessUsers([
+  const defaults=[
     {id:'1', username:'readonly', display:'Read Only User', password:'readonly123', role:'readonly', created:now},
     {id:'2', username:'admin', display:'Admin User', password:'admin1234', role:'admin', created:now},
     {id:'3', username:'superadmin', display:'Super Admin', password:'super12345', role:'superadmin', created:now}
-  ]);
-})();
+  ];
+  for(const u of defaults){
+    await setDoc(doc(accessCol, u.id), { username:u.username, display:u.display, password:u.password, role:u.role, created:u.created });
+  }
+  await getAccessUsers();
+}
 
-function renderAccessPage(){
-  const users=getAccessUsers();
+async function renderAccessPage(){
+  const users=await getAccessUsers();
   const tb=document.getElementById('access-tbody');
   const ct=document.getElementById('access-count');
   if(ct) ct.textContent=users.length+' account'+(users.length!==1?'s':'');
@@ -4503,31 +4512,32 @@ function renderAccessPage(){
   }).join('');
 }
 
-function saveAccessUser(){
+async function saveAccessUser(){
   const uname=document.getElementById('acc-username').value.trim();
   const display=document.getElementById('acc-display').value.trim();
   const pwd=document.getElementById('acc-password').value;
   const role=document.getElementById('acc-role').value;
   const editId=document.getElementById('acc-edit-id').value;
   if(!uname||!pwd||pwd.length<6) return showToast('Username & password (min 6 chars) required','error');
-  const users=getAccessUsers();
-  // Check duplicate username
+  const users=await getAccessUsers();
   const dup=users.find(u=>u.username.toLowerCase()===uname.toLowerCase()&&u.id!==editId);
   if(dup) return showToast('Username already exists','error');
   if(editId){
-    const idx=users.findIndex(u=>u.id===editId);
-    if(idx>=0){ users[idx].username=uname; users[idx].display=display; users[idx].password=pwd; users[idx].role=role; }
+    const existing=users.find(u=>u.id===editId);
+    if(existing){
+      await setDoc(doc(accessCol, editId), { username:uname, display, password:pwd, role, created:existing.created });
+    }
   } else {
-    users.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,6), username:uname, display:display, password:pwd, role:role, created:new Date().toISOString()});
+    const newId=Date.now()+'_'+Math.random().toString(36).slice(2,6);
+    await setDoc(doc(accessCol, newId), { username:uname, display, password:pwd, role, created:new Date().toISOString() });
   }
-  persistAccessUsers(users);
   resetAccessForm();
-  renderAccessPage();
+  await renderAccessPage();
   showToast(editId?'User updated':'User added','success');
 }
 
-function editAccessUser(id){
-  const users=getAccessUsers();
+async function editAccessUser(id){
+  const users=await getAccessUsers();
   const u=users.find(x=>x.id===id); if(!u) return;
   document.getElementById('acc-username').value=u.username;
   document.getElementById('acc-display').value=u.display||'';
@@ -4537,11 +4547,10 @@ function editAccessUser(id){
   document.getElementById('access-form-title').textContent='Edit Login';
 }
 
-function deleteAccessUser(id){
+async function deleteAccessUser(id){
   if(!confirm('Delete this login account?')) return;
-  const users=getAccessUsers().filter(u=>u.id!==id);
-  persistAccessUsers(users);
-  renderAccessPage();
+  await deleteDoc(doc(accessCol, id));
+  await renderAccessPage();
   showToast('User deleted','success');
 }
 
@@ -4558,19 +4567,19 @@ function toggleAccPwd(){
 
 // ---- expose new globals ----
 Object.assign(window, {
-  renderOverview, renderVolunteers, renderSchedules, addSchedule, deleteSchedule,
+  renderOverview,
   handleCSVImport, openGroupMessage, closeGroupMessage, copyText,
+  sendGroupWhatsApp, sendGroupSMS, sendGroupEmail,
   addMemberNote, deleteMemberNote, editAttRecord,
   toggleSelectMode, toggleSelect, clearSelection, bulkDelete, bulkSetStatus,
   confirmDialog,
   toggleMarkGroup, toggleHousehold,
-  renderAssimilation, advanceStage, saveNextStep,
+  renderAssimilation, advanceStage, saveNextStep, toggleReachOutDone,
   addPrayer, deletePrayer, togglePrayerAnswered, setPrayerKind,
   openVisitor, closeVisitor, saveVisitor,
   setTrendWeeks, setTrendEvent, setRecEventFilter,
   renderReports, generateMonthlyPDF, generateMemberCardsPDF,
   restoreMember, permanentDelete, loadAuditLog,
-  saveCurrentFilter, applySavedFilter,
   renderAccessPage, saveAccessUser, editAccessUser, deleteAccessUser, resetAccessForm, toggleAccPwd,
   handleLogin, handleLogout, toggleLoginPwd, toggleUserDropdown
 });
@@ -4592,16 +4601,18 @@ document.addEventListener('click',function(e){
 });
 
 // ---- init: restore session or show login ----
-renderSavedFilterOptions();
-if(restoreSession()){
-  document.getElementById('login-screen').classList.add('hidden');
-  document.getElementById('app-layout').style.display='flex';
-  applyRoleVisibility();
-  showPage('overview');
-} else {
-  document.getElementById('app-layout').style.display='none';
-  document.getElementById('mobile-nav').style.display='none';
-}
+(async function(){
+  await seedDefaults();
+  if(await restoreSession()){
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-layout').style.display='flex';
+    applyRoleVisibility();
+    showPage('overview');
+  } else {
+    document.getElementById('app-layout').style.display='none';
+    document.getElementById('mobile-nav').style.display='none';
+  }
+})();
 
 </script>
 
