@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kings Generation — Members</title>
+<meta name="description" content="Kings Generation church member & attendance portal">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -99,8 +100,8 @@
 
 [data-theme="light"] .topbar { background: #FFFFFF; border-bottom-color: rgba(0,0,0,0.08); }
 
-[data-theme="light"] .logo-cross .cross-fill { fill: #B8922E; }
-[data-theme="light"] .logo-cross .cross-ring { stroke: rgba(0,0,0,0.12); }
+[data-theme="light"] .logo-cross { mix-blend-mode: multiply; }
+[data-theme="light"] .login-logo { mix-blend-mode: multiply; }
 
 [data-theme="light"] .top-btn.primary { color: #fff; }
 [data-theme="light"] .chip.active { color: #fff; }
@@ -142,8 +143,10 @@ body {
 }
 
 .logo-cross {
-  width: 32px; height: 32px;
-  margin-bottom: 10px;
+  width: 120px; height: 120px;
+  margin-bottom: -15px;
+  object-fit: contain;
+  mix-blend-mode: lighten;
 }
 
 .logo-name {
@@ -163,7 +166,7 @@ body {
   margin-top: 3px;
 }
 
-.nav { padding: 1rem 0.75rem; flex: 1; }
+.nav { padding: 1rem 0.75rem; flex: 1; overflow-y: auto; }
 
 .nav-item {
   display: flex;
@@ -227,7 +230,7 @@ body {
 .topbar {
   background: #141720;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding: 1rem 2rem;
+  padding: 1rem 4.5rem 1rem 2rem;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -665,8 +668,9 @@ tbody td {
   background: var(--surface);
   border-radius: 20px;
   width: 100%; max-width: 480px;
+  max-height: 90vh;
   box-shadow: var(--shadow-lg);
-  overflow: hidden;
+  overflow-y: auto;
   animation: popIn 0.2s ease;
   border: 1px solid var(--border-strong);
 }
@@ -979,23 +983,576 @@ tbody td {
   .att-month-grid{grid-template-columns:repeat(3,1fr);}
   .mh-stats{grid-template-columns:repeat(2,1fr);}
 }
+
+/* ════════════════════════════════════════════
+   ✦ POLISH LAYER — visual refinements & UX
+   ════════════════════════════════════════════ */
+
+/* — Atmospheric background depth (dark) — */
+body{
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(1100px 700px at 12% -8%, rgba(212,168,71,0.10), transparent 55%),
+    radial-gradient(900px 600px at 108% 8%, rgba(96,165,250,0.06), transparent 50%),
+    radial-gradient(800px 800px at 50% 120%, rgba(167,139,250,0.05), transparent 60%);
+  background-attachment: fixed;
+}
+[data-theme="light"] body{
+  background-image:
+    radial-gradient(1100px 700px at 12% -10%, rgba(184,146,46,0.10), transparent 55%),
+    radial-gradient(900px 600px at 110% 6%, rgba(37,99,235,0.05), transparent 50%),
+    radial-gradient(900px 900px at 50% 125%, rgba(124,58,237,0.04), transparent 60%);
+}
+
+/* — Themed scrollbars — */
+*{scrollbar-width:thin;scrollbar-color:var(--surface3) transparent;}
+*::-webkit-scrollbar{width:10px;height:10px;}
+*::-webkit-scrollbar-track{background:transparent;}
+*::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:8px;border:2px solid var(--cream);}
+*::-webkit-scrollbar-thumb:hover{background:var(--gold-dim);}
+
+/* — Keyboard focus rings (accessibility) — */
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible,
+.nav-item:focus-visible, .chip:focus-visible, [tabindex]:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:2px;
+  border-radius:8px;
+}
+input:focus-visible, select:focus-visible{outline-offset:0;}
+
+/* — Tabular figures so big numbers don't jitter — */
+.stat-card-val,.stats-pill-num,.att-hero-val,.att-month-val,.att-year-val,
+.att-donut-center-val,.att-record-pct,.mh-stat-val,.bar-pct,.att-ministry-pct,
+.chip-count{font-variant-numeric:tabular-nums;font-feature-settings:"tnum";}
+
+/* — Status ring on avatars — */
+.avatar{position:relative;box-shadow:0 0 0 2px var(--surface), 0 0 0 3.5px var(--av-ring,transparent);}
+[data-theme="light"] .avatar{box-shadow:0 0 0 2px var(--surface), 0 0 0 3.5px var(--av-ring,transparent);}
+.card-avatar{box-shadow:0 0 0 2px var(--surface), 0 0 0 4px var(--av-ring,transparent);}
+
+/* — Filter chip live counts — */
+.chip{display:inline-flex;align-items:center;gap:7px;}
+.chip-count{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  font-size:.66rem;font-weight:700;line-height:1;
+  background:var(--surface3);color:var(--text-secondary);
+  transition:all .15s;
+}
+.chip:hover .chip-count{background:var(--gold-light);color:var(--gold);}
+.chip.active .chip-count{background:rgba(0,0,0,0.18);color:#0D0F14;}
+[data-theme="light"] .chip.active .chip-count{background:rgba(255,255,255,0.3);color:#fff;}
+
+/* — Search clear (×) button — */
+.search-wrap{display:flex;align-items:center;}
+.search-clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;border:none;border-radius:50%;
+  background:var(--surface3);color:var(--text-secondary);
+  display:none;align-items:center;justify-content:center;cursor:pointer;
+  padding:0;transition:all .15s;
+}
+.search-clear:hover{background:var(--gold-dim);color:#fff;}
+.search-clear.show{display:flex;}
+
+/* — Sortable table headers — */
+thead th.sortable{cursor:pointer;user-select:none;transition:color .15s;}
+thead th.sortable:hover{color:var(--gold);}
+.sort-ind{display:inline-block;margin-left:5px;font-size:.7rem;opacity:0;transition:opacity .15s,transform .15s;}
+thead th.sortable:hover .sort-ind{opacity:.5;}
+thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
+
+/* — Skeleton loaders — */
+.skel-row{display:flex;align-items:center;gap:12px;padding:.85rem 1.5rem;border-bottom:1px solid var(--border);}
+.skel{background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200% 100%;animation:skelShimmer 1.3s ease-in-out infinite;border-radius:6px;}
+.skel-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;}
+.skel-line{height:10px;}
+@keyframes skelShimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* — Staggered entrance for stat/hero cards — */
+.stat-card,.att-hero-card{animation:riseIn .5s cubic-bezier(.2,.7,.3,1) both;}
+.summary-row .stat-card:nth-child(1),.att-hero .att-hero-card:nth-child(1){animation-delay:.02s;}
+.summary-row .stat-card:nth-child(2),.att-hero .att-hero-card:nth-child(2){animation-delay:.08s;}
+.summary-row .stat-card:nth-child(3),.att-hero .att-hero-card:nth-child(3){animation-delay:.14s;}
+.summary-row .stat-card:nth-child(4),.att-hero .att-hero-card:nth-child(4){animation-delay:.20s;}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px) scale(.98);}to{opacity:1;transform:none;}}
+
+/* — Subtle lift on interactive cards — */
+.stat-card{transition:transform .2s cubic-bezier(.2,.7,.3,1),box-shadow .2s,border-color .2s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:rgba(212,168,71,.25);}
+.att-hero-card{transition:transform .2s cubic-bezier(.2,.7,.3,1),box-shadow .2s;}
+.att-hero-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.top-btn,.btn-save,.btn-cancel{transition:transform .12s,background .15s,color .15s,box-shadow .15s;}
+.top-btn:active,.btn-save:active,.btn-cancel:active{transform:scale(.97);}
+.top-btn.primary:hover{box-shadow:0 4px 14px rgba(212,168,71,.35);}
+
+/* — Refined toast (slide + accent bar) — */
+#toast{
+  display:flex !important;align-items:center;gap:9px;
+  box-shadow:var(--shadow-lg);backdrop-filter:blur(8px);
+  transform:translateY(0);
+}
+#toast.toast-hide{transform:translateY(14px);}
+
+/* — Nav active accent bar — */
+.nav-item{position:relative;}
+.nav-item.active::before{
+  content:'';position:absolute;left:-0.75rem;top:50%;transform:translateY(-50%);
+  width:3px;height:18px;border-radius:0 3px 3px 0;background:var(--gold);
+}
+
+/* — Reduced motion — */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important;}
+}
+
+/* ════════════════════════════════════════════
+   ✦ MOBILE BOTTOM NAVIGATION
+   ════════════════════════════════════════════ */
+.mobile-nav{display:none;}
+.mobile-topbar{display:none;}
+@media (max-width: 768px){
+  .mobile-topbar{
+    display:flex;align-items:center;gap:10px;
+    padding:0.85rem 1rem;
+    background:var(--white);border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:50;
+  }
+  .mobile-topbar .logo-cross{width:24px;height:24px;margin:0;}
+  .mobile-topbar .mt-name{font-family:'Lora',serif;font-weight:600;font-size:1rem;color:var(--text-primary);flex:1;}
+  .mobile-topbar .mt-count{font-size:.7rem;font-weight:700;color:var(--gold);background:var(--gold-light);padding:3px 10px;border-radius:20px;}
+
+  .mobile-nav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;
+    background:var(--white);border-top:1px solid var(--border);
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:0 -4px 20px rgba(0,0,0,.18);
+  }
+  [data-theme="light"] .mobile-nav{box-shadow:0 -4px 20px rgba(0,0,0,.08);}
+  .mnav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:8px 4px;border:none;background:none;cursor:pointer;
+    color:var(--text-secondary);font-family:inherit;font-size:.62rem;font-weight:600;
+    border-radius:10px;transition:all .15s;
+  }
+  .mnav-item span{letter-spacing:.02em;}
+  .mnav-item.active{color:var(--gold);background:var(--gold-pale);}
+  .mnav-item.add{color:var(--gold);}
+  .mnav-add-circle{
+    width:34px;height:34px;border-radius:50%;background:var(--gold);
+    display:flex;align-items:center;justify-content:center;margin-top:-2px;
+    box-shadow:0 4px 12px rgba(212,168,71,.4);
+  }
+  /* Give content breathing room above the bottom bar */
+  .content{padding-bottom:5.5rem !important;}
+  /* Topbar: let search drop to its own full-width row */
+  .topbar{flex-wrap:wrap;row-gap:10px;}
+  .search-wrap{max-width:none;order:3;flex-basis:100%;}
+  .page-title{font-size:1.1rem;}
+  .summary-row{grid-template-columns:repeat(2,1fr);}
+  .att-hero{grid-template-columns:repeat(2,1fr);}
+}
+/* ════════════════════════════════════════════
+   ✦ NEEDS FOLLOW-UP SECTION
+   ════════════════════════════════════════════ */
+.fu-wrap{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid #F87171;
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow);
+  margin-bottom:1.5rem;
+  overflow:hidden;
+  animation:riseIn .5s cubic-bezier(.2,.7,.3,1) both;
+}
+.fu-head{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;cursor:pointer;user-select:none;}
+.fu-head-icon{width:32px;height:32px;border-radius:8px;background:var(--red-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fu-title{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--text-primary);}
+.fu-sub{font-size:.72rem;color:var(--text-secondary);margin-top:1px;}
+.fu-count{margin-left:auto;font-size:.78rem;font-weight:700;color:var(--red);background:var(--red-bg);padding:3px 11px;border-radius:20px;font-variant-numeric:tabular-nums;}
+.fu-chev{color:var(--text-secondary);transition:transform .2s;flex-shrink:0;}
+.fu-chev.open{transform:rotate(180deg);}
+.fu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;padding:0 1.25rem 1.25rem;}
+.fu-card{display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;}
+.fu-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:rgba(248,113,113,.35);}
+.fu-meta{flex:1;min-width:0;}
+.fu-name{font-weight:600;font-size:.88rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fu-reason{font-size:.74rem;font-weight:600;color:var(--red);margin-top:2px;}
+.fu-seen{font-size:.7rem;color:var(--slate-light);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fu-acts{display:flex;gap:6px;flex-shrink:0;}
+.fu-act{width:30px;height:30px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .15s;}
+.fu-act:hover{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+@media (max-width:768px){ .fu-grid{grid-template-columns:1fr;} }
+/* ════════════════════════════════════════════
+   ✦ DASHBOARD / VOLUNTEERS / SCHEDULES / BULK / NOTES
+   ════════════════════════════════════════════ */
+.ov-greeting{font-family:'Lora',serif;font-size:1.4rem;font-weight:600;color:var(--text-primary);margin-bottom:1.25rem;}
+.ov-greeting span{color:var(--gold);}
+.dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+.dash-span-2{grid-column:1/-1;}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow);}
+.dash-card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+.dash-card-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);}
+.dash-card-sub{font-size:.72rem;color:var(--slate-light);}
+.dash-list{display:flex;flex-direction:column;gap:2px;}
+.dash-item{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:8px;transition:background .12s;cursor:pointer;}
+.dash-item:hover{background:var(--gold-pale);}
+.dash-item-main{flex:1;min-width:0;}
+.dash-item-name{font-weight:600;font-size:.84rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dash-item-sub{font-size:.72rem;color:var(--slate-light);margin-top:1px;}
+.dash-item-tag{font-size:.72rem;font-weight:700;white-space:nowrap;}
+.dash-empty{text-align:center;padding:1.5rem;color:var(--slate-light);font-size:.82rem;}
+
+/* trend chart */
+.trend-svg{width:100%;height:auto;display:block;overflow:visible;}
+.trend-dot{cursor:pointer;transition:r .12s;}
+.trend-dot:hover{r:6;}
+
+/* volunteers */
+.vol-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.vol-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;box-shadow:var(--shadow);}
+.vol-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.vol-name{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--text-primary);}
+.vol-count{font-size:.72rem;font-weight:700;color:var(--gold);background:var(--gold-light);padding:3px 10px;border-radius:20px;}
+.vol-members{display:flex;flex-direction:column;gap:2px;}
+.vol-member{display:flex;align-items:center;gap:9px;padding:5px 4px;border-radius:8px;cursor:pointer;transition:background .12s;}
+.vol-member:hover{background:var(--gold-pale);}
+.vol-member-name{font-size:.82rem;font-weight:500;color:var(--text-primary);}
+
+/* schedules */
+.sched-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.sched-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-lg);padding:1.25rem;box-shadow:var(--shadow);}
+.sched-day{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);}
+.sched-name{font-family:'Lora',serif;font-size:1.05rem;font-weight:600;color:var(--text-primary);margin-top:3px;}
+.sched-time{font-size:.82rem;color:var(--text-secondary);margin-top:4px;}
+.sched-next{font-size:.72rem;color:var(--slate-light);margin-top:8px;}
+.sched-del{margin-top:10px;}
+
+/* bulk action bar */
+.bulk-bar{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(140%);z-index:300;display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border-strong);border-radius:14px;padding:.7rem 1rem;box-shadow:var(--shadow-lg);transition:transform .25s cubic-bezier(.2,.7,.3,1);min-width:min(560px,92vw);}
+.bulk-bar.show{transform:translateX(-50%) translateY(0);}
+.bulk-count{font-size:.85rem;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;}
+.bulk-select{padding:.45rem .7rem;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--text-primary);font-family:inherit;font-size:.8rem;outline:none;}
+.bulk-btn{padding:.45rem .9rem;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-primary);font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;}
+.bulk-btn:hover{background:var(--surface3);}
+.bulk-btn.danger{color:var(--red);border-color:rgba(248,113,113,.4);}
+.bulk-btn.danger:hover{background:var(--red-bg);}
+.bulk-btn.ghost{border:none;color:var(--text-secondary);}
+@media (max-width:768px){ .bulk-bar{bottom:5.5rem;flex-wrap:wrap;min-width:0;width:92vw;} }
+
+/* select mode checkbox in member cell */
+.sel-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--border-strong);display:none;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;cursor:pointer;color:transparent;}
+.select-mode .sel-box{display:flex;}
+.sel-box.on{background:var(--gold);border-color:var(--gold);color:#0D0F14;}
+
+/* contact action buttons (reuse fu-act look) */
+.contact-row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.contact-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface2);color:var(--text-secondary);text-decoration:none;font-size:.72rem;font-weight:600;transition:all .15s;}
+.contact-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+
+/* member notes */
+.mh-note-add{display:flex;gap:8px;margin-bottom:12px;}
+.mh-note-input{flex:1;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.82rem;color:var(--text-primary);background:var(--surface2);outline:none;resize:vertical;min-height:38px;}
+.mh-note-input:focus{border-color:var(--gold);background:var(--surface3);}
+.mh-note{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.mh-note-text{font-size:.84rem;color:var(--text-primary);line-height:1.45;white-space:pre-wrap;}
+.mh-note-meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+.mh-note-date{font-size:.7rem;color:var(--slate-light);}
+.mh-note-del{font-size:.7rem;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;}
+.mh-last-seen{display:flex;gap:14px;font-size:.78rem;color:var(--text-secondary);margin-bottom:1rem;padding:10px 12px;background:var(--surface2);border-radius:10px;}
+.mh-last-seen b{color:var(--text-primary);}
+
+@media (max-width:900px){ .dash-grid{grid-template-columns:1fr;} }
+/* household grouping in mark-attendance */
+.mark-hh-group{margin-bottom:10px;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.mark-hh-head{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--surface2);cursor:pointer;user-select:none;transition:background .12s;}
+.mark-hh-head:hover{background:var(--surface3);}
+.mark-hh-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--border-strong);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;}
+.mark-hh-check.on{background:var(--gold);border-color:var(--gold);color:#0D0F14;}
+.mark-hh-check.partial{background:var(--gold-light);border-color:var(--gold);color:var(--gold);}
+.mark-hh-name{font-weight:700;font-size:.82rem;color:var(--text-primary);flex:1;}
+.mark-hh-count{font-size:.72rem;color:var(--slate-light);white-space:nowrap;}
+.mark-hh-members{padding:4px 6px;}
+.mark-hh-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--slate-light);margin:10px 4px 4px;}
+.mark-group-btn{border:none;background:none;font-family:inherit;font-size:.75rem;font-weight:600;color:var(--text-secondary);cursor:pointer;margin-left:6px;}
+.mark-group-btn.on{color:var(--gold);}
+/* ════════ ASSIMILATION PIPELINE ════════ */
+.assim-board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start;}
+.assim-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem;box-shadow:var(--shadow);}
+.assim-col-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.assim-col-title{font-family:'Lora',serif;font-weight:600;font-size:1rem;display:flex;align-items:center;gap:8px;color:var(--text-primary);}
+.assim-col-dot{width:9px;height:9px;border-radius:50%;}
+.assim-col-count{font-size:.72rem;font-weight:700;color:var(--slate-light);background:var(--surface2);padding:3px 9px;border-radius:20px;}
+.assim-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px 12px;margin-bottom:9px;}
+.assim-card.stale{border-color:rgba(248,113,113,.5);}
+.assim-card-top{display:flex;align-items:center;gap:9px;}
+.assim-card-name{font-weight:600;font-size:.85rem;color:var(--text-primary);flex:1;cursor:pointer;}
+.assim-card-age{font-size:.68rem;color:var(--slate-light);white-space:nowrap;}
+.assim-card-age.stale{color:var(--red);font-weight:700;}
+.assim-step{margin-top:8px;display:flex;align-items:center;gap:6px;}
+.assim-step-input{flex:1;padding:.4rem .6rem;border:1px solid var(--border-strong);border-radius:7px;background:var(--surface);color:var(--text-primary);font-family:inherit;font-size:.76rem;outline:none;}
+.assim-step-input:focus{border-color:var(--gold);}
+.assim-due{font-size:.66rem;color:var(--slate-light);margin-top:5px;}
+.assim-due.overdue{color:var(--red);font-weight:700;}
+.assim-actions{display:flex;gap:6px;margin-top:8px;}
+.assim-advance{flex:1;padding:.4rem;border:1px solid var(--gold);background:var(--gold-light);color:var(--gold);border-radius:7px;font-family:inherit;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.assim-advance:hover{background:var(--gold);color:#0D0F14;}
+.assim-empty{font-size:.78rem;color:var(--slate-light);text-align:center;padding:1rem 0;}
+
+/* pipeline snapshot (dashboard) */
+.pipe-snap{display:flex;flex-direction:column;gap:9px;}
+.pipe-row{display:flex;align-items:center;gap:10px;}
+.pipe-bar-wrap{flex:1;height:8px;background:var(--surface2);border-radius:20px;overflow:hidden;}
+.pipe-bar{height:100%;border-radius:20px;}
+.pipe-label{font-size:.78rem;color:var(--text-secondary);width:62px;}
+.pipe-num{font-size:.8rem;font-weight:700;color:var(--text-primary);width:26px;text-align:right;font-variant-numeric:tabular-nums;}
+
+/* date type tag */
+.date-tag{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:20px;}
+
+/* prayer / life-event log */
+.pray-add{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.pray-kind{display:flex;gap:6px;}
+.pray-kind button{flex:1;padding:.4rem;border:1px solid var(--border-strong);background:var(--surface2);color:var(--text-secondary);border-radius:7px;font-family:inherit;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;}
+.pray-kind button.on{border-color:var(--gold);background:var(--gold-light);color:var(--gold);}
+.pray-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.pray-item.answered{opacity:.62;}
+.pray-text{font-size:.84rem;color:var(--text-primary);line-height:1.45;white-space:pre-wrap;}
+.pray-text.answered{text-decoration:line-through;}
+.pray-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.pray-date{font-size:.7rem;color:var(--slate-light);}
+.pray-toggle{font-size:.7rem;color:var(--green);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;}
+.pray-del{font-size:.7rem;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;}
+.mh-keydates{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem;}
+.mh-keydate{font-size:.72rem;color:var(--text-secondary);background:var(--surface2);border:1px solid var(--border);padding:5px 10px;border-radius:8px;}
+.mh-keydate b{color:var(--text-primary);}
+
+@media (max-width:900px){ .assim-board{grid-template-columns:1fr;} }
+/* trend & record filters */
+.trend-select{padding:.35rem .6rem;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface2);color:var(--text-primary);font-family:inherit;font-size:.74rem;outline:none;cursor:pointer;max-width:160px;}
+.trend-select:focus{border-color:var(--gold);}
+.trend-wk-group{display:flex;gap:2px;background:var(--surface3);border-radius:18px;padding:3px;}
+.trend-wk{padding:4px 11px;border-radius:16px;font-size:.72rem;font-weight:700;border:none;background:none;color:var(--text-secondary);cursor:pointer;transition:all .15s;font-family:inherit;}
+.trend-wk:hover{color:var(--gold);}
+.trend-wk.on{background:var(--gold);color:#0D0F14;}
+.visitor-field-note{font-size:.66rem;color:var(--slate-light);margin-top:3px;}
+/* reports: growth + cohort */
+.growth-svg{width:100%;height:auto;display:block;overflow:visible;}
+.cohort-table{border-collapse:collapse;font-size:.74rem;width:100%;min-width:520px;}
+.cohort-table th{font-weight:700;color:var(--slate-light);padding:6px 8px;text-align:center;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;}
+.cohort-table td{padding:1px;text-align:center;}
+.cohort-row-label{text-align:left;white-space:nowrap;color:var(--text-secondary);font-weight:600;padding-right:10px;}
+.cohort-size{color:var(--slate-light);font-weight:500;font-size:.68rem;}
+.cohort-cell{display:block;border-radius:6px;padding:8px 4px;font-weight:700;color:#0D0F14;font-variant-numeric:tabular-nums;}
+.cohort-cell.empty{background:var(--surface2)!important;color:var(--slate-light);font-weight:400;}
+
+/* ── ACCESS PAGE ── */
+.access-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.84rem;}
+.access-table th{text-align:left;padding:10px 14px;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--slate);font-weight:600;border-bottom:1px solid var(--border);}
+.access-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.access-table tr:last-child td{border-bottom:none;}
+.access-table tr:hover td{background:var(--gold-pale);}
+.access-role-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:600;letter-spacing:.02em;}
+.access-role-badge.readonly{background:var(--blue-bg);color:var(--blue);}
+.access-role-badge.admin{background:var(--green-bg);color:var(--green);}
+.access-role-badge.superadmin{background:var(--gold-light);color:var(--gold);}
+.access-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.access-form .form-field{display:flex;flex-direction:column;gap:4px;}
+.access-form .form-field.full{grid-column:1/-1;}
+.access-form label{font-size:.74rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;}
+.access-form input,.access-form select{padding:9px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface2);color:var(--text-primary);font-size:.84rem;font-family:inherit;outline:none;transition:border .15s;}
+.access-form input:focus,.access-form select:focus{border-color:var(--gold);}
+.access-btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+.access-desc-list{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
+.access-desc-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surface2);border-radius:10px;}
+.access-desc-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;}
+.access-desc-icon.ro{background:var(--blue-bg);}
+.access-desc-icon.ad{background:var(--green-bg);}
+.access-desc-icon.sa{background:var(--gold-light);}
+.access-desc-body{flex:1;}
+.access-desc-title{font-weight:600;font-size:.85rem;color:var(--text-primary);}
+.access-desc-sub{font-size:.78rem;color:var(--text-secondary);margin-top:2px;}
+.access-pwd-wrap{position:relative;}
+.access-pwd-wrap input{width:100%;padding-right:36px;}
+.access-pwd-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--slate);cursor:pointer;padding:4px;}
+
+/* ── LOGIN PAGE ── */
+.login-screen{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  background:#0D0F14;
+  transition:opacity .4s;
+}
+.login-screen.hidden{opacity:0;pointer-events:none;}
+.login-card{
+  width:100%;max-width:400px;padding:2.5rem 2rem 2rem;
+  background:#1C2030;border-radius:20px;
+  box-shadow:0 16px 48px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);
+  text-align:center;
+}
+.login-logo{
+  width:260px;height:260px;margin:0 auto -20px;object-fit:contain;mix-blend-mode:lighten;display:block;
+}
+.login-title{
+  font-family:'Lora',serif;font-size:1.4rem;font-weight:600;color:#fff;margin-bottom:4px;
+}
+.login-sub{
+  font-size:.78rem;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.8rem;
+}
+.login-field{
+  position:relative;margin-bottom:14px;text-align:left;
+}
+.login-field label{
+  display:block;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.45);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;
+}
+.login-field input{
+  width:100%;padding:11px 14px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
+  color:#fff;font-size:.88rem;font-family:inherit;outline:none;
+  transition:border .2s;
+}
+.login-field input:focus{border-color:rgba(212,168,71,.6);}
+.login-field .login-pwd-toggle{
+  position:absolute;right:12px;bottom:10px;
+  background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;
+}
+.login-btn{
+  width:100%;padding:12px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,#D4A847,#B8922E);color:#0D0F14;
+  font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;
+  letter-spacing:.02em;margin-top:6px;
+  transition:opacity .15s,transform .15s;
+}
+.login-btn:hover{opacity:.9;transform:translateY(-1px);}
+.login-btn:active{transform:translateY(0);}
+.login-error{
+  color:#F87171;font-size:.8rem;margin-top:12px;min-height:1.2em;
+}
+.login-hint{
+  margin-top:18px;font-size:.72rem;color:rgba(255,255,255,.25);
+}
+
+/* Logged-in user avatar — top-right */
+.user-avatar-wrap{
+  position:fixed;top:12px;right:20px;z-index:60;
+}
+.user-avatar-btn{
+  width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:700;color:#0D0F14;cursor:pointer;border:2px solid transparent;
+  transition:box-shadow .2s,border-color .2s;box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+.user-avatar-btn:hover{border-color:rgba(255,255,255,.2);box-shadow:0 2px 12px rgba(0,0,0,.4);}
+.user-avatar-btn.ro{background:var(--blue);}
+.user-avatar-btn.ad{background:var(--green);}
+.user-avatar-btn.sa{background:var(--gold);}
+.user-dropdown{
+  display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:220px;
+  background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;
+  box-shadow:var(--shadow-lg);overflow:hidden;
+  animation:dropIn .15s ease;
+}
+.user-dropdown.open{display:block;}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.user-dropdown-header{
+  padding:14px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.user-dropdown-av{
+  width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:700;color:#0D0F14;flex-shrink:0;
+}
+.user-dropdown-av.ro{background:var(--blue);}
+.user-dropdown-av.ad{background:var(--green);}
+.user-dropdown-av.sa{background:var(--gold);}
+.user-dropdown-name{font-size:.84rem;font-weight:600;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.user-dropdown-role{font-size:.7rem;color:var(--text-secondary);margin-top:1px;}
+.user-dropdown-item{
+  display:flex;align-items:center;gap:10px;width:100%;padding:10px 16px;
+  border:none;background:none;cursor:pointer;font-family:inherit;
+  font-size:.82rem;font-weight:500;color:var(--text-secondary);transition:all .12s;
+}
+.user-dropdown-item:hover{background:var(--gold-pale);color:var(--text-primary);}
+.user-dropdown-item.danger{color:var(--red);}
+.user-dropdown-item.danger:hover{background:var(--red-bg);color:var(--red);}
+[data-theme="light"] .user-avatar-btn:hover{border-color:rgba(0,0,0,.12);}
+[data-theme="light"] .user-dropdown{background:#fff;border-color:rgba(0,0,0,.1);}
+@media (max-width:768px){
+  .user-avatar-wrap{top:10px;right:12px;}
+}
+[data-theme="light"] .login-card{background:#fff;box-shadow:0 16px 48px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.06);}
+[data-theme="light"] .login-title{color:#1A1D28;}
+[data-theme="light"] .login-sub{color:rgba(0,0,0,.4);}
+[data-theme="light"] .login-field label{color:rgba(0,0,0,.45);}
+[data-theme="light"] .login-field input{border-color:rgba(0,0,0,.12);background:rgba(0,0,0,.03);color:#1A1D28;}
+[data-theme="light"] .login-field input:focus{border-color:rgba(184,146,46,.5);}
+[data-theme="light"] .login-btn{background:linear-gradient(135deg,#B8922E,#9A7A20);color:#fff;}
+[data-theme="light"] .login-hint{color:rgba(0,0,0,.2);}
 </style>
 </head>
 <body>
 
-<div class="layout">
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <img class="login-logo" src="KG_Logo.png" alt="Kings Generation">
+    <div class="login-sub">Member Portal Login</div>
+    <form id="login-form" onsubmit="event.preventDefault();handleLogin()">
+      <div class="login-field">
+        <label>Username</label>
+        <input type="text" id="login-username" autocomplete="username" placeholder="Enter username" required>
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" id="login-password" autocomplete="current-password" placeholder="Enter password" required>
+        <button type="button" class="login-pwd-toggle" onclick="toggleLoginPwd()" tabindex="-1">
+          <svg id="login-eye" width="16" height="16" fill="none" viewBox="0 0 20 20"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+      </div>
+      <button type="submit" class="login-btn">Sign In</button>
+      <div class="login-error" id="login-error"></div>
+    </form>
+    <div class="login-hint">Contact your Super Admin if you don't have credentials.</div>
+  </div>
+</div>
+
+<div class="layout" id="app-layout" style="display:none;">
+
+<!-- USER AVATAR (top-right) -->
+<div class="user-avatar-wrap" id="user-avatar-wrap" style="display:none;">
+  <div class="user-avatar-btn" id="user-avatar-btn" onclick="toggleUserDropdown()"></div>
+  <div class="user-dropdown" id="user-dropdown">
+    <div class="user-dropdown-header">
+      <div class="user-dropdown-av" id="user-dropdown-av"></div>
+      <div>
+        <div class="user-dropdown-name" id="user-dropdown-name"></div>
+        <div class="user-dropdown-role" id="user-dropdown-role"></div>
+      </div>
+    </div>
+    <button class="user-dropdown-item" id="user-dd-access" onclick="showPage('access');toggleUserDropdown();" style="display:none;">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><rect x="3" y="9" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.5" fill="currentColor"/></svg>
+      Access Management
+    </button>
+    <button class="user-dropdown-item danger" onclick="handleLogout()">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M7 19H3a1 1 0 01-1-1V2a1 1 0 011-1h4M13 15l5-5-5-5M18 10H7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Sign Out
+    </button>
+  </div>
+</div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo-area">
-    <svg class="logo-cross" viewBox="0 0 32 32" fill="none">
-      <rect x="13" y="2" width="6" height="28" rx="2" fill="rgba(200,168,75,0.9)"/>
-      <rect x="2" y="11" width="28" height="6" rx="2" fill="rgba(200,168,75,0.9)"/>
-    </svg>
+    <img class="logo-cross" src="KG_Logo.png" alt="Kings Generation">
     <div class="logo-name">Kings Generation</div>
     <div class="logo-sub">Member Portal</div>
   </div>
   <nav class="nav">
+    <div class="nav-section">Home</div>
+    <button class="nav-item" id="nav-overview" onclick="showPage('overview')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M3 10l7-7 7 7M5 8.5V17h10V8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Dashboard
+    </button>
     <div class="nav-section">Directory</div>
     <button class="nav-item active" id="nav-members" onclick="showPage('members')">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM5 16a7 7 0 1114 0H5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -1005,19 +1562,28 @@ tbody td {
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M17 20H3a2 2 0 01-2-2V6l4-4h12a2 2 0 012 2v14a2 2 0 01-2 2z" stroke="currentColor" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       Attendance
     </button>
+    <div class="nav-section">Care</div>
+    <button class="nav-item" id="nav-assimilation" onclick="showPage('assimilation')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M3 16c0-3 2.5-4.5 4-4.5s4 1.5 4 4.5M9 6.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM13 11l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Assimilation
+    </button>
     <div class="nav-section">Ministry</div>
-    <button class="nav-item" onclick="alert('Coming soon')">
+    <button class="nav-item" id="nav-schedules" onclick="showPage('schedules')">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       Schedules
     </button>
-    <button class="nav-item" onclick="alert('Coming soon')">
+    <button class="nav-item" id="nav-volunteers" onclick="showPage('volunteers')">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M4 6h12M4 10h8M4 14h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       Volunteers
     </button>
     <div class="nav-section">Reports</div>
-    <button class="nav-item" onclick="alert('Coming soon')">
+    <button class="nav-item" id="nav-analytics" onclick="showPage('overview')">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M6 13l3-3 2 2 3-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Analytics
+    </button>
+    <button class="nav-item" id="nav-reports" onclick="showPage('reports')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M5 2h7l4 4v12a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 2v4h4M7 11h6M7 14h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Reports &amp; PDF
     </button>
   </nav>
   <div class="sidebar-bottom">
@@ -1026,6 +1592,7 @@ tbody td {
       <span class="theme-toggle-label" id="theme-label">Light Mode</span>
       <div class="theme-toggle-track"><div class="theme-toggle-thumb"></div></div>
     </button>
+    <div id="sidebar-user-info"></div>
     <div class="stats-pill" style="margin-top:8px;">
       <div class="stats-pill-num" id="sidebar-count">0</div>
       <div class="stats-pill-label">Total Members</div>
@@ -1039,32 +1606,53 @@ tbody td {
     <div class="page-title">Members</div>
     <div class="search-wrap">
       <svg width="14" height="14" fill="none" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M14 14l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input type="text" id="search" placeholder="Search members…" oninput="render()">
+      <input type="text" id="search" placeholder="Search name, ID, skill, household…" oninput="render()">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Clear search">
+        <svg width="9" height="9" fill="none" viewBox="0 0 10 10"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
     </div>
+    <button class="top-btn admin-only" onclick="document.getElementById('csv-import-input').click()" title="Import members from CSV">
+      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 10V2M5 5l3-3 3 3M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Import
+    </button>
+    <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="handleCSVImport(event)">
+    <button class="top-btn" onclick="openGroupMessage()" title="Message the filtered members">
+      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M2 4a1 1 0 011-1h10a1 1 0 011 1v7a1 1 0 01-1 1H6l-3 3V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      Message
+    </button>
     <button class="top-btn" onclick="exportCSV()">
       <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Export
     </button>
-    <button class="top-btn primary" onclick="openModal()">
+    <button class="top-btn primary admin-only" onclick="openModal()">
       <svg width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
       Add Member
     </button>
   </div>
 
   <div class="filters" id="filters">
-    <button class="chip active" data-f="All" onclick="setFilter(this)">All Members</button>
-    <button class="chip" data-f="Active" onclick="setFilter(this)">Active</button>
-    <button class="chip" data-f="New" onclick="setFilter(this)">New</button>
-    <button class="chip" data-f="Visitor" onclick="setFilter(this)">Visitors</button>
-    <button class="chip" data-f="Inactive" onclick="setFilter(this)">Inactive</button>
+    <button class="chip active" data-f="All" onclick="setFilter(this)">All Members<span class="chip-count" data-cf="All">0</span></button>
+    <button class="chip" data-f="Active" onclick="setFilter(this)">Active<span class="chip-count" data-cf="Active">0</span></button>
+    <button class="chip" data-f="New" onclick="setFilter(this)">New<span class="chip-count" data-cf="New">0</span></button>
+    <button class="chip" data-f="Visitor" onclick="setFilter(this)">Visitors<span class="chip-count" data-cf="Visitor">0</span></button>
+    <button class="chip" data-f="Inactive" onclick="setFilter(this)">Inactive<span class="chip-count" data-cf="Inactive">0</span></button>
+    <button class="chip" id="chip-archived" data-f="Archived" onclick="setFilter(this)" style="display:none;">Archived<span class="chip-count" data-cf="Archived">0</span></button>
+    <div style="flex:1"></div>
+    <select id="saved-filter-select" class="trend-select" style="max-width:none;" onchange="applySavedFilter(this.value)"><option value="">Saved views…</option></select>
+    <button class="chip" onclick="saveCurrentFilter()" title="Save current filter + search">＋ Save view</button>
   </div>
 
   <div class="content">
+    <div id="followup-section"></div>
     <div class="summary-row" id="summary"></div>
 
     <div class="table-wrap">
       <div class="table-header">
         <span class="table-header-title" id="result-label">All Members</span>
+        <button class="top-btn admin-only" id="select-toggle" onclick="toggleSelectMode()" style="padding:.4rem .8rem;font-size:.78rem;">
+          <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="1.5" y="1.5" width="13" height="13" rx="3" stroke="currentColor" stroke-width="1.4"/></svg>
+          Select
+        </button>
         <div class="view-toggle">
           <button class="view-btn active" id="vt-table" onclick="setView('table')" title="Table view">
             <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -1079,11 +1667,11 @@ tbody td {
         <table>
           <thead>
             <tr>
-              <th>Member</th>
-              <th>Ministry / Role</th>
-              <th>Status</th>
-              <th>Attendance</th>
-              <th>Joined</th>
+              <th class="sortable" data-sort="name" onclick="sortBy('name')">Member<span class="sort-ind"></span></th>
+              <th class="sortable" data-sort="ministry" onclick="sortBy('ministry')">Ministry / Role<span class="sort-ind"></span></th>
+              <th class="sortable" data-sort="status" onclick="sortBy('status')">Status<span class="sort-ind"></span></th>
+              <th class="sortable" data-sort="attendance" onclick="sortBy('attendance')">Attendance<span class="sort-ind"></span></th>
+              <th class="sortable" data-sort="joined" onclick="sortBy('joined')">Joined<span class="sort-ind"></span></th>
               <th></th>
             </tr>
           </thead>
@@ -1104,6 +1692,10 @@ tbody td {
     <button class="top-btn" onclick="exportAttCSV()">
       <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Export
+    </button>
+    <button class="top-btn admin-only" onclick="openVisitor()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M7 9c1.7 0 3-1.3 3-3S8.7 3 7 3 4 4.3 4 6s1.3 3 3 3zM2 14c0-2.2 2.2-3.5 5-3.5M12 10v4M10 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Welcome Visitor
     </button>
     <button class="top-btn primary" onclick="openMarkAttendance()">
       <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M6 8l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="1" y="1" width="14" height="14" rx="2" stroke="#fff" stroke-width="1.6"/></svg>
@@ -1184,7 +1776,10 @@ tbody td {
           <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M14 8A6 6 0 112 8a6 6 0 0112 0z" stroke="#4ADE80" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="#4ADE80" stroke-width="1.4" stroke-linecap="round"/></svg>
         </div>
         <div><div class="att-section-title">Recent Records</div><div class="att-section-subtitle">Service-by-service attendance history</div></div>
-        <div class="att-section-right"><span id="att-records-count" class="att-records-count"></span></div>
+        <div class="att-section-right">
+          <select id="rec-event-filter" class="trend-select" onchange="setRecEventFilter(this.value)"></select>
+          <span id="att-records-count" class="att-records-count"></span>
+        </div>
       </div>
       <div class="att-records-section">
         <div id="att-records-grid" class="att-records-grid"></div>
@@ -1223,6 +1818,265 @@ tbody td {
   </div>
 </div>
 
+<!-- OVERVIEW / DASHBOARD PAGE -->
+<div id="overview-page" class="main" style="display:none;flex-direction:column;min-width:0;">
+  <div class="topbar">
+    <div class="page-title">Dashboard</div>
+    <div style="flex:1"></div>
+    <button class="top-btn" onclick="openMarkAttendance()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M6 8l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/></svg>
+      Mark Attendance
+    </button>
+    <button class="top-btn admin-only" onclick="openVisitor()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M7 9c1.7 0 3-1.3 3-3S8.7 3 7 3 4 4.3 4 6s1.3 3 3 3zM2 14c0-2.2 2.2-3.5 5-3.5M12 10v4M10 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Welcome Visitor
+    </button>
+    <button class="top-btn primary admin-only" onclick="openModal()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      Add Member
+    </button>
+  </div>
+  <div class="content" style="padding-top:1.5rem;">
+    <div id="ov-greeting" class="ov-greeting"></div>
+    <div id="ov-stats" class="summary-row"></div>
+    <div class="dash-grid">
+      <div class="dash-card dash-span-2">
+        <div class="dash-card-head" style="flex-wrap:wrap;gap:8px;align-items:center;">
+          <div class="dash-card-title">Attendance Trend</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;">
+            <select id="trend-event" class="trend-select" onchange="setTrendEvent(this.value)"></select>
+            <div class="trend-wk-group">
+              <button class="trend-wk" data-wk="4" onclick="setTrendWeeks(4)">4w</button>
+              <button class="trend-wk on" data-wk="8" onclick="setTrendWeeks(8)">8w</button>
+              <button class="trend-wk" data-wk="12" onclick="setTrendWeeks(12)">12w</button>
+              <button class="trend-wk" data-wk="0" onclick="setTrendWeeks(0)">All</button>
+            </div>
+          </div>
+          <div id="ov-trend-sub" class="dash-card-sub" style="width:100%;"></div>
+        </div>
+        <div id="ov-trend"></div>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">🗓 Reach Out This Week</div></div>
+        <div id="ov-reachout" class="dash-list"></div>
+      </div>
+            <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">🎂 Upcoming Dates</div><div class="dash-card-sub">next 45 days</div></div>
+        <div id="ov-birthdays" class="dash-list"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">⚑ Needs Follow-up</div></div>
+        <div id="ov-followup" class="dash-list"></div>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">Assimilation Pipeline</div><div class="dash-card-sub" style="cursor:pointer;color:var(--gold)" onclick="showPage('assimilation')">Open →</div></div>
+        <div id="ov-pipeline"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">Recent Services</div></div>
+        <div id="ov-recent" class="dash-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ASSIMILATION PAGE -->
+<div id="assimilation-page" class="main" style="display:none;flex-direction:column;min-width:0;">
+  <div class="topbar"><div class="page-title">Assimilation Pipeline</div><div style="flex:1"></div>
+    <button class="top-btn primary admin-only" onclick="openModal()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      Add Member
+    </button>
+  </div>
+  <div class="content" style="padding-top:1.5rem;">
+    <div class="att-section-subtitle" style="margin-bottom:1rem;">Move people from first visit to fully connected. Set a next step for each person and advance them as they grow. People flagged <span style="color:var(--red);font-weight:600;">red</span> have stalled.</div>
+    <div id="assim-board" class="assim-board"></div>
+  </div>
+</div>
+
+<!-- REPORTS PAGE -->
+<div id="reports-page" class="main" style="display:none;flex-direction:column;min-width:0;">
+  <div class="topbar"><div class="page-title">Reports &amp; PDF</div><div style="flex:1"></div></div>
+  <div class="content" style="padding-top:1.5rem;">
+    <div class="dash-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">📄 Monthly Summary PDF</div></div>
+        <div style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px;">A one-page summary: attendance, new members, visitors and birthdays for a chosen month.</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="month" id="report-month" class="trend-select" style="max-width:none;">
+          <button class="top-btn primary" onclick="generateMonthlyPDF()">
+            <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Generate PDF
+          </button>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">🪪 Member Cards PDF</div></div>
+        <div style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px;">Printable directory cards — photo, contact, key dates and attendance. Uses your current Members filter.</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select id="report-cards-scope" class="trend-select" style="max-width:none;">
+            <option value="all">All members</option>
+            <option value="filtered">Current Members filter</option>
+            <option value="followup">Needs follow-up only</option>
+          </select>
+          <button class="top-btn primary" onclick="generateMemberCardsPDF()">
+            <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Generate PDF
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="dash-grid" style="grid-template-columns:1fr;">
+      <div class="dash-card dash-span-2">
+        <div class="dash-card-head"><div class="dash-card-title">📈 New Members Over Time</div><div id="rep-growth-sub" class="dash-card-sub"></div></div>
+        <div id="rep-growth"></div>
+      </div>
+    </div>
+    <div class="dash-grid" style="grid-template-columns:1fr;">
+      <div class="dash-card dash-span-2">
+        <div class="dash-card-head"><div class="dash-card-title">🧲 Cohort Retention</div><div class="dash-card-sub">% of each join-month group attending in the months after they joined</div></div>
+        <div id="rep-cohort" style="overflow-x:auto;"></div>
+      </div>
+    </div>
+    <div class="dash-grid" style="grid-template-columns:1fr;">
+      <div class="dash-card dash-span-2">
+        <div class="dash-card-head"><div class="dash-card-title">🧾 Activity Log</div><button class="top-btn" onclick="loadAuditLog()" style="padding:.35rem .8rem;font-size:.74rem;">Load activity</button></div>
+        <div style="font-size:.78rem;color:var(--text-secondary);margin-bottom:8px;">Who changed what. Recorded when sign-in is enabled; admins can review the last 200 actions.</div>
+        <div id="audit-list" class="dash-list"><div class="dash-empty">Tap "Load activity" to view recent changes.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOLUNTEERS PAGE -->
+<div id="volunteers-page" class="main" style="display:none;flex-direction:column;min-width:0;">
+  <div class="topbar"><div class="page-title">Volunteers &amp; Teams</div><div style="flex:1"></div></div>
+  <div class="content" style="padding-top:1.5rem;">
+    <div class="att-section-subtitle" style="margin-bottom:1rem;">Members grouped by their ministry / serving team.</div>
+    <div id="vol-teams" class="vol-grid"></div>
+  </div>
+</div>
+
+<!-- SCHEDULES PAGE -->
+<div id="schedules-page" class="main" style="display:none;flex-direction:column;min-width:0;">
+  <div class="topbar"><div class="page-title">Service Schedule</div><div style="flex:1"></div>
+    <button class="top-btn primary admin-only" onclick="addSchedule()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      Add Service
+    </button>
+  </div>
+  <div class="content" style="padding-top:1.5rem;">
+    <div class="att-section-subtitle" style="margin-bottom:1rem;">Your weekly recurring services, sorted by the next time they occur. Saved on this device.</div>
+    <div id="sched-list" class="sched-grid"></div>
+  </div>
+</div>
+
+<!-- ACCESS PAGE -->
+<div id="access-page" class="main" style="display:none;flex-direction:column;min-width:0;">
+  <div class="topbar"><div class="page-title">Access Management</div><div style="flex:1"></div></div>
+  <div class="content" style="padding-top:1.5rem;">
+    <div class="dash-grid" style="grid-template-columns:1fr 1fr;">
+      <!-- Left: Add / Edit user -->
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title" id="access-form-title">Add Login</div></div>
+        <form id="access-form" class="access-form" onsubmit="event.preventDefault();saveAccessUser()">
+          <div class="form-field">
+            <label>Username</label>
+            <input type="text" id="acc-username" required autocomplete="off" placeholder="e.g. pastor_john">
+          </div>
+          <div class="form-field">
+            <label>Display Name</label>
+            <input type="text" id="acc-display" placeholder="e.g. Pastor John">
+          </div>
+          <div class="form-field">
+            <label>Password</label>
+            <div class="access-pwd-wrap">
+              <input type="password" id="acc-password" required autocomplete="new-password" placeholder="Min 6 characters" minlength="6">
+              <button type="button" class="access-pwd-toggle" onclick="toggleAccPwd()" title="Show/hide password">
+                <svg id="acc-eye" width="16" height="16" fill="none" viewBox="0 0 20 20"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Role</label>
+            <select id="acc-role" required>
+              <option value="readonly">Read Only</option>
+              <option value="admin">Admin</option>
+              <option value="superadmin">Super Admin</option>
+            </select>
+          </div>
+          <input type="hidden" id="acc-edit-id" value="">
+          <div class="form-field full">
+            <div class="access-btn-row">
+              <button type="button" class="top-btn" onclick="resetAccessForm()" style="padding:.45rem 1rem;">Cancel</button>
+              <button type="submit" class="top-btn primary" style="padding:.45rem 1.2rem;">Save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- Right: Role descriptions -->
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">Role Descriptions</div></div>
+        <div class="access-desc-list">
+          <div class="access-desc-item">
+            <div class="access-desc-icon ro">👁️</div>
+            <div class="access-desc-body">
+              <div class="access-desc-title" style="color:var(--blue)">Read Only</div>
+              <div class="access-desc-sub">Can mark attendence and Can view members, attendance, reports &amp; dashboards. Cannot add, edit or delete any data.</div>
+            </div>
+          </div>
+          <div class="access-desc-item">
+            <div class="access-desc-icon ad">🛡️</div>
+            <div class="access-desc-body">
+              <div class="access-desc-title" style="color:var(--green)">Admin</div>
+              <div class="access-desc-sub">Full read/write access — add members, mark attendance, edit records, manage schedules &amp; volunteers.</div>
+            </div>
+          </div>
+          <div class="access-desc-item">
+            <div class="access-desc-icon sa">⚡</div>
+            <div class="access-desc-body">
+              <div class="access-desc-title" style="color:var(--gold)">Super Admin</div>
+              <div class="access-desc-sub">Everything Admin can do, plus manage other user logins, delete permanently, view audit logs &amp; access this page.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- User table -->
+    <div class="dash-grid" style="grid-template-columns:1fr;">
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">Login Accounts</div><div class="dash-card-sub" id="access-count"></div></div>
+        <div style="overflow-x:auto;">
+          <table class="access-table">
+            <thead><tr><th>Username</th><th>Display Name</th><th>Role</th><th>Created</th><th style="text-align:right;">Actions</th></tr></thead>
+            <tbody id="access-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BULK ACTION BAR -->
+<div class="bulk-bar" id="bulk-bar">
+  <span class="bulk-count" id="bulk-count">0 selected</span>
+  <div style="flex:1"></div>
+  <select id="bulk-status" class="bulk-select">
+    <option value="Active">Active</option>
+    <option value="New">New</option>
+    <option value="Visitor">Visitor</option>
+    <option value="Inactive">Inactive</option>
+  </select>
+  <button class="bulk-btn" onclick="bulkSetStatus()">Set status</button>
+  <button class="bulk-btn danger" onclick="bulkDelete()">Archive</button>
+  <button class="bulk-btn ghost" onclick="clearSelection()">Cancel</button>
+</div>
+
+</div>
 </div>
 
 <!-- MEMBER HISTORY MODAL -->
@@ -1267,6 +2121,7 @@ tbody td {
         <div style="flex:1"></div>
         <button onclick="markAllPresent()" style="border:none;background:none;font-family:inherit;font-size:.75rem;font-weight:600;color:var(--gold);cursor:pointer;">Select All</button>
         <button onclick="markAllAbsent()" style="border:none;background:none;font-family:inherit;font-size:.75rem;font-weight:600;color:var(--text-secondary);cursor:pointer;margin-left:6px;">Clear All</button>
+        <button onclick="toggleMarkGroup()" id="mark-group-btn" class="mark-group-btn">Group by family</button>
       </div>
       <div style="position:relative;margin-bottom:.5rem;">
         <svg width="14" height="14" fill="none" viewBox="0 0 20 20" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--slate-light);pointer-events:none;"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M14 14l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -1300,9 +2155,11 @@ tbody td {
         </div>
         <div>
           <button type="button" class="photo-upload-btn" onclick="document.getElementById('f-photo-input').click()">Upload Photo</button>
+          <button type="button" class="photo-upload-btn" onclick="document.getElementById('f-photo-camera').click()">📷 Camera</button>
           <button type="button" class="photo-remove-btn" id="photo-remove-btn" style="display:none" onclick="removePhoto()">Remove</button>
           <input type="file" id="f-photo-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
-          <div style="font-size:.68rem;color:var(--slate-light);margin-top:4px;">JPG, PNG • Max 200KB</div>
+          <input type="file" id="f-photo-camera" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(event)">
+          <div style="font-size:.68rem;color:var(--slate-light);margin-top:4px;">JPG, PNG • Max 200KB • Camera works on mobile</div>
         </div>
       </div>
       <div class="field-row">
@@ -1344,14 +2201,26 @@ tbody td {
     <div class="modal-section" style="padding-top:1rem;">
       <div class="modal-section-label">Additional Details</div>
       <div class="field-row">
-        <div class="field"><label>Age</label><input id="f-age" type="number" placeholder="34"></div>
+        <div class="field"><label>Date of Birth</label><input id="f-dob" type="date"></div>
+        <div class="field"><label>Age <span style="font-weight:500;color:var(--slate-light);text-transform:none;letter-spacing:0;">(auto from DOB)</span></label><input id="f-age" type="number" placeholder="34"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Household / Family</label><input id="f-household" placeholder="e.g. Jeberaj Family" list="household-list"><datalist id="household-list"></datalist></div>
         <div class="field"><label>Address / Area</label><input id="f-address" placeholder="Coimbatore"></div>
       </div>
       <div class="field"><label>Additional Skills / Gifts</label><input id="f-skills" placeholder="e.g. Keyboard, Teaching, Counselling"></div>
       <div class="field-row">
         <div class="field"><label>Date Joined</label><input id="f-joined" type="date"></div>
-        <div class="field"><label>Attendance %</label><input id="f-attendance" type="number" min="0" max="100" placeholder="85"></div>
       </div>
+    </div>
+    <hr class="modal-divider">
+    <div class="modal-section" style="padding-top:1rem;">
+      <div class="modal-section-label">Pastoral &amp; Key Dates</div>
+      <div class="field-row">
+        <div class="field"><label>Membership Date</label><input id="f-membership" type="date"></div>
+        <div class="field"><label>Wedding Anniversary</label><input id="f-wedding" type="date"></div>
+      </div>
+      <div class="field"><label>Next Step <span style="font-weight:500;color:var(--slate-light);text-transform:none;letter-spacing:0;">(assimilation)</span></label><input id="f-nextstep" placeholder="e.g. Invite to small group, schedule welcome call" list="nextstep-list"><datalist id="nextstep-list"><option value="Welcome call"><option value="Invite to small group"><option value="Coffee with pastor"><option value="Newcomers class"><option value="Membership class"><option value="Connect to a ministry"><option value="Home visit"></datalist></div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
@@ -1360,10 +2229,67 @@ tbody td {
   </div>
 </div>
 
+<!-- CONFIRM DIALOG -->
+<div class="overlay" id="confirm-overlay">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-head"><span class="modal-head-title" id="confirm-title">Please confirm</span></div>
+    <div style="padding:1.25rem 1.5rem;"><div id="confirm-msg" style="font-size:.9rem;color:var(--text-primary);line-height:1.55;"></div></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="confirm-no">Cancel</button>
+      <button class="btn-save" id="confirm-yes">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- GROUP MESSAGE MODAL -->
+<div class="overlay" id="gm-overlay" onclick="if(event.target===this)closeGroupMessage()">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-head">
+      <span class="modal-head-title">Message Members</span>
+      <button class="modal-close" onclick="closeGroupMessage()"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </div>
+    <div style="padding:1.25rem 1.5rem;">
+      <div id="gm-summary" style="font-size:.85rem;color:var(--text-secondary);margin-bottom:1rem;"></div>
+      <div id="gm-actions" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- VISITOR QUICK-CAPTURE -->
+<div class="overlay" id="visitor-overlay" onclick="if(event.target===this)closeVisitor()">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-head">
+      <span class="modal-head-title">Welcome a First-Time Visitor</span>
+      <button class="modal-close" onclick="closeVisitor()"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </div>
+    <div style="padding:1.25rem 1.5rem;">
+      <div style="font-size:.8rem;color:var(--text-secondary);margin-bottom:1rem;">Quick capture at the door. Saves as a <b style="color:var(--text-primary)">Visitor</b> with a follow-up next step so they don't fall through.</div>
+      <div class="field"><label>Name *</label><input id="v-name" placeholder="Full name" onkeydown="if(event.key==='Enter')document.getElementById('v-phone').focus()"></div>
+      <div class="field-row">
+        <div class="field"><label>Phone</label><input id="v-phone" placeholder="+91…"></div>
+        <div class="field"><label>Email</label><input id="v-email" type="email" placeholder="optional"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Invited by</label><input id="v-invited" placeholder="who brought them"></div>
+        <div class="field"><label>First visit</label><input id="v-date" type="date"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Follow-up next step</label><input id="v-nextstep" value="Welcome call" list="nextstep-list"></div>
+        <div class="field"><label>Follow up by</label><input id="v-due" type="date"><div class="visitor-field-note">Defaults to 3 days out.</div></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeVisitor()">Cancel</button>
+      <button class="btn-cancel" onclick="saveVisitor(true)">Save &amp; add another</button>
+      <button class="btn-save" onclick="saveVisitor(false)">Save Visitor</button>
+    </div>
+  </div>
+</div>
+
 <!-- Firebase SDKs -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, getDocs, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ─────────────────────────────────────────────
 // 🔧 PASTE YOUR FIREBASE CONFIG HERE
@@ -1384,6 +2310,10 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const membersCol = collection(db, 'members');
 const attendanceCol = collection(db, 'attendance_records');
+const auditCol = collection(db, 'audit_log');
+
+// App runs in open mode (no sign-in).
+let currentRole = 'admin';
 
 const AV_CLASSES = ['av-a','av-b','av-c','av-d','av-e','av-f'];
 let members = [];
@@ -1397,14 +2327,28 @@ let markAttPresent = new Set();
 let attendanceRecords = [];
 
 // ── Show loading state ──
-document.getElementById('tbody').innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="loading-indicator">Connecting to database…</div></div></td></tr>`;
+document.getElementById('tbody').innerHTML = Array.from({length:5}).map(()=>`
+  <tr><td colspan="6" style="padding:0;">
+    <div class="skel-row">
+      <div class="skel skel-av"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div class="skel skel-line" style="width:38%;"></div>
+        <div class="skel skel-line" style="width:22%;height:8px;"></div>
+      </div>
+      <div class="skel skel-line" style="width:70px;height:20px;border-radius:20px;"></div>
+      <div class="skel skel-line" style="width:80px;"></div>
+    </div>
+  </td></tr>`).join('');
 
 // ── Real-time listener — fires on every change ──
 const q = query(membersCol, orderBy('name'));
 onSnapshot(q, (snapshot) => {
   members = snapshot.docs.map(d => ({ _docId: d.id, ...d.data() }));
+  _visitorSeq=0;
+  applyComputedAttendance();
   showToast('Synced', 'success');
   render();
+  refreshActive();
 }, (err) => {
   console.error(err);
   showToast('Firebase error — check your config', 'error');
@@ -1412,9 +2356,24 @@ onSnapshot(q, (snapshot) => {
 
 // ── Save (add or edit) ──
 async function saveMember() {
+  if(!requireAdmin()) return;
   const name = document.getElementById('f-name').value.trim();
   const memberId = document.getElementById('f-id').value.trim();
   if (!name || !memberId) { showToast('Name and Member ID are required', 'error'); return; }
+
+  // Duplicate-ID detection (only when adding, or changing ID to an existing one)
+  const clash = members.find(x => (x.id||'')===memberId && x._docId!==(editDocId||memberId));
+  if (clash) { showToast(`Member ID "${memberId}" already belongs to ${clash.name}`, 'error'); return; }
+
+  const dob = document.getElementById('f-dob').value;
+  let age = parseInt(document.getElementById('f-age').value) || null;
+  if (dob) age = ageFromDob(dob); // DOB wins when present
+
+  const status = document.getElementById('f-status').value;
+  const prev = editDocId ? members.find(x=>x._docId===editDocId) : null;
+  // Track when the member entered the current pipeline stage
+  let stageSince = prev?.stageSince || prev?.joined || '';
+  if (!prev || prev.status !== status) stageSince = new Date().toISOString();
 
   const data = {
     id: memberId,
@@ -1422,12 +2381,17 @@ async function saveMember() {
     phone:      document.getElementById('f-phone').value.trim(),
     email:      document.getElementById('f-email').value.trim(),
     ministry:   document.getElementById('f-ministry').value,
-    status:     document.getElementById('f-status').value,
-    age:        parseInt(document.getElementById('f-age').value) || null,
+    status,
+    dob:        dob || '',
+    age,
+    household:  document.getElementById('f-household').value.trim(),
     address:    document.getElementById('f-address').value.trim(),
     skills:     document.getElementById('f-skills').value.split(',').map(s => s.trim()).filter(Boolean),
     joined:     document.getElementById('f-joined').value,
-    attendance: parseInt(document.getElementById('f-attendance').value) || 0,
+    membershipDate:     document.getElementById('f-membership').value || '',
+    weddingAnniversary: document.getElementById('f-wedding').value || '',
+    nextStep:           document.getElementById('f-nextstep').value.trim(),
+    stageSince,
     updatedAt:  new Date().toISOString(),
   };
   if(pendingPhoto !== null) data.photo = pendingPhoto;
@@ -1439,6 +2403,7 @@ async function saveMember() {
     const docRef = doc(membersCol, editDocId || memberId);
     await setDoc(docRef, data, { merge: true });
     closeModal();
+    logAudit(editDocId?'Updated member':'Added member', name+' ('+memberId+')');
     showToast(editDocId ? 'Member updated' : 'Member added', 'success');
   } catch (e) {
     console.error(e);
@@ -1448,24 +2413,59 @@ async function saveMember() {
   }
 }
 
-// ── Delete ──
+// ── Archive (soft delete) with undo ──
 async function deleteMember(docId) {
-  if (!confirm('Remove this member from the database?')) return;
+  if(!requireAdmin()) return;
+  const m = members.find(x=>x._docId===docId);
+  const ok = await confirmDialog(`Archive ${m?m.name:'this member'}? They'll be hidden from lists but kept on record, and you can restore them anytime from the Archived view.`, {title:'Archive member', confirmText:'Archive'});
+  if (!ok) return;
   try {
-    await deleteDoc(doc(membersCol, docId));
-    showToast('Member removed', 'success');
+    await setDoc(doc(membersCol, docId), {archived:true, archivedAt:new Date().toISOString(), updatedAt:new Date().toISOString()}, {merge:true});
+    logAudit('Archived member', `${m?m.name:''} (${m?m.id:docId})`);
+    showUndoToast(`${m?m.name:'Member'} archived`, async ()=>{
+      await setDoc(doc(membersCol, docId), {archived:false, archivedAt:null, updatedAt:new Date().toISOString()}, {merge:true});
+      logAudit('Restored member', `${m?m.name:''} (${m?m.id:docId})`);
+      showToast('Restored', 'success');
+    });
   } catch (e) {
-    showToast('Delete failed: ' + e.message, 'error');
+    showToast('Archive failed: ' + e.message, 'error');
   }
+}
+async function restoreMember(docId){
+  if(!requireAdmin()) return;
+  const m = members.find(x=>x._docId===docId);
+  try{
+    await setDoc(doc(membersCol, docId), {archived:false, archivedAt:null, updatedAt:new Date().toISOString()}, {merge:true});
+    logAudit('Restored member', `${m?m.name:''} (${m?m.id:docId})`);
+    showToast(`${m?m.name:'Member'} restored`, 'success');
+  }catch(e){ showToast('Restore failed: '+e.message,'error'); }
+}
+async function permanentDelete(docId){
+  if(!requireAdmin()) return;
+  const m = members.find(x=>x._docId===docId);
+  const ok = await confirmDialog(`Permanently delete ${m?m.name:'this member'}? This cannot be undone.`, {title:'Delete forever', danger:true, confirmText:'Delete forever'});
+  if(!ok) return;
+  try{
+    await deleteDoc(doc(membersCol, docId));
+    logAudit('Permanently deleted member', `${m?m.name:''} (${m?m.id:docId})`);
+    showToast('Permanently deleted','success');
+  }catch(e){ showToast('Delete failed: '+e.message,'error'); }
 }
 
 // ── Helpers ──
 function initials(n){ return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
 function avClass(n){ return AV_CLASSES[n.charCodeAt(0) % AV_CLASSES.length]; }
+function ringColor(status){
+  return status==='Active' ? 'var(--green)'
+       : status==='New'    ? 'var(--blue)'
+       : status==='Visitor'? 'var(--amber)'
+       : 'transparent';
+}
 function avatarHtml(m, size){
   const s = size || 36;
-  if(m.photo) return `<div class="avatar" style="width:${s}px;height:${s}px;"><img class="avatar-img" src="${m.photo}" alt="${m.name}"></div>`;
-  return `<div class="avatar ${avClass(m.name)}" style="width:${s}px;height:${s}px;font-size:${s<40?'0.72':'0.78'}rem;">${initials(m.name)}</div>`;
+  const ring = `--av-ring:${ringColor(m.status)};`;
+  if(m.photo) return `<div class="avatar" style="width:${s}px;height:${s}px;${ring}"><img class="avatar-img" src="${m.photo}" alt="${m.name}"></div>`;
+  return `<div class="avatar ${avClass(m.name)}" style="width:${s}px;height:${s}px;font-size:${s<40?'0.72':'0.78'}rem;${ring}">${initials(m.name)}</div>`;
 }
 let pendingPhoto = null;
 function handlePhotoUpload(e){
@@ -1528,13 +2528,57 @@ function showToast(msg, type='success') {
   t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2500);
 }
 
+let sortState = { key:'name', dir:1 };
+function live(){ return members.filter(m=>!m.archived); }
 function filtered(){
   const q = document.getElementById('search').value.toLowerCase();
-  return members.filter(m => {
-    const fOk = filter==='All' || m.status===filter;
-    const qOk = !q || m.name.toLowerCase().includes(q) || (m.id||'').toLowerCase().includes(q) || (m.ministry||'').toLowerCase().includes(q) || (m.address||'').toLowerCase().includes(q);
-    return fOk && qOk;
+  const base = filter==='Archived' ? members.filter(m=>m.archived) : members.filter(m=>!m.archived && (filter==='All' || m.status===filter));
+  const list = base.filter(m => {
+    if(!q) return true;
+    const skills=(m.skills||[]).join(' ').toLowerCase();
+    return m.name.toLowerCase().includes(q) || (m.id||'').toLowerCase().includes(q) || (m.ministry||'').toLowerCase().includes(q)
+      || (m.address||'').toLowerCase().includes(q) || (m.household||'').toLowerCase().includes(q) || skills.includes(q);
   });
+  const k = sortState.key, dir = sortState.dir;
+  list.sort((a,b)=>{
+    let av, bv;
+    if(k==='attendance'){ av=a.attendance||0; bv=b.attendance||0; return (av-bv)*dir; }
+    if(k==='joined'){ av=a.joined||''; bv=b.joined||''; return av<bv?-dir:av>bv?dir:0; }
+    av=(a[k]||'').toString().toLowerCase(); bv=(b[k]||'').toString().toLowerCase();
+    return av<bv?-dir:av>bv?dir:0;
+  });
+  return list;
+}
+
+function sortBy(key){
+  if(sortState.key===key) sortState.dir *= -1;
+  else { sortState.key=key; sortState.dir=1; }
+  render();
+}
+function updateSortIndicators(){
+  document.querySelectorAll('thead th.sortable').forEach(th=>{
+    const isSorted = th.dataset.sort===sortState.key;
+    th.classList.toggle('sorted', isSorted);
+    const ind = th.querySelector('.sort-ind');
+    if(ind) ind.textContent = isSorted ? (sortState.dir>0?'↑':'↓') : '↕';
+  });
+}
+function updateChipCounts(){
+  const liveM=live();
+  const counts={All:liveM.length,Active:0,New:0,Visitor:0,Inactive:0,Archived:members.length-liveM.length};
+  liveM.forEach(m=>{ if(counts[m.status]!=null) counts[m.status]++; });
+  document.querySelectorAll('.chip-count[data-cf]').forEach(el=>{
+    el.textContent = counts[el.dataset.cf] ?? 0;
+  });
+  const ac=document.getElementById('chip-archived'); if(ac) ac.style.display = counts.Archived>0 ? '' : 'none';
+}
+function updateSearchClear(){
+  const v = document.getElementById('search').value;
+  document.getElementById('search-clear').classList.toggle('show', !!v);
+}
+function clearSearch(){
+  const s=document.getElementById('search');
+  s.value=''; s.focus(); render();
 }
 
 function setFilter(btn){
@@ -1558,12 +2602,109 @@ function render(){
   const label = filter==='All'?'All Members':`${filter} Members`;
   document.getElementById('result-label').textContent = `${label} (${list.length})`;
   renderSummary();
+  renderFollowUp();
+  updateChipCounts();
+  updateSearchClear();
+  updateSortIndicators();
   if(view==='table') renderTable(list);
   else renderGrid(list);
 }
 
+// ── Computed attendance from real records ──
+function memberAttStats(docId){
+  let present=0, absent=0;
+  attendanceRecords.forEach(r=>{
+    if(r.presentIds && r.presentIds.includes(docId)) present++;
+    else if(r.absentIds && r.absentIds.includes(docId)) absent++;
+  });
+  const services=present+absent;
+  return {present, absent, services, rate: services?Math.round(present/services*100):null};
+}
+
+// Overrides each member's attendance % with the real computed rate when
+// records exist; members never marked yet keep their seeded manual value.
+function applyComputedAttendance(){
+  members.forEach(m=>{
+    const s=memberAttStats(m._docId);
+    m._attServices=s.services; m._attPresent=s.present; m._attAbsent=s.absent;
+    m._attReal=s.rate;
+    if(s.rate!==null) m.attendance=s.rate;
+  });
+}
+
+// Follow-up: recency-based risk signal for regular members.
+function followUpInfo(m){
+  const docId=m._docId;
+  const tracked=attendanceRecords
+    .filter(r=>(r.presentIds&&r.presentIds.includes(docId))||(r.absentIds&&r.absentIds.includes(docId)))
+    .sort((a,b)=>b.date.localeCompare(a.date));
+  let consec=0;
+  for(const r of tracked){
+    if(r.presentIds&&r.presentIds.includes(docId)) break;
+    consec++;
+  }
+  const lastPresent=tracked.find(r=>r.presentIds&&r.presentIds.includes(docId));
+  const lastSeen=lastPresent?lastPresent.date:null;
+  const daysSince=lastSeen?Math.floor((Date.now()-new Date(lastSeen+'T00:00:00').getTime())/86400000):null;
+  return {tracked:tracked.length, consec, lastSeen, daysSince};
+}
+
+function atRiskList(){
+  return live()
+    .filter(m=>m.status!=='Inactive'&&m.status!=='Visitor')
+    .map(m=>({m, info:followUpInfo(m)}))
+    .filter(x=>x.info.tracked>=2 && (x.info.consec>=3 || (x.info.consec>=2 && (x.info.daysSince==null||x.info.daysSince>=21))))
+    .sort((a,b)=>b.info.consec-a.info.consec || ((b.info.daysSince||0)-(a.info.daysSince||0)));
+}
+
+function telLink(p){ return p?`tel:${p.replace(/[^\d+]/g,'')}`:null; }
+function waLink(p){ const d=p?p.replace(/[^\d]/g,''):''; return d?`https://wa.me/${d}`:null; }
+
+let followUpCollapsed=false;
+function toggleFollowUp(){ followUpCollapsed=!followUpCollapsed; renderFollowUp(); }
+
+function renderFollowUp(){
+  const host=document.getElementById('followup-section');
+  if(!host) return;
+  const list=atRiskList();
+  if(!list.length){ host.innerHTML=''; return; }
+  const cards=list.map(({m,info})=>{
+    const reason = info.consec>=3 ? `Missed last ${info.consec} services`
+                 : `Missed last ${info.consec} · ${info.daysSince!=null?info.daysSince+' days away':'away a while'}`;
+    const seen = info.lastSeen?fmtDate(info.lastSeen):'Never recorded';
+    const tel=telLink(m.phone), wa=waLink(m.phone);
+    const contacts=[
+      wa?`<a class="fu-act" href="${wa}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="WhatsApp">
+            <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 00-5.6 9.8L1.5 14.5l3.3-.86A6.5 6.5 0 108 1.5z" stroke="currentColor" stroke-width="1.3"/><path d="M5.8 5.3c.15-.02.32 0 .43.26.13.3.44 1.07.48 1.15.04.08.06.18.01.28-.27.55-.56.53-.3.98.45.78 1 1.04 1.62 1.3.15.06.26.05.36-.06.11-.13.45-.53.57-.71.11-.18.23-.15.38-.09.16.06 1 .47 1.17.56.17.08.28.13.32.2.04.07.04.4-.1.78-.13.39-.78.74-1.08.76-.78.06-1.5-.22-2.86-1.05C5.7 9.13 5.1 8 5.05 7.9c-.05-.08-.45-.6-.45-1.14 0-.55.29-.81.39-.92.1-.11.22-.14.3-.14z" fill="currentColor"/></svg>
+          </a>`:'',
+      tel?`<a class="fu-act" href="${tel}" onclick="event.stopPropagation()" title="Call">
+            <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M3 2h2l1 3-1.5 1a8 8 0 004.5 4.5L11 11l3 1v2a1 1 0 01-1 1A11 11 0 012 3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          </a>`:''
+    ].join('');
+    return `<div class="fu-card" onclick="viewMemberHistory('${m._docId}')">
+      ${avatarHtml(m,40)}
+      <div class="fu-meta">
+        <div class="fu-name">${m.name}</div>
+        <div class="fu-reason">${reason}</div>
+        <div class="fu-seen">Last Visit: ${seen}${m.ministry?' · '+m.ministry:''}</div>
+      </div>
+      <div class="fu-acts">${contacts}</div>
+    </div>`;
+  }).join('');
+  host.innerHTML=`
+    <div class="fu-wrap">
+      <div class="fu-head" onclick="toggleFollowUp()">
+        <div class="fu-head-icon"><svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 1l7 13H1L8 1z" stroke="#F87171" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v3.5M8 11.5h.01" stroke="#F87171" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><div class="fu-title">Needs Follow-up</div><div class="fu-sub">Regular members who've missed several recent services</div></div>
+        <span class="fu-count">${list.length}</span>
+        <svg class="fu-chev ${followUpCollapsed?'':'open'}" width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="fu-grid" style="display:${followUpCollapsed?'none':'grid'}">${cards}</div>
+    </div>`;
+}
+
 function renderSummary(){
-  const all = members;
+  const all = live();
   if (!all.length) {
     document.getElementById('summary').innerHTML = '';
     document.getElementById('sidebar-count').textContent = 0;
@@ -1571,6 +2712,9 @@ function renderSummary(){
   }
   const active = all.filter(m=>m.status==='Active').length;
   const newM = all.filter(m=>m.status==='New').length;
+  const now = new Date();
+  const thisMonth = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  const newThisMonth = all.filter(m=>m.joined&&m.joined.startsWith(thisMonth)).length;
   const avgAtt = Math.round(all.reduce((s,m)=>s+(m.attendance||0),0)/all.length);
   document.getElementById('summary').innerHTML = `
     <div class="stat-card">
@@ -1582,6 +2726,11 @@ function renderSummary(){
       <div class="stat-card-label">Active</div>
       <div class="stat-card-val">${active}</div>
       <div class="stat-card-sub">${Math.round(active/all.length*100)}% of congregation</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">New This Month</div>
+      <div class="stat-card-val">${newThisMonth}</div>
+      <div class="stat-card-sub">${now.toLocaleString('en-US',{month:'long',year:'numeric'})}</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">New This Year</div>
@@ -1604,11 +2753,14 @@ function renderTable(list){
   document.getElementById('tbody').innerHTML = list.map(m => {
     const isOpen = expanded.has(m._docId);
     const miniTag = m.ministry ? `<span class="ministry-tag">${m.ministry}</span>` : '<span style="color:var(--slate-light);font-size:0.78rem">—</span>';
+    const sel = selected.has(m._docId);
+    const meta = rowMeta(m._docId);
     return `
     <tr onclick="toggleRow('${m._docId}')">
       <td><div class="member-cell">
+        <div class="sel-box ${sel?'on':''}"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         ${avatarHtml(m, 36)}
-        <div><div class="member-name">${m.name}</div><div class="member-id">${m.id||''}</div></div>
+        <div><div class="member-name">${m.name}</div><div class="member-id">${m.id||''}${meta?' · '+meta:''}</div></div>
       </div></td>
       <td>${miniTag}</td>
       <td><span class="badge ${badgeClass(m.status)}">${m.status}</span></td>
@@ -1622,8 +2774,11 @@ function renderTable(list){
           <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           History
         </button>
-        <button class="action-btn" onclick="event.stopPropagation();openEditModal('${m._docId}')">Edit</button>
-        <button class="action-btn" style="color:var(--red)" onclick="event.stopPropagation();deleteMember('${m._docId}')">Delete</button>
+        ${m.archived
+          ? `<button class="action-btn admin-only" style="color:var(--green)" onclick="event.stopPropagation();restoreMember('${m._docId}')">Restore</button>
+             <button class="action-btn admin-only" style="color:var(--red)" onclick="event.stopPropagation();permanentDelete('${m._docId}')">Delete forever</button>`
+          : `<button class="action-btn admin-only" onclick="event.stopPropagation();openEditModal('${m._docId}')">Edit</button>
+             <button class="action-btn admin-only" style="color:var(--red)" onclick="event.stopPropagation();deleteMember('${m._docId}')">Archive</button>`}
       </td>
     </tr>
     <tr class="expanded-row" id="exp-${m._docId}" style="display:${isOpen?'':'none'}">
@@ -1633,11 +2788,12 @@ function renderTable(list){
             <div class="exp-block-label">Contact</div>
             <div class="exp-block-val">${m.phone||'—'}</div>
             <div class="exp-block-sub">${m.email||'—'}</div>
+            <div class="contact-row">${contactButtons(m)}</div>
           </div>
           <div>
             <div class="exp-block-label">Personal</div>
-            <div class="exp-block-val">${m.age ? m.age+' yrs' : '—'}</div>
-            <div class="exp-block-sub">${m.address||'—'}</div>
+            <div class="exp-block-val">${m.age ? m.age+' yrs' : '—'}${m.dob?' · '+fmtDate(m.dob):''}</div>
+            <div class="exp-block-sub">${m.address||'—'}${m.household?' · '+m.household:''}</div>
           </div>
           <div>
             <div class="exp-block-label">Skills / Gifts</div>
@@ -1650,6 +2806,7 @@ function renderTable(list){
 }
 
 function toggleRow(docId){
+  if(selectMode){ toggleSelect(docId); return; }
   const row = document.getElementById(`exp-${docId}`);
   if(expanded.has(docId)){
     expanded.delete(docId);
@@ -1693,6 +2850,8 @@ function renderGrid(list){
         <div class="card-row"><span class="card-row-label">Phone</span><span class="card-row-val">${m.phone||'—'}</span></div>
         <div class="card-row"><span class="card-row-label">Age</span><span class="card-row-val">${m.age?m.age+' yrs':'—'}</span></div>
         <div class="card-row"><span class="card-row-label">Area</span><span class="card-row-val">${m.address||'—'}</span></div>
+        ${m.household?`<div class="card-row"><span class="card-row-label">Household</span><span class="card-row-val">${m.household}</span></div>`:''}
+        <div class="contact-row">${contactButtons(m)}</div>
         <div style="margin-top:8px"><div class="exp-block-label" style="font-size:0.65rem">Skills / Gifts</div>
         <div class="skills-row">${(m.skills||[]).map(s=>`<span class="skill-tag">${s}</span>`).join('')||'<span style="color:var(--slate-light);font-size:0.75rem">None on file</span>'}</div></div>
         <div style="display:flex;gap:6px;margin-top:10px">
@@ -1735,10 +2894,17 @@ function openModal(m=null){
   document.getElementById('f-ministry').value = m?.ministry||'';
   document.getElementById('f-status').value = m?.status||'Active';
   document.getElementById('f-age').value = m?.age||'';
+  document.getElementById('f-dob').value = m?.dob||'';
+  document.getElementById('f-household').value = m?.household||'';
   document.getElementById('f-address').value = m?.address||'';
+  // household autocomplete suggestions
+  const hh=[...new Set(members.map(x=>x.household).filter(Boolean))].sort();
+  document.getElementById('household-list').innerHTML = hh.map(h=>`<option value="${h}">`).join('');
   document.getElementById('f-skills').value = m?.skills?.join(', ')||'';
   document.getElementById('f-joined').value = m?.joined||'';
-  document.getElementById('f-attendance').value = m?.attendance||'';
+  document.getElementById('f-membership').value = m?.membershipDate||'';
+  document.getElementById('f-wedding').value = m?.weddingAnniversary||'';
+  document.getElementById('f-nextstep').value = m?.nextStep||'';
   pendingPhoto = null;
   const preview = document.getElementById('photo-preview');
   const removeBtn = document.getElementById('photo-remove-btn');
@@ -1764,9 +2930,9 @@ function closeModal(){ document.getElementById('modal-overlay').classList.remove
 function closeOutside(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
 
 function exportCSV(){
-  const rows = [['ID','Name','Ministry','Status','Age','Address','Skills','Joined','Attendance%']];
-  members.forEach(m=>rows.push([m.id,m.name,m.ministry||'',m.status,m.age||'',m.address||'',(m.skills||[]).join('; '),m.joined||'',m.attendance||'']));
-  const csv = rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const rows = [['ID','Name','Phone','Email','Ministry','Status','DOB','Age','Household','Address','Skills','Joined','Attendance%','Baptism','Membership','Anniversary','NextStep']];
+  members.forEach(m=>rows.push([m.id,m.name,m.phone||'',m.email||'',m.ministry||'',m.status,m.dob||'',m.age||'',m.household||'',m.address||'',(m.skills||[]).join('; '),m.joined||'',m.attendance||'',m.baptismDate||'',m.membershipDate||'',m.weddingAnniversary||'',m.nextStep||'']));
+  const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'kings-generation-members.csv';
@@ -1786,6 +2952,18 @@ window.toggleRow = toggleRow;
 window.toggleCard = toggleCard;
 window.exportCSV = exportCSV;
 window.render = render;
+window.sortBy = sortBy;
+window.clearSearch = clearSearch;
+window.toggleFollowUp = toggleFollowUp;
+
+// ── Esc closes any open modal ──
+document.addEventListener('keydown', (e)=>{
+  if(e.key!=='Escape') return;
+  ['modal-overlay','mark-att-overlay','mh-overlay','visitor-overlay','gm-overlay'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el && el.classList.contains('open')) el.classList.remove('open');
+  });
+});
 
 // ── Theme Toggle ──
 function toggleTheme(){
@@ -1799,12 +2977,16 @@ function toggleTheme(){
 function updateThemeUI(theme){
   const icon=document.getElementById('theme-icon');
   const label=document.getElementById('theme-label');
+  const micon=document.getElementById('mnav-theme-icon');
+  const mlabel=document.getElementById('mnav-theme-label');
+  const sun='<circle cx=\"10\" cy=\"10\" r=\"4\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M10 1v2M10 17v2M1 10h2M17 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>';
+  const moon='<path d=\"M10 1a9 9 0 109 9 7 7 0 01-9-9z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>';
   if(theme==='light'){
-    icon.innerHTML='<circle cx=\"10\" cy=\"10\" r=\"4\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M10 1v2M10 17v2M1 10h2M17 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>';
-    label.textContent='Dark Mode';
+    icon.innerHTML=sun; label.textContent='Dark Mode';
+    if(micon) micon.innerHTML=sun; if(mlabel) mlabel.textContent='Dark';
   } else {
-    icon.innerHTML='<path d=\"M10 1a9 9 0 109 9 7 7 0 01-9-9z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"/>';
-    label.textContent='Light Mode';
+    icon.innerHTML=moon; label.textContent='Light Mode';
+    if(micon) micon.innerHTML=moon; if(mlabel) mlabel.textContent='Light';
   }
 }
 // Apply saved theme on load
@@ -1815,22 +2997,30 @@ function updateThemeUI(theme){
 })();
 window.toggleTheme=toggleTheme;
 
-// ── Attendance page ──
+// ── Page routing ──
+const PAGES = ['overview','members','attendance','assimilation','volunteers','schedules','reports','access'];
+const NAV_MAP = {overview:'nav-overview', members:'nav-members', attendance:'nav-attendance', assimilation:'nav-assimilation', volunteers:'nav-volunteers', schedules:'nav-schedules', reports:'nav-reports', access:'nav-access'};
+const MNAV_MAP = {overview:'mnav-overview', members:'mnav-members', attendance:'mnav-attendance'};
 let attTierFilter = 'all';
 function showPage(page) {
-  const mp=document.getElementById('members-page');
-  const ap=document.getElementById('attendance-page');
-  const nm=document.getElementById('nav-members');
-  const na=document.getElementById('nav-attendance');
-  if(page==='attendance'){
-    mp.style.display='none'; ap.style.display='flex';
-    nm.classList.remove('active'); na.classList.add('active');
-    renderAttendance();
-  } else {
-    mp.style.display=''; ap.style.display='none';
-    nm.classList.add('active'); na.classList.remove('active');
-    render();
-  }
+  if(!PAGES.includes(page)) page='members';
+  if(page==='access'&&!isSuperAdmin()){ page='overview'; showToast('Super Admin access required','error'); }
+  PAGES.forEach(p=>{ const el=document.getElementById(p+'-page'); if(el) el.style.display=(p===page)?'flex':'none'; });
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nb=document.getElementById(NAV_MAP[page]); if(nb) nb.classList.add('active');
+  if(page==='overview'){ const an=document.getElementById('nav-analytics'); if(an) an.classList.add('active'); }
+  document.querySelectorAll('.mnav-item').forEach(n=>n.classList.remove('active'));
+  const mb=document.getElementById(MNAV_MAP[page]); if(mb) mb.classList.add('active');
+  applyRoleVisibility();
+  if(page==='overview') renderOverview();
+  else if(page==='attendance') renderAttendance();
+  else if(page==='assimilation') renderAssimilation();
+  else if(page==='volunteers') renderVolunteers();
+  else if(page==='schedules') renderSchedules();
+  else if(page==='reports') renderReports();
+  else if(page==='access') renderAccessPage();
+  else render();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function attTier(p){return p>80?'high':p>=30?'mid':'low';}
 function setAttFilter(btn){
@@ -1839,7 +3029,7 @@ function setAttFilter(btn){
   btn.classList.add('active'); renderAttendance();
 }
 function renderAttendance(){
-  const all=members; if(!all.length) return;
+  const all=live(); if(!all.length) return;
   const high=all.filter(m=>(m.attendance||0)>80);
   const mid=all.filter(m=>(m.attendance||0)>=30&&(m.attendance||0)<=80);
   const low=all.filter(m=>(m.attendance||0)<30);
@@ -2025,28 +3215,111 @@ function renderAttendance(){
   }).join(''):`<tr><td colspan="6"><div class="empty-state">No members in this tier</div></td></tr>`;
 }
 // ── Mark Attendance ──
-function openMarkAttendance(){
+let editingRecordId = null;
+function openMarkAttendance(recordId){
   markAttPresent.clear();
-  document.getElementById('mark-att-date').value=new Date().toISOString().split('T')[0];
+  editingRecordId = recordId || null;
+  const titleEl = document.querySelector('#mark-att-overlay .modal-head-title');
+  if(editingRecordId){
+    const rec = attendanceRecords.find(r=>r._docId===editingRecordId);
+    if(rec){
+      (rec.presentIds||[]).forEach(id=>markAttPresent.add(id));
+      document.getElementById('mark-att-date').value = rec.date;
+      document.getElementById('mark-att-event').value = rec.event||'Sunday Service';
+    }
+    if(titleEl) titleEl.textContent='Edit Attendance';
+  } else {
+    document.getElementById('mark-att-date').value=new Date().toISOString().split('T')[0];
+    document.getElementById('mark-att-event').value='Sunday Service';
+    if(titleEl) titleEl.textContent='Mark Attendance';
+  }
   document.getElementById('mark-att-search').value='';
   document.getElementById('mark-att-overlay').classList.add('open');
+  updateMarkGroupBtn();
   renderMarkAttList();
 }
-function closeMarkAttendance(){ document.getElementById('mark-att-overlay').classList.remove('open'); }
+function editAttRecord(docId){ showPage('attendance'); openMarkAttendance(docId); }
+function closeMarkAttendance(){ document.getElementById('mark-att-overlay').classList.remove('open'); editingRecordId=null; }
 
-function renderMarkAttList(){
+const MARK_CHECK_SVG='<svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#0D0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+let markAttGrouped=(()=>{ try{ return localStorage.getItem('kg-markatt-grouped')==='1'; }catch(e){ return false; } })();
+
+function markFilteredList(){
   const q=document.getElementById('mark-att-search').value.toLowerCase();
-  const list=members.filter(m=>!q||m.name.toLowerCase().includes(q)||(m.id||'').toLowerCase().includes(q));
-  document.getElementById('mark-att-list').innerHTML=list.map(m=>{
-    const checked=markAttPresent.has(m._docId);
-    return `<div class="mark-att-item ${checked?'checked':''}" onclick="toggleAttMember('${m._docId}')">
-      <div class="mark-att-check">${checked?'<svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#0D0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</div>
+  return live().filter(m=>!q||m.name.toLowerCase().includes(q)||(m.id||'').toLowerCase().includes(q));
+}
+function markFamilyKeys(list){
+  const groups=new Map();
+  list.forEach(m=>{ const h=(m.household||'').trim(); if(h){ if(!groups.has(h)) groups.set(h,[]); groups.get(h).push(m); } });
+  const keys=[...groups.keys()].filter(h=>groups.get(h).length>=2).sort((a,b)=>a.localeCompare(b));
+  return {groups, keys};
+}
+function markMemberRow(m){
+  const checked=markAttPresent.has(m._docId);
+  return `<div class="mark-att-item ${checked?'checked':''}" onclick="toggleAttMember('${m._docId}')">
+      <div class="mark-att-check">${checked?MARK_CHECK_SVG:''}</div>
       ${avatarHtml(m, 32)}
       <div style="flex:1"><div style="font-weight:600;font-size:.85rem;">${m.name}</div><div style="font-size:.72rem;color:var(--slate-light);">${m.id||''} ${m.ministry?'· '+m.ministry:''}</div></div>
       <span class="badge ${checked?'badge-active':'badge-inactive'}" style="font-size:.68rem;">${checked?'Present':'Absent'}</span>
     </div>`;
-  }).join('');
+}
+
+function renderMarkAttList(){
+  const list=markFilteredList();
+  const host=document.getElementById('mark-att-list');
+  const empty='<div style="text-align:center;padding:1.5rem;color:var(--slate-light);font-size:.82rem;">No members match.</div>';
+
+  if(!markAttGrouped){
+    host.innerHTML=list.map(markMemberRow).join('')||empty;
+    updateMarkAttStats(); return;
+  }
+
+  const {groups, keys}=markFamilyKeys(list);
+  const inFamily=new Set(); keys.forEach(h=>groups.get(h).forEach(m=>inFamily.add(m._docId)));
+  const singles=list.filter(m=>!inFamily.has(m._docId)).sort((a,b)=>a.name.localeCompare(b.name));
+
+  let html='';
+  keys.forEach((h,idx)=>{
+    const arr=groups.get(h);
+    const present=arr.filter(m=>markAttPresent.has(m._docId)).length;
+    const state=present===arr.length?'on':present>0?'partial':'';
+    const mark=state==='on'?MARK_CHECK_SVG:state==='partial'?'–':'';
+    html+=`<div class="mark-hh-group">
+      <div class="mark-hh-head" onclick="toggleHousehold(${idx})">
+        <div class="mark-hh-check ${state}">${mark}</div>
+        <div class="mark-hh-name">${escapeHtml(h)}</div>
+        <div class="mark-hh-count">${present}/${arr.length} present</div>
+      </div>
+      <div class="mark-hh-members">${arr.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(markMemberRow).join('')}</div>
+    </div>`;
+  });
+  if(singles.length){
+    html+=`<div class="mark-hh-label">Individuals</div>`+singles.map(markMemberRow).join('');
+  }
+  host.innerHTML=html||empty;
   updateMarkAttStats();
+}
+
+function toggleHousehold(idx){
+  const list=markFilteredList();
+  const {groups, keys}=markFamilyKeys(list);
+  const h=keys[idx]; if(!h) return;
+  const arr=groups.get(h);
+  const allPresent=arr.every(m=>markAttPresent.has(m._docId));
+  arr.forEach(m=>{ if(allPresent) markAttPresent.delete(m._docId); else markAttPresent.add(m._docId); });
+  renderMarkAttList();
+}
+
+function toggleMarkGroup(){
+  markAttGrouped=!markAttGrouped;
+  try{ localStorage.setItem('kg-markatt-grouped', markAttGrouped?'1':'0'); }catch(e){}
+  updateMarkGroupBtn();
+  renderMarkAttList();
+}
+function updateMarkGroupBtn(){
+  const b=document.getElementById('mark-group-btn'); if(!b) return;
+  b.classList.toggle('on', markAttGrouped);
+  b.textContent=markAttGrouped?'● Grouped by family':'Group by family';
 }
 
 function toggleAttMember(docId){
@@ -2054,8 +3327,8 @@ function toggleAttMember(docId){
   else markAttPresent.add(docId);
   renderMarkAttList();
 }
-function markAllPresent(){ members.forEach(m=>markAttPresent.add(m._docId)); renderMarkAttList(); }
-function markAllAbsent(){ markAttPresent.clear(); renderMarkAttList(); }
+function markAllPresent(){ markFilteredList().forEach(m=>markAttPresent.add(m._docId)); renderMarkAttList(); }
+function markAllAbsent(){ markFilteredList().forEach(m=>markAttPresent.delete(m._docId)); renderMarkAttList(); }
 
 function updateMarkAttStats(){
   const total=members.length;
@@ -2066,6 +3339,7 @@ function updateMarkAttStats(){
 }
 
 async function saveAttendanceRecord(){
+  if(!requireAdmin()) return;
   const date=document.getElementById('mark-att-date').value;
   const event=document.getElementById('mark-att-event').value;
   if(!date){showToast('Please select a date','error');return;}
@@ -2087,7 +3361,12 @@ async function saveAttendanceRecord(){
   try{
     const docId=date+'_'+event.replace(/\s+/g,'-');
     await setDoc(doc(attendanceCol,docId),record);
-    showToast('Attendance saved for '+date,'success');
+    // If editing and the date/event (and thus doc id) changed, remove the old record
+    if(editingRecordId && editingRecordId!==docId){
+      await deleteDoc(doc(attendanceCol,editingRecordId));
+    }
+    logAudit(editingRecordId?'Edited attendance':'Saved attendance', (event||'Service')+' · '+date+' · '+presentIds.length+' present');
+    showToast(editingRecordId?'Attendance updated for '+date:'Attendance saved for '+date,'success');
     closeMarkAttendance();
     loadAttendanceRecords();
   }catch(e){
@@ -2100,7 +3379,10 @@ async function loadAttendanceRecords(){
   try{
     const snap=await getDocs(query(attendanceCol,orderBy('date','desc')));
     attendanceRecords=snap.docs.map(d=>({_docId:d.id,...d.data()}));
+    applyComputedAttendance();
     renderAttendanceRecords();
+    render();
+    refreshActive();
     if(document.getElementById('attendance-page').style.display!=='none') renderAttendance();
   }catch(e){console.error('Failed to load attendance records',e);}
 }
@@ -2108,14 +3390,17 @@ async function loadAttendanceRecords(){
 function renderAttendanceRecords(){
   const grid=document.getElementById('att-records-grid');
   const countEl=document.getElementById('att-records-count');
+  const sel=document.getElementById('rec-event-filter');
+  if(sel){ const types=eventTypes(); sel.innerHTML=`<option value="all">All types</option>`+types.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join(''); sel.value=recEventFilter; }
   if(!attendanceRecords.length){
     grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2.5rem;color:var(--slate-light);font-size:.85rem;"><svg width="36" height="36" fill="none" viewBox="0 0 36 36" style="margin-bottom:10px;opacity:.3;display:block;margin-left:auto;margin-right:auto;"><rect x="2" y="2" width="32" height="32" rx="6" stroke="currentColor" stroke-width="1.5"/><path d="M12 18l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>No attendance records yet.<br><span style="font-size:.78rem;color:var(--slate-light);opacity:.7">Click "Mark Attendance" to get started</span></div>';
     countEl.textContent='';
     return;
   }
-  countEl.textContent=attendanceRecords.length+' record'+(attendanceRecords.length!==1?'s':'');
+  const recs=attendanceRecords.filter(r=>recEventFilter==='all'||(r.event||'Service')===recEventFilter);
+  countEl.textContent=recs.length+' record'+(recs.length!==1?'s':'');
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  grid.innerHTML=attendanceRecords.map(r=>{
+  grid.innerHTML=recs.length?recs.map(r=>{
     const d=new Date(r.date+'T00:00:00');
     const dayName=days[d.getDay()];
     const pct=r.percentage||0;
@@ -2134,17 +3419,23 @@ function renderAttendanceRecords(){
         <span class="att-record-stat"><span class="att-record-stat-dot" style="background:#F87171"></span> ${absent} absent</span>
       </div>
       <div class="att-record-bar"><div class="att-record-bar-fill" style="width:${pct}%;background:${col}"></div></div>
-      <div style="margin-top:8px;text-align:right;">
-        <button class="action-btn" style="font-size:.68rem;" onclick="deleteAttRecord('${r._docId}')">Remove</button>
+      <div style="margin-top:8px;text-align:right;display:flex;gap:6px;justify-content:flex-end;">
+        <button class="action-btn" style="font-size:.68rem;" onclick="editAttRecord('${r._docId}')">Edit</button>
+        <button class="action-btn" style="font-size:.68rem;color:var(--red)" onclick="deleteAttRecord('${r._docId}')">Remove</button>
       </div>
     </div>`;
-  }).join('');
+  }).join(''):'<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--slate-light);font-size:.82rem;">No records for this service type.</div>';
 }
+let recEventFilter='all';
+function setRecEventFilter(v){ recEventFilter=v; renderAttendanceRecords(); }
 
 async function deleteAttRecord(docId){
-  if(!confirm('Delete this attendance record?')) return;
+  if(!requireAdmin()) return;
+  const ok = await confirmDialog('Delete this attendance record? This cannot be undone.', {title:'Delete record', danger:true, confirmText:'Delete'});
+  if(!ok) return;
   try{
     await deleteDoc(doc(attendanceCol,docId));
+    logAudit('Deleted attendance record', docId);
     showToast('Record deleted','success');
     loadAttendanceRecords();
   }catch(e){showToast('Delete failed: '+e.message,'error');}
@@ -2201,9 +3492,16 @@ function viewMemberHistory(docId){
   const totalServices=history.length;
   const pct=totalServices?Math.round(presentCount/totalServices*100):0;
 
-  // Last seen
+  // Last Visit
   const lastPresent=history.find(r=>r.presentIds&&r.presentIds.includes(docId));
   const lastSeenStr=lastPresent?fmtDate(lastPresent.date):'Never';
+  const streak=attStreak(docId);
+  const fu=followUpInfo(m);
+  const notes=(m.notes||[]).slice().sort((a,b)=>(b.ts||'').localeCompare(a.ts||''));
+  const prayers=(m.prayer||[]).slice().sort((a,b)=>(b.ts||'').localeCompare(a.ts||''));
+  const keyDates=[
+    ['DOB', m.dob], ['Baptism', m.baptismDate], ['Membership', m.membershipDate], ['Anniversary', m.weddingAnniversary]
+  ].filter(([,v])=>v);
 
   const body=document.getElementById('mh-body');
   body.innerHTML=`
@@ -2212,8 +3510,20 @@ function viewMemberHistory(docId){
       <div class="mh-profile-info">
         <div class="mh-profile-name">${m.name}</div>
         <div class="mh-profile-sub">${m.id||''} ${m.ministry?'· '+m.ministry:''}</div>
+        <div class="contact-row">${contactButtons(m)}</div>
       </div>
     </div>
+
+    <div class="mh-last-seen">
+      <span>Last Visit: <b>${lastSeenStr}</b></span>
+      <span>${streak>0?`🔥 <b>${streak}</b> in a row`:(fu.consec>0?`Missed last <b>${fu.consec}</b>`:'—')}</span>
+    </div>
+
+    ${(keyDates.length||m.nextStep)?`<div class="mh-keydates">
+      <div class="mh-keydate">Stage: <b>${m.status}</b></div>
+      ${m.nextStep?`<div class="mh-keydate">Next step: <b>${escapeHtml(m.nextStep)}</b>${m.nextStepDue?' (by '+fmtDate(m.nextStepDue)+')':''}</div>`:''}
+      ${keyDates.map(([lbl,v])=>`<div class="mh-keydate">${lbl}: <b>${fmtDate(v)}</b></div>`).join('')}
+    </div>`:''}
 
     <div class="mh-stats">
       <div class="mh-stat"><div class="mh-stat-val" style="color:#4ADE80">${presentCount}</div><div class="mh-stat-label">Present</div></div>
@@ -2221,6 +3531,29 @@ function viewMemberHistory(docId){
       <div class="mh-stat"><div class="mh-stat-val">${totalServices}</div><div class="mh-stat-label">Services</div></div>
       <div class="mh-stat"><div class="mh-stat-val" style="color:${pct>80?'#4ADE80':pct>=30?'#FBD324':'#F87171'}">${pct}%</div><div class="mh-stat-label">Rate</div></div>
     </div>
+
+    <div class="mh-section-label">Follow-up Notes</div>
+    <div class="mh-note-add">
+      <textarea class="mh-note-input" id="mh-note-text" placeholder="Add a pastoral note (e.g. called, visited, prayer request)…"></textarea>
+      <button class="btn-save" style="align-self:flex-start;" onclick="addMemberNote('${docId}')">Add</button>
+    </div>
+    <div id="mh-notes">${notes.length?notes.map((n,i)=>`
+      <div class="mh-note">
+        <div class="mh-note-text">${escapeHtml(n.text)}</div>
+        <div class="mh-note-meta"><span class="mh-note-date">${fmtNoteDate(n.ts)}</span><button class="mh-note-del" onclick="deleteMemberNote('${docId}',${i})">Delete</button></div>
+      </div>`).join(''):'<div style="font-size:.78rem;color:var(--slate-light);margin-bottom:1rem;">No notes yet.</div>'}</div>
+
+    <div class="mh-section-label">Life Events</div>
+    <div class="mh-note-add">
+      <textarea class="mh-note-input" id="mh-pray-text" placeholder="Log a life event (new baby, bereavement, job, wedding)…"></textarea>
+      <button class="btn-save" style="align-self:flex-start;" onclick="addPrayer('${docId}')">Add</button>
+    </div>
+    <div id="mh-prayers">${prayers.length?prayers.map((p,i)=>{
+      return `<div class="mh-note">
+        <div class="mh-note-text">${escapeHtml(p.text)}</div>
+        <div class="mh-note-meta"><span class="mh-note-date">${fmtNoteDate(p.ts)}</span><button class="mh-note-del" onclick="deletePrayer('${docId}',${i})">Delete</button></div>
+      </div>`;
+    }).join(''):'<div style="font-size:.78rem;color:var(--slate-light);margin-bottom:1rem;">Nothing logged yet.</div>'}</div>
 
     <div class="mh-section-label">Attendance Timeline</div>
     ${history.length?`<div class="mh-timeline">${history.map(r=>{
@@ -2247,6 +3580,1056 @@ function viewMemberHistory(docId){
   document.getElementById('mh-overlay').classList.add('open');
 }
 
+// ════════════════════════════════════════════
+// ✦ NEW FEATURE LOGIC
+// ════════════════════════════════════════════
+
+// ---- refresh whichever non-members page is currently visible ----
+function refreshActive(){
+  const vis=id=>{ const el=document.getElementById(id); return el && el.style.display!=='none'; };
+  if(vis('overview-page')) renderOverview();
+  else if(vis('assimilation-page')) renderAssimilation();
+  else if(vis('volunteers-page')) renderVolunteers();
+  else if(vis('schedules-page')) renderSchedules();
+  else if(vis('reports-page')) renderReports();
+}
+
+// ---- small utils ----
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function ageFromDob(dob){ if(!dob) return null; const d=new Date(dob+'T00:00:00'); if(isNaN(d)) return null; const n=new Date(); let a=n.getFullYear()-d.getFullYear(); const mm=n.getMonth()-d.getMonth(); if(mm<0||(mm===0&&n.getDate()<d.getDate())) a--; return a>=0?a:null; }
+function fmtNoteDate(ts){ if(!ts) return ''; const d=new Date(ts); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})+' · '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+function attStreak(docId){
+  const tracked=attendanceRecords.filter(r=>(r.presentIds&&r.presentIds.includes(docId))||(r.absentIds&&r.absentIds.includes(docId))).sort((a,b)=>b.date.localeCompare(a.date));
+  let s=0; for(const r of tracked){ if(r.presentIds&&r.presentIds.includes(docId)) s++; else break; } return s;
+}
+function rowMeta(docId){
+  const s=attStreak(docId);
+  if(s>=2) return `🔥 ${s} in a row`;
+  const fu=followUpInfo({_docId:docId});
+  if(fu.lastSeen) return `last visit ${fmtDate(fu.lastSeen)}`;
+  return '';
+}
+
+// ---- contact links ----
+function smsLink(p){ const d=p?p.replace(/[^\d+]/g,''):''; return d?`sms:${d}`:null; }
+function mailLink(e){ return e?`mailto:${e}`:null; }
+function contactButtons(m){
+  const items=[];
+  const tel=telLink(m.phone), wa=waLink(m.phone), sms=smsLink(m.phone), mail=mailLink(m.email);
+  if(tel) items.push(`<a class="contact-btn" href="${tel}" onclick="event.stopPropagation()">📞 Call</a>`);
+  if(wa) items.push(`<a class="contact-btn" href="${wa}" target="_blank" rel="noopener" onclick="event.stopPropagation()">WhatsApp</a>`);
+  if(sms) items.push(`<a class="contact-btn" href="${sms}" onclick="event.stopPropagation()">SMS</a>`);
+  if(mail) items.push(`<a class="contact-btn" href="${mail}" onclick="event.stopPropagation()">✉ Email</a>`);
+  return items.join('')||'<span style="font-size:.72rem;color:var(--slate-light)">No contact details</span>';
+}
+
+// ---- styled confirm dialog ----
+let _confirmResolve=null;
+function confirmDialog(message, opts={}){
+  return new Promise(resolve=>{
+    _confirmResolve=resolve;
+    document.getElementById('confirm-title').textContent=opts.title||'Please confirm';
+    document.getElementById('confirm-msg').textContent=message;
+    const yes=document.getElementById('confirm-yes');
+    yes.textContent=opts.confirmText||'Confirm';
+    yes.style.background=opts.danger?'var(--red)':'var(--gold)';
+    yes.style.color=opts.danger?'#fff':'#0D0F14';
+    document.getElementById('confirm-overlay').classList.add('open');
+  });
+}
+function _confirmClose(val){ document.getElementById('confirm-overlay').classList.remove('open'); if(_confirmResolve){ _confirmResolve(val); _confirmResolve=null; } }
+document.getElementById('confirm-yes').addEventListener('click',()=>_confirmClose(true));
+document.getElementById('confirm-no').addEventListener('click',()=>_confirmClose(false));
+document.getElementById('confirm-overlay').addEventListener('click',e=>{ if(e.target.id==='confirm-overlay') _confirmClose(false); });
+
+// ---- undo toast ----
+function showUndoToast(msg, undoFn){
+  let t=document.getElementById('undo-toast');
+  if(!t){ t=document.createElement('div'); t.id='undo-toast'; t.style.cssText='position:fixed;bottom:1.5rem;left:1.5rem;padding:.7rem 1rem;border-radius:12px;font-size:.83rem;font-weight:600;z-index:9999;display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--border-strong);box-shadow:var(--shadow-lg);color:var(--text-primary);font-family:inherit;'; document.body.appendChild(t); }
+  t.innerHTML=`<span>${escapeHtml(msg)}</span>`;
+  const btn=document.createElement('button'); btn.textContent='Undo';
+  btn.style.cssText='border:none;background:none;color:var(--gold);font-weight:700;cursor:pointer;font-family:inherit;font-size:.83rem;';
+  btn.onclick=async()=>{ t.style.display='none'; clearTimeout(t._timer); try{ await undoFn(); }catch(e){ showToast('Undo failed','error'); } };
+  t.appendChild(btn); t.style.display='flex';
+  clearTimeout(t._timer); t._timer=setTimeout(()=>{ t.style.display='none'; }, 7000);
+}
+
+// ---- birthdays ----
+function upcomingBirthdays(days=30){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const res=[];
+  members.forEach(m=>{
+    if(!m.dob) return;
+    const d=new Date(m.dob+'T00:00:00'); if(isNaN(d)) return;
+    let nb=new Date(today.getFullYear(), d.getMonth(), d.getDate());
+    if(nb<today) nb=new Date(today.getFullYear()+1, d.getMonth(), d.getDate());
+    const diff=Math.round((nb-today)/86400000);
+    if(diff<=days) res.push({m, date:nb, days:diff, turning:nb.getFullYear()-d.getFullYear()});
+  });
+  return res.sort((a,b)=>a.days-b.days);
+}
+
+// ---- multi-type key dates (birthday / anniversary / baptism / membership) ----
+const DATE_TYPES=[
+  {key:'dob',               label:'Birthday',   tag:'🎂', color:'var(--gold)'},
+  {key:'weddingAnniversary',label:'Anniversary',tag:'💍', color:'#C084FC'},
+  {key:'baptismDate',       label:'Baptism',    tag:'💧', color:'var(--blue)'},
+  {key:'membershipDate',    label:'Membership', tag:'⭐', color:'var(--green)'},
+];
+function upcomingDates(days=30){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const res=[];
+  live().forEach(m=>{
+    DATE_TYPES.forEach(t=>{
+      const val=m[t.key]; if(!val) return;
+      const d=new Date(val+'T00:00:00'); if(isNaN(d)) return;
+      let nb=new Date(today.getFullYear(), d.getMonth(), d.getDate());
+      if(nb<today) nb=new Date(today.getFullYear()+1, d.getMonth(), d.getDate());
+      const diff=Math.round((nb-today)/86400000);
+      if(diff<=days) res.push({m, type:t, date:nb, days:diff, years:nb.getFullYear()-d.getFullYear()});
+    });
+  });
+  return res.sort((a,b)=>a.days-b.days);
+}
+function dateEventItem(e){
+  const isB=e.type.key==='dob';
+  const sub=isB?`turns ${e.years}`:`${e.years} year${e.years!==1?'s':''}`;
+  const when=e.days===0?'today 🎉':e.days===1?'tomorrow':`in ${e.days} days`;
+  return `<div class="dash-item" onclick="viewMemberHistory('${e.m._docId}')">
+      ${avatarHtml(e.m,34)}
+      <div class="dash-item-main"><div class="dash-item-name">${e.m.name}</div><div class="dash-item-sub"><span class="date-tag" style="background:var(--surface2);color:${e.type.color}">${e.type.tag} ${e.type.label}</span> · ${sub}</div></div>
+      <div class="dash-item-tag" style="color:${e.type.color}">${when}</div>
+    </div>`;
+}
+
+// ---- open prayer requests across members ----
+function openPrayerList(){
+  const res=[];
+  live().forEach(m=>(m.prayer||[]).forEach((p,i)=>{ if((p.kind==='Prayer'||!p.kind) && !p.answered) res.push({m, p, i}); }));
+  return res.sort((a,b)=>(b.p.ts||'').localeCompare(a.p.ts||''));
+}
+// ---- attendance trend (filterable by service type + week window) ----
+let trendWeeks=8, trendEvent='all';
+function eventTypes(){ return [...new Set(attendanceRecords.map(r=>r.event||'Service'))].sort(); }
+function trendRecords(){
+  let recs=[...attendanceRecords].filter(r=>r.date);
+  if(trendEvent!=='all') recs=recs.filter(r=>(r.event||'Service')===trendEvent);
+  if(trendWeeks){ const cut=new Date(); cut.setDate(cut.getDate()-trendWeeks*7); const cutISO=cut.toISOString().slice(0,10); recs=recs.filter(r=>r.date>=cutISO); }
+  return recs.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function buildTrendSVG(recs){
+  if(recs.length<2) return '<div class="dash-empty">Not enough data in this range — try a wider window or a different service type.</div>';
+  const W=720,H=220,pad=34;
+  const xs=(i)=>pad+ (recs.length===1?0:i*(W-2*pad)/(recs.length-1));
+  const ys=(v)=>H-pad-(v/100)*(H-2*pad);
+  const pts=recs.map((r,i)=>({x:xs(i),y:ys(r.percentage||0),v:r.percentage||0,r}));
+  const line=pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
+  const area=`M${pts[0].x.toFixed(1)},${(H-pad).toFixed(1)} `+pts.map(p=>'L'+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')+` L${pts[pts.length-1].x.toFixed(1)},${(H-pad).toFixed(1)} Z`;
+  const grid=[0,25,50,75,100].map(v=>`<line x1="${pad}" y1="${ys(v).toFixed(1)}" x2="${W-pad}" y2="${ys(v).toFixed(1)}" stroke="var(--border)" stroke-width="1"/><text x="${pad-6}" y="${(ys(v)+3).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--slate-light)">${v}</text>`).join('');
+  const dots=pts.map(p=>`<circle class="trend-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="var(--gold)" stroke="var(--surface)" stroke-width="2"><title>${fmtDate(p.r.date)} · ${p.v}% (${p.r.event||'Service'})</title></circle>`).join('');
+  const step=Math.ceil(pts.length/8);
+  const labels=pts.map((p,i)=>{ if(step>1 && i%step) return ''; const d=new Date(p.r.date+'T00:00:00'); const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]; return `<text x="${p.x.toFixed(1)}" y="${H-pad+16}" text-anchor="middle" font-size="9.5" fill="var(--slate-light)">${mo} ${d.getDate()}</text>`; }).join('');
+  return `<svg class="trend-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+    <defs><linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--gold)" stop-opacity="0.28"/><stop offset="100%" stop-color="var(--gold)" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <path d="${area}" fill="url(#trendGrad)"/>
+    <path d="${line}" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}${labels}
+  </svg>`;
+}
+function renderTrend(){
+  const sel=document.getElementById('trend-event');
+  if(sel){ const types=eventTypes(); sel.innerHTML=`<option value="all">All services</option>`+types.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join(''); sel.value=trendEvent; }
+  const recs=trendRecords();
+  const host=document.getElementById('ov-trend'); if(host) host.innerHTML=buildTrendSVG(recs);
+  const sub=document.getElementById('ov-trend-sub');
+  if(sub){ const avg=recs.length?Math.round(recs.reduce((s,r)=>s+(r.percentage||0),0)/recs.length):0; sub.textContent=`${recs.length} service${recs.length!==1?'s':''}${trendEvent!=='all'?' · '+trendEvent:''}${recs.length?' · avg '+avg+'%':''}`; }
+  document.querySelectorAll('.trend-wk').forEach(b=>b.classList.toggle('on', (+b.dataset.wk)===trendWeeks));
+}
+function setTrendWeeks(w){ trendWeeks=w; renderTrend(); }
+function setTrendEvent(v){ trendEvent=v; renderTrend(); }
+
+// ---- dashboard ----
+function renderOverview(){
+  const total=live().length;
+  const active=live().filter(m=>m.status==='Active').length;
+  const tracked=live().filter(m=>m._attReal!=null);
+  const avg=tracked.length?Math.round(tracked.reduce((s,m)=>s+m._attReal,0)/tracked.length):(total?Math.round(members.reduce((s,m)=>s+(m.attendance||0),0)/total):0);
+  const hour=new Date().getHours();
+  const greet=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+  const g=document.getElementById('ov-greeting'); if(g) g.innerHTML=`${greet} — <span>Kings Generation</span>`;
+  const stats=document.getElementById('ov-stats');
+  if(stats) stats.innerHTML=`
+    <div class="stat-card"><div class="stat-card-label">Total Members</div><div class="stat-card-val">${total}</div><div class="stat-card-sub"><span class="stat-dot" style="background:var(--green)"></span>${active} active</div></div>
+    <div class="stat-card"><div class="stat-card-label">Avg Attendance</div><div class="stat-card-val">${avg}%</div><div class="stat-card-sub">from records</div></div>
+    <div class="stat-card"><div class="stat-card-label">Services Logged</div><div class="stat-card-val">${attendanceRecords.length}</div><div class="stat-card-sub">all time</div></div>
+    <div class="stat-card"><div class="stat-card-label">Need Follow-up</div><div class="stat-card-val" style="color:${atRiskList().length?'var(--red)':'var(--text-primary)'}">${atRiskList().length}</div><div class="stat-card-sub">members</div></div>`;
+  const trend=document.getElementById('ov-trend'); if(trend) renderTrend();
+
+  // reach out this week (next 7 days, all date types)
+  const week=upcomingDates(7);
+  const roEl=document.getElementById('ov-reachout');
+  if(roEl) roEl.innerHTML=week.length?week.slice(0,8).map(dateEventItem).join(''):'<div class="dash-empty">Nothing in the next 7 days. Add key dates to members.</div>';
+
+  // upcoming dates (next 45 days, all types)
+  const bdays=upcomingDates(45);
+  const bEl=document.getElementById('ov-birthdays');
+  if(bEl) bEl.innerHTML=bdays.length?bdays.slice(0,10).map(dateEventItem).join(''):'<div class="dash-empty">No key dates on file yet. Add birthdays, baptisms or anniversaries.</div>';
+
+  // followup
+  const risk=atRiskList();
+  const fEl=document.getElementById('ov-followup');
+  if(fEl) fEl.innerHTML=risk.length?risk.slice(0,8).map(({m,info})=>`
+    <div class="dash-item" onclick="viewMemberHistory('${m._docId}')">
+      ${avatarHtml(m,34)}
+      <div class="dash-item-main"><div class="dash-item-name">${m.name}</div><div class="dash-item-sub">missed last ${info.consec} · ${info.lastSeen?'seen '+fmtDate(info.lastSeen):'never seen'}</div></div>
+      <div class="dash-item-tag" style="color:var(--red)">!</div>
+    </div>`).join(''):'<div class="dash-empty">Everyone\u2019s attending well 🎉</div>';
+
+  // open prayer requests
+  const prayers=openPrayerList();
+  const pEl=document.getElementById('ov-prayers');
+  if(pEl) pEl.innerHTML=prayers.length?prayers.slice(0,8).map(({m,p})=>`
+    <div class="dash-item" onclick="viewMemberHistory('${m._docId}')">
+      ${avatarHtml(m,34)}
+      <div class="dash-item-main"><div class="dash-item-name">${m.name}</div><div class="dash-item-sub">${escapeHtml(p.text).slice(0,60)}</div></div>
+    </div>`).join(''):'<div class="dash-empty">No open prayer requests. Add them from a member\u2019s profile.</div>';
+
+  // pipeline snapshot
+  const pipeEl=document.getElementById('ov-pipeline');
+  if(pipeEl){
+    const order=[['Visitor','#FBD324'],['New','var(--blue)'],['Active','var(--green)']];
+    const counts=order.map(([s])=>live().filter(m=>m.status===s).length);
+    const max=Math.max(1,...counts);
+    pipeEl.innerHTML=`<div class="pipe-snap">${order.map(([s,c],i)=>`
+      <div class="pipe-row"><span class="pipe-label">${s}</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:${Math.round(counts[i]/max*100)}%;background:${c}"></div></div><span class="pipe-num">${counts[i]}</span></div>`).join('')}</div>`;
+  }
+
+  // recent services
+  const recent=[...attendanceRecords].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+  const rEl=document.getElementById('ov-recent');
+  if(rEl) rEl.innerHTML=recent.length?recent.map(r=>{ const pct=r.percentage||0; const col=pct>80?'#4ADE80':pct>=30?'#FBD324':'#F87171'; return `
+    <div class="dash-item" onclick="showPage('attendance')">
+      <div class="dash-item-main"><div class="dash-item-name">${r.event||'Service'}</div><div class="dash-item-sub">${fmtDate(r.date)} · ${r.presentCount||0}/${r.totalMembers||0}</div></div>
+      <div class="dash-item-tag" style="color:${col}">${pct}%</div>
+    </div>`;}).join(''):'<div class="dash-empty">No services logged yet.</div>';
+}
+
+// ---- assimilation pipeline ----
+const STAGE_THRESHOLD={Visitor:14, New:30}; // days before a stage is "stale"
+function daysInStage(m){
+  const since=m.stageSince||m.joined||m.updatedAt;
+  if(!since) return null;
+  const d=new Date(since); if(isNaN(d)) return null;
+  return Math.floor((Date.now()-d.getTime())/86400000);
+}
+function nextStage(s){ return s==='Visitor'?'New':s==='New'?'Active':null; }
+function isStale(m){
+  if(m.status!=='Visitor' && m.status!=='New') return false;
+  if(!m.nextStep) return true;
+  if(m.nextStepDue && new Date(m.nextStepDue+'T23:59:59') < new Date()) return true;
+  const d=daysInStage(m);
+  return d!=null && d > (STAGE_THRESHOLD[m.status]||30);
+}
+function renderAssimilation(){
+  const host=document.getElementById('assim-board'); if(!host) return;
+  const cols=[['Visitor','#FBD324'],['New','var(--blue)'],['Active','var(--green)']];
+  host.innerHTML=cols.map(([stage,color])=>{
+    const list=live().filter(m=>m.status===stage).sort((a,b)=>(isStale(b)-isStale(a))||((daysInStage(b)||0)-(daysInStage(a)||0)));
+    return `<div class="assim-col">
+      <div class="assim-col-head">
+        <div class="assim-col-title"><span class="assim-col-dot" style="background:${color}"></span>${stage}</div>
+        <span class="assim-col-count">${list.length}</span>
+      </div>
+      ${list.length?list.map(m=>{
+        const stale=isStale(m);
+        const dis=daysInStage(m);
+        const ns=nextStage(m.status);
+        const dueOver=m.nextStepDue && new Date(m.nextStepDue+'T23:59:59')<new Date();
+        return `<div class="assim-card ${stale?'stale':''}">
+          <div class="assim-card-top">
+            ${avatarHtml(m,30)}
+            <div class="assim-card-name" onclick="viewMemberHistory('${m._docId}')">${m.name}</div>
+            <span class="assim-card-age ${stale?'stale':''}">${dis!=null?dis+'d':''}</span>
+          </div>
+          <div class="assim-step">
+            <input class="assim-step-input" value="${escapeHtml(m.nextStep||'')}" placeholder="Set next step…" list="nextstep-list" onclick="event.stopPropagation()" onchange="saveNextStep('${m._docId}', this.value)">
+          </div>
+          ${m.nextStepDue?`<div class="assim-due ${dueOver?'overdue':''}">Due ${fmtDate(m.nextStepDue)}${dueOver?' · overdue':''}</div>`:''}
+          <div class="assim-actions">
+            ${ns?`<button class="assim-advance" onclick="advanceStage('${m._docId}')">Advance to ${ns} →</button>`:`<button class="assim-advance" style="border-color:var(--green);background:var(--green-bg);color:var(--green);cursor:default" onclick="event.stopPropagation()">✓ Connected</button>`}
+          </div>
+        </div>`;
+      }).join(''):'<div class="assim-empty">No one here right now.</div>'}
+    </div>`;
+  }).join('');
+}
+async function advanceStage(docId){
+  if(!requireAdmin()) return;
+  const m=members.find(x=>x._docId===docId); if(!m) return;
+  const ns=nextStage(m.status); if(!ns) return;
+  try{
+    await setDoc(doc(membersCol,docId),{status:ns, stageSince:new Date().toISOString(), updatedAt:new Date().toISOString()},{merge:true});
+    logAudit('Advanced pipeline stage', m.name+': '+m.status+' → '+ns);
+    showToast(`${m.name} → ${ns}`,'success');
+  }catch(e){ showToast('Could not advance: '+e.message,'error'); }
+}
+async function saveNextStep(docId, value){
+  if(!requireAdmin()) return;
+  const m=members.find(x=>x._docId===docId); if(!m) return;
+  const v=(value||'').trim();
+  if(v===(m.nextStep||'')) return;
+  m.nextStep=v;
+  try{ await setDoc(doc(membersCol,docId),{nextStep:v, updatedAt:new Date().toISOString()},{merge:true}); showToast('Next step saved','success'); }
+  catch(e){ showToast('Could not save next step','error'); }
+}
+
+// ---- volunteers (ministry teams) ----
+function renderVolunteers(){
+  const host=document.getElementById('vol-teams'); if(!host) return;
+  const teams={};
+  live().forEach(m=>{ const k=m.ministry||'No Ministry'; (teams[k]=teams[k]||[]).push(m); });
+  const keys=Object.keys(teams).sort((a,b)=>teams[b].length-teams[a].length);
+  host.innerHTML=keys.map(k=>`
+    <div class="vol-card">
+      <div class="vol-head"><div class="vol-name">${k}</div><span class="vol-count">${teams[k].length}</span></div>
+      <div class="vol-members">${teams[k].sort((a,b)=>a.name.localeCompare(b.name)).map(m=>`
+        <div class="vol-member" onclick="viewMemberHistory('${m._docId}')">${avatarHtml(m,28)}<span class="vol-member-name">${m.name}</span></div>`).join('')}</div>
+    </div>`).join('')||'<div class="dash-empty">No members yet.</div>';
+}
+
+// ---- schedules (local) ----
+const DAYNAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function loadSchedules(){ try{ return JSON.parse(localStorage.getItem('kg-schedules')||'[]'); }catch(e){ return []; } }
+function saveSchedules(s){ try{ localStorage.setItem('kg-schedules', JSON.stringify(s)); }catch(e){} }
+function nextOccurrence(dow, time){
+  const now=new Date(); const [hh,mm]=(time||'10:00').split(':').map(Number);
+  for(let i=0;i<8;i++){ const d=new Date(now); d.setDate(now.getDate()+i); d.setHours(hh,mm||0,0,0); if(d.getDay()===dow && d>now) return d; }
+  const d=new Date(now); d.setDate(now.getDate()+((dow-now.getDay()+7)%7||7)); d.setHours(hh,mm||0,0,0); return d;
+}
+function renderSchedules(){
+  const host=document.getElementById('sched-list'); if(!host) return;
+  let list=loadSchedules();
+  if(!list.length){
+    list=[{id:'1',name:'Sunday Service',dow:0,time:'10:00'},{id:'2',name:'Midweek Service',dow:3,time:'19:00'},{id:'3',name:'Prayer Meeting',dow:5,time:'18:30'}];
+    saveSchedules(list);
+  }
+  const withNext=list.map(s=>({...s, next:nextOccurrence(s.dow, s.time)})).sort((a,b)=>a.next-b.next);
+  host.innerHTML=withNext.map(s=>`
+    <div class="sched-card">
+      <div class="sched-day">${DAYNAMES[s.dow]}</div>
+      <div class="sched-name">${escapeHtml(s.name)}</div>
+      <div class="sched-time">${s.next.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}</div>
+      <div class="sched-next">Next: ${s.next.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}</div>
+      <div class="sched-del"><button class="action-btn" style="color:var(--red)" onclick="deleteSchedule('${s.id}')">Remove</button></div>
+    </div>`).join('');
+}
+async function addSchedule(){
+  if(!requireAdmin()) return;
+  const name=prompt('Service name (e.g. Sunday Service):'); if(!name) return;
+  const dayStr=prompt('Day of week (0=Sun,1=Mon,…,6=Sat):','0'); const dow=parseInt(dayStr); if(isNaN(dow)||dow<0||dow>6){ showToast('Invalid day','error'); return; }
+  const time=prompt('Time (HH:MM, 24h):','10:00')||'10:00';
+  const list=loadSchedules(); list.push({id:String(Date.now()),name:name.trim(),dow,time}); saveSchedules(list); renderSchedules(); showToast('Service added','success');
+}
+async function deleteSchedule(id){
+  if(!requireAdmin()) return;
+  const ok=await confirmDialog('Remove this service from the schedule?',{title:'Remove service',danger:true,confirmText:'Remove'}); if(!ok) return;
+  saveSchedules(loadSchedules().filter(s=>s.id!==id)); renderSchedules();
+}
+
+// ---- CSV import ----
+function parseCSV(text){
+  const rows=[]; let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){ const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else { if(c==='"') q=true; else if(c===','){ row.push(cur); cur=''; } else if(c==='\n'){ row.push(cur); rows.push(row); row=[]; cur=''; } else if(c==='\r'){} else cur+=c; }
+  }
+  if(cur.length||row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(r=>r.some(c=>c.trim()!==''));
+}
+async function handleCSVImport(e){
+  if(!requireAdmin()) return;
+  const file=e.target.files[0]; if(!file) return;
+  e.target.value='';
+  const text=await file.text();
+  const rows=parseCSV(text);
+  if(rows.length<2){ showToast('CSV looks empty','error'); return; }
+  const headers=rows[0].map(h=>h.trim().toLowerCase());
+  const col=(names)=>{ for(const n of names){ const i=headers.indexOf(n); if(i>=0) return i; } return -1; };
+  const ix={ id:col(['id','member id']), name:col(['name','full name']), phone:col(['phone']), email:col(['email']),
+    ministry:col(['ministry','ministry / role','role']), status:col(['status']), dob:col(['dob','date of birth']),
+    age:col(['age']), household:col(['household','family']), address:col(['address','address / area','area']),
+    skills:col(['skills','skills / gifts']), joined:col(['joined','date joined']), attendance:col(['attendance%','attendance']),
+    baptism:col(['baptism','baptism date']), membership:col(['membership','membership date']), wedding:col(['anniversary','wedding anniversary','wedding']), nextStep:col(['nextstep','next step']) };
+  if(ix.name<0){ showToast('CSV needs at least a "Name" column','error'); return; }
+  const data=rows.slice(1);
+  const ok=await confirmDialog(`Import ${data.length} row${data.length!==1?'s':''}? Existing members with the same ID will be updated.`,{title:'Import members',confirmText:'Import'});
+  if(!ok) return;
+  let added=0,updated=0,failed=0;
+  showToast('Importing…','success');
+  for(const r of data){
+    try{
+      const name=(r[ix.name]||'').trim(); if(!name) continue;
+      let id=ix.id>=0?(r[ix.id]||'').trim():''; if(!id) id='KG-'+Date.now().toString(36)+Math.floor(Math.random()*1000);
+      const exists=members.find(x=>(x.id||'')===id);
+      const dob=ix.dob>=0?(r[ix.dob]||'').trim():'';
+      const rec={ id, name,
+        phone:ix.phone>=0?(r[ix.phone]||'').trim():'',
+        email:ix.email>=0?(r[ix.email]||'').trim():'',
+        ministry:ix.ministry>=0?(r[ix.ministry]||'').trim():'',
+        status:ix.status>=0?((r[ix.status]||'').trim()||'Active'):'Active',
+        dob, age:dob?ageFromDob(dob):(ix.age>=0?parseInt(r[ix.age])||null:null),
+        household:ix.household>=0?(r[ix.household]||'').trim():'',
+        address:ix.address>=0?(r[ix.address]||'').trim():'',
+        skills:ix.skills>=0?(r[ix.skills]||'').split(/[;,]/).map(s=>s.trim()).filter(Boolean):[],
+        joined:ix.joined>=0?(r[ix.joined]||'').trim():'',
+        attendance:ix.attendance>=0?parseInt(r[ix.attendance])||0:0,
+        baptismDate:ix.baptism>=0?(r[ix.baptism]||'').trim():'',
+        membershipDate:ix.membership>=0?(r[ix.membership]||'').trim():'',
+        weddingAnniversary:ix.wedding>=0?(r[ix.wedding]||'').trim():'',
+        nextStep:ix.nextStep>=0?(r[ix.nextStep]||'').trim():'',
+        updatedAt:new Date().toISOString() };
+      await setDoc(doc(membersCol, id), rec, {merge:true});
+      exists?updated++:added++;
+    }catch(err){ console.error(err); failed++; }
+  }
+  logAudit('Imported members', added+' added, '+updated+' updated'+(failed?', '+failed+' failed':''));
+  showToast(`Imported: ${added} added, ${updated} updated${failed?', '+failed+' failed':''}`,'success');
+}
+
+// ---- group message ----
+function openGroupMessage(){
+  const list=filtered();
+  const withEmail=list.filter(m=>m.email);
+  const withPhone=list.filter(m=>m.phone);
+  document.getElementById('gm-summary').innerHTML=`Messaging the <b style="color:var(--text-primary)">${filter==='All'?'all':filter.toLowerCase()}</b> view — <b style="color:var(--text-primary)">${list.length}</b> member${list.length!==1?'s':''} (${withEmail.length} with email, ${withPhone.length} with phone).`;
+  const acts=document.getElementById('gm-actions');
+  const emails=withEmail.map(m=>m.email).join(',');
+  const phones=withPhone.map(m=>m.phone).join(', ');
+  const emailList=withEmail.map(m=>m.email).join('\n');
+  acts.innerHTML=`
+    ${withEmail.length?`<a class="top-btn primary" style="justify-content:center" href="mailto:?bcc=${encodeURIComponent(emails)}" onclick="closeGroupMessage()">✉ Email all ${withEmail.length} (BCC)</a>`:''}
+    ${withPhone.length?`<button class="top-btn" style="justify-content:center" onclick="copyText(${JSON.stringify(phones)},'Phone numbers copied')">Copy ${withPhone.length} phone numbers</button>`:''}
+    ${withEmail.length?`<button class="top-btn" style="justify-content:center" onclick="copyText(${JSON.stringify(emailList)},'Emails copied')">Copy ${withEmail.length} email addresses</button>`:''}
+    ${!list.length?'<div class="dash-empty">No members in the current view.</div>':''}
+    <div style="font-size:.72rem;color:var(--slate-light);margin-top:4px;">Tip: for WhatsApp, copy the numbers into a Broadcast List in the app.</div>`;
+  document.getElementById('gm-overlay').classList.add('open');
+}
+function closeGroupMessage(){ document.getElementById('gm-overlay').classList.remove('open'); }
+function copyText(t,msg){ navigator.clipboard?.writeText(t).then(()=>showToast(msg||'Copied','success'),()=>showToast('Copy failed','error')); }
+
+// ---- member notes ----
+async function addMemberNote(docId){
+  if(!requireAdmin()) return;
+  const ta=document.getElementById('mh-note-text'); const text=ta.value.trim(); if(!text) return;
+  const m=members.find(x=>x._docId===docId); if(!m) return;
+  const notes=[...(m.notes||[]), {ts:new Date().toISOString(), text}];
+  m.notes=notes;
+  try{ await setDoc(doc(membersCol,docId),{notes, updatedAt:new Date().toISOString()},{merge:true}); showToast('Note added','success'); viewMemberHistory(docId); }
+  catch(e){ showToast('Could not save note: '+e.message,'error'); }
+}
+async function deleteMemberNote(docId, idx){
+  if(!requireAdmin()) return;
+  const m=members.find(x=>x._docId===docId); if(!m) return;
+  const notes=(m.notes||[]).slice().sort((a,b)=>(b.ts||'').localeCompare(a.ts||''));
+  notes.splice(idx,1);
+  m.notes=notes;
+  try{ await setDoc(doc(membersCol,docId),{notes},{merge:true}); viewMemberHistory(docId); }
+  catch(e){ showToast('Could not delete note','error'); }
+}
+
+// ---- life-event log ----
+const PRAYER_KINDS=['Life event'];
+let prayerKind='Life event';
+function setPrayerKind(k){ prayerKind=k; }
+function prayerTagColor(k){ return 'var(--blue)'; }
+async function addPrayer(docId){
+  if(!requireAdmin()) return;
+  const ta=document.getElementById('mh-pray-text'); const text=ta.value.trim(); if(!text) return;
+  const m=members.find(x=>x._docId===docId); if(!m) return;
+  const prayer=[...(m.prayer||[]), {ts:new Date().toISOString(), text, kind:prayerKind, answered:false}];
+  m.prayer=prayer;
+  try{ await setDoc(doc(membersCol,docId),{prayer, updatedAt:new Date().toISOString()},{merge:true}); showToast(prayerKind+' logged','success'); viewMemberHistory(docId); }
+  catch(e){ showToast('Could not save: '+e.message,'error'); }
+}
+async function deletePrayer(docId, idx){
+  if(!requireAdmin()) return;
+  const m=members.find(x=>x._docId===docId); if(!m) return;
+  const prayer=(m.prayer||[]).slice().sort((a,b)=>(b.ts||'').localeCompare(a.ts||''));
+  prayer.splice(idx,1);
+  m.prayer=prayer;
+  try{ await setDoc(doc(membersCol,docId),{prayer},{merge:true}); viewMemberHistory(docId); }
+  catch(e){ showToast('Could not delete','error'); }
+}
+async function togglePrayerAnswered(docId, idx){
+  if(!requireAdmin()) return;
+  const m=members.find(x=>x._docId===docId); if(!m) return;
+  const prayer=(m.prayer||[]).slice().sort((a,b)=>(b.ts||'').localeCompare(a.ts||''));
+  if(!prayer[idx]) return;
+  prayer[idx]={...prayer[idx], answered:!prayer[idx].answered, answeredAt:!prayer[idx].answered?new Date().toISOString():null};
+  m.prayer=prayer;
+  try{ await setDoc(doc(membersCol,docId),{prayer},{merge:true}); viewMemberHistory(docId); }
+  catch(e){ showToast('Could not update','error'); }
+}
+
+// ════════ REPORTS: growth, cohort retention, PDF ════════
+function monthKey(d){ return (d||'').slice(0,7); }
+function monthLabel(key){ const [y,m]=key.split('-'); const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return mo[+m-1]+' '+y.slice(2); }
+function monthFull(key){ const [y,m]=key.split('-'); const mo=['January','February','March','April','May','June','July','August','September','October','November','December']; return mo[+m-1]+' '+y; }
+function addMonths(key,n){ let [y,m]=key.split('-').map(Number); m=m-1+n; y+=Math.floor(m/12); m=((m%12)+12)%12; return y+'-'+String(m+1).padStart(2,'0'); }
+function recordsInMonth(key){ return attendanceRecords.filter(r=>r.date && r.date.slice(0,7)===key); }
+function memberPresentInMonth(docId,key){ return recordsInMonth(key).some(r=>r.presentIds&&r.presentIds.includes(docId)); }
+
+function growthData(monthsBack=12){
+  const curKey=new Date().toISOString().slice(0,7);
+  const keys=[]; for(let i=monthsBack-1;i>=0;i--) keys.push(addMonths(curKey,-i));
+  const counts=keys.map(k=>live().filter(m=>monthKey(m.joined)===k).length);
+  return {keys,counts};
+}
+function buildGrowthSVG(g){
+  const {keys,counts}=g;
+  if(!counts.some(c=>c>0)) return '<div class="dash-empty">No join dates recorded yet. Add a "Date Joined" to members to see growth over time.</div>';
+  const W=720,H=240,pad=30,gap=8;
+  const bw=(W-2*pad)/keys.length, max=Math.max(1,...counts);
+  const ys=v=>H-pad-(v/max)*(H-2*pad-16);
+  const bars=keys.map((k,i)=>{
+    const x=pad+i*bw+gap/2, w=bw-gap, y=ys(counts[i]), h=(H-pad)-y;
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(0,h).toFixed(1)}" rx="4" fill="var(--gold)" opacity="0.85"><title>${monthFull(k)}: ${counts[i]} new</title></rect>
+      ${counts[i]?`<text x="${(x+w/2).toFixed(1)}" y="${(y-5).toFixed(1)}" text-anchor="middle" font-size="10" fill="var(--text-secondary)" font-weight="700">${counts[i]}</text>`:''}
+      <text x="${(x+w/2).toFixed(1)}" y="${H-pad+15}" text-anchor="middle" font-size="9.5" fill="var(--slate-light)">${monthLabel(k).split(' ')[0]}</text>`;
+  }).join('');
+  return `<svg class="growth-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="var(--border)"/>${bars}</svg>`;
+}
+function heatColor(pct){ return pct>=80?'#4ADE80':pct>=60?'#A3E635':pct>=40?'#FBD324':pct>=20?'#FB923C':'#F87171'; }
+function buildCohortTable(){
+  const withJoin=live().filter(m=>monthKey(m.joined));
+  if(!withJoin.length) return '<div class="dash-empty">No join dates on file yet — add "Date Joined" to members.</div>';
+  if(!attendanceRecords.length) return '<div class="dash-empty">No attendance records yet to measure retention.</div>';
+  const cohorts={}; withJoin.forEach(m=>{ const k=monthKey(m.joined); (cohorts[k]=cohorts[k]||[]).push(m); });
+  const cohortKeys=Object.keys(cohorts).sort().slice(-12);
+  const curKey=new Date().toISOString().slice(0,7);
+  const maxOffset=6;
+  let html='<table class="cohort-table"><thead><tr><th class="cohort-row-label">Joined</th>';
+  for(let k=0;k<=maxOffset;k++) html+=`<th>+${k}mo</th>`;
+  html+='</tr></thead><tbody>';
+  cohortKeys.forEach(ck=>{
+    const arr=cohorts[ck];
+    html+=`<tr><td class="cohort-row-label">${monthLabel(ck)} <span class="cohort-size">(${arr.length})</span></td>`;
+    for(let k=0;k<=maxOffset;k++){
+      const mk=addMonths(ck,k);
+      if(mk>curKey){ html+='<td></td>'; continue; }
+      if(!recordsInMonth(mk).length){ html+='<td><span class="cohort-cell empty">—</span></td>'; continue; }
+      const present=arr.filter(m=>memberPresentInMonth(m._docId,mk)).length;
+      const pct=Math.round(present/arr.length*100);
+      html+=`<td><span class="cohort-cell" style="background:${heatColor(pct)}">${pct}%</span></td>`;
+    }
+    html+='</tr>';
+  });
+  html+='</tbody></table><div style="font-size:.72rem;color:var(--slate-light);margin-top:10px;">Each row is everyone who joined that month. Each cell is the share of them who attended at least one service that many months later. "—" means no services were logged that month.</div>';
+  return html;
+}
+function renderReports(){
+  const mi=document.getElementById('report-month'); if(mi && !mi.value) mi.value=new Date().toISOString().slice(0,7);
+  const g=growthData(12);
+  const gh=document.getElementById('rep-growth'); if(gh) gh.innerHTML=buildGrowthSVG(g);
+  const gs=document.getElementById('rep-growth-sub'); if(gs){ const tot=g.counts.reduce((a,b)=>a+b,0); gs.textContent=`${tot} joined in the last 12 months`; }
+  const ch=document.getElementById('rep-cohort'); if(ch) ch.innerHTML=buildCohortTable();
+}
+
+// ---- PDF (print-to-PDF via hidden iframe) ----
+const REP_LOGO='<svg class="rep-logo" viewBox="0 0 32 32"><rect x="13" y="2" width="6" height="28" rx="2" fill="#C8A24A"/><rect x="2" y="11" width="28" height="6" rx="2" fill="#C8A24A"/></svg>';
+const PRINT_CSS=`*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Helvetica Neue',Arial,sans-serif;color:#1a1f2b;background:#fff;}
+.page{padding:24px 28px;}
+.rep-head{display:flex;align-items:center;gap:14px;border-bottom:3px solid #C8A24A;padding-bottom:14px;margin-bottom:18px;}
+.rep-logo{width:42px;height:42px;}
+.rep-title{font-size:21px;font-weight:800;color:#0D0F14;}
+.rep-sub{font-size:12px;color:#777;margin-top:2px;}
+.rep-gen{margin-left:auto;font-size:10.5px;color:#999;text-align:right;line-height:1.5;}
+.rep-kpis{display:flex;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+.rep-kpi{flex:1;min-width:96px;border:1px solid #e3e3e3;border-radius:10px;padding:11px 13px;}
+.rep-kpi-val{font-size:21px;font-weight:800;color:#0D0F14;}
+.rep-kpi-lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:#999;margin-top:2px;}
+.rep-sec{font-size:13px;font-weight:800;color:#0D0F14;margin:20px 0 8px;border-left:3px solid #C8A24A;padding-left:8px;}
+table.rep{width:100%;border-collapse:collapse;font-size:11.5px;}
+table.rep th{text-align:left;background:#f6f4ee;color:#666;padding:6px 8px;font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;}
+table.rep td{padding:6px 8px;border-bottom:1px solid #eee;}
+.muted{color:#999;}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.mcard{border:1px solid #e0e0e0;border-radius:10px;padding:12px 14px;page-break-inside:avoid;}
+.mcard-top{display:flex;gap:10px;align-items:center;margin-bottom:8px;}
+.mcard-av{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#C8A24A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;}
+.mcard-name{font-weight:800;font-size:14px;color:#0D0F14;}
+.mcard-id{font-size:10.5px;color:#999;}
+.mcard-row{font-size:11px;color:#333;margin:2.5px 0;}
+.mcard-row b{color:#0D0F14;}
+.badge{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;}
+@media print{ @page{ size:A4; margin:13mm; } .page{padding:0;} }`;
+function printHTML(title, body){
+  let f=document.getElementById('print-frame');
+  if(!f){ f=document.createElement('iframe'); f.id='print-frame'; f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;'; document.body.appendChild(f); }
+  const d=f.contentWindow.document;
+  d.open(); d.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title><style>${PRINT_CSS}</style></head><body><div class="page">${body}</div></body></html>`); d.close();
+  setTimeout(()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(e){ showToast('Could not open the print dialog','error'); } }, 400);
+}
+function repHead(title, sub){ return `<div class="rep-head">${REP_LOGO}<div><div class="rep-title">${title}</div><div class="rep-sub">${sub||'Kings Generation Member Portal'}</div></div><div class="rep-gen">Generated<br>${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</div></div>`; }
+function repBadge(s){ const c={Active:'#16a34a',New:'#2563eb',Visitor:'#d97706',Inactive:'#777'}[s]||'#777'; const bg={Active:'#dcfce7',New:'#dbeafe',Visitor:'#fef3c7',Inactive:'#eee'}[s]||'#eee'; return `<span class="badge" style="background:${bg};color:${c}">${s||'—'}</span>`; }
+function repAvatar(m){ return m.photo?`<img class="mcard-av" src="${m.photo}">`:`<div class="mcard-av">${initials(m.name)}</div>`; }
+
+function generateMonthlyPDF(){
+  const key=(document.getElementById('report-month').value)||new Date().toISOString().slice(0,7);
+  const recs=recordsInMonth(key).sort((a,b)=>a.date.localeCompare(b.date));
+  const newM=live().filter(m=>monthKey(m.joined)===key).sort((a,b)=>(a.joined||'').localeCompare(b.joined||''));
+  const visitors=live().filter(m=>m.status==='Visitor'&&monthKey(m.joined)===key);
+  const avg=recs.length?Math.round(recs.reduce((s,r)=>s+(r.percentage||0),0)/recs.length):0;
+  const peak=recs.reduce((mx,r)=>Math.max(mx,r.presentCount||0),0);
+  const mm=key.split('-')[1];
+  const bdays=live().filter(m=>m.dob&&m.dob.slice(5,7)===mm).sort((a,b)=>(a.dob.slice(8)).localeCompare(b.dob.slice(8)));
+  const kpis=`<div class="rep-kpis">
+    <div class="rep-kpi"><div class="rep-kpi-val">${members.length}</div><div class="rep-kpi-lbl">Total members</div></div>
+    <div class="rep-kpi"><div class="rep-kpi-val">${recs.length}</div><div class="rep-kpi-lbl">Services held</div></div>
+    <div class="rep-kpi"><div class="rep-kpi-val">${avg}%</div><div class="rep-kpi-lbl">Avg attendance</div></div>
+    <div class="rep-kpi"><div class="rep-kpi-val">${peak}</div><div class="rep-kpi-lbl">Peak present</div></div>
+    <div class="rep-kpi"><div class="rep-kpi-val">${newM.length}</div><div class="rep-kpi-lbl">New members</div></div>
+    <div class="rep-kpi"><div class="rep-kpi-val">${visitors.length}</div><div class="rep-kpi-lbl">First-time visitors</div></div>
+  </div>`;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const servicesTable=recs.length?`<table class="rep"><thead><tr><th>Date</th><th>Service</th><th>Present</th><th>Total</th><th>Rate</th></tr></thead><tbody>${recs.map(r=>{const d=new Date(r.date+'T00:00:00');return `<tr><td>${days[d.getDay()]} ${fmtDate(r.date)}</td><td>${escapeHtml(r.event||'Service')}</td><td>${r.presentCount||0}</td><td>${r.totalMembers||0}</td><td><b>${r.percentage||0}%</b></td></tr>`;}).join('')}</tbody></table>`:'<div class="muted" style="font-size:12px;">No services were logged this month.</div>';
+  const newTable=newM.length?`<table class="rep"><thead><tr><th>Name</th><th>Status</th><th>Joined</th><th>Phone</th></tr></thead><tbody>${newM.map(m=>`<tr><td>${escapeHtml(m.name)}</td><td>${repBadge(m.status)}</td><td>${fmtDate(m.joined)}</td><td>${escapeHtml(m.phone||'—')}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="font-size:12px;">No new members this month.</div>';
+  const bdayList=bdays.length?`<table class="rep"><thead><tr><th>Name</th><th>Date</th><th>Turns</th></tr></thead><tbody>${bdays.map(m=>{const day=+m.dob.slice(8);const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mm-1];const turning=+key.slice(0,4)-(+m.dob.slice(0,4));return `<tr><td>${escapeHtml(m.name)}</td><td>${mo} ${day}</td><td>${turning>0?turning:'—'}</td></tr>`;}).join('')}</tbody></table>`:'<div class="muted" style="font-size:12px;">No birthdays this month.</div>';
+  const body=`${repHead('Monthly Summary — '+monthFull(key))}${kpis}
+    <div class="rep-sec">Services this month</div>${servicesTable}
+    <div class="rep-sec">New members</div>${newTable}
+    <div class="rep-sec">Birthdays in ${monthFull(key).split(' ')[0]}</div>${bdayList}`;
+  printHTML('Monthly Summary — '+monthFull(key), body);
+}
+
+function generateMemberCardsPDF(){
+  const scope=document.getElementById('report-cards-scope').value;
+  let list;
+  if(scope==='filtered') list=filtered();
+  else if(scope==='followup') list=atRiskList().map(x=>x.m);
+  else list=[...members].sort((a,b)=>a.name.localeCompare(b.name));
+  if(!list.length){ showToast('No members in that selection','error'); return; }
+  const cards=list.map(m=>{
+    const fu=followUpInfo(m);
+    const kd=[['DOB',m.dob],['Baptism',m.baptismDate],['Membership',m.membershipDate],['Anniversary',m.weddingAnniversary]].filter(([,v])=>v).map(([l,v])=>`${l}: ${fmtDate(v)}`).join(' · ');
+    return `<div class="mcard">
+      <div class="mcard-top">${repAvatar(m)}<div><div class="mcard-name">${escapeHtml(m.name)}</div><div class="mcard-id">${escapeHtml(m.id||'')} ${repBadge(m.status)}</div></div></div>
+      ${m.ministry?`<div class="mcard-row"><b>Ministry:</b> ${escapeHtml(m.ministry)}</div>`:''}
+      <div class="mcard-row"><b>Phone:</b> ${escapeHtml(m.phone||'—')}${m.email?` &nbsp; <b>Email:</b> ${escapeHtml(m.email)}`:''}</div>
+      ${m.household?`<div class="mcard-row"><b>Household:</b> ${escapeHtml(m.household)}</div>`:''}
+      <div class="mcard-row"><b>Attendance:</b> ${m.attendance||0}% &nbsp; <b>Last Visit:</b> ${fu.lastSeen?fmtDate(fu.lastSeen):'—'}</div>
+      ${kd?`<div class="mcard-row muted">${kd}</div>`:''}
+      ${m.nextStep?`<div class="mcard-row"><b>Next step:</b> ${escapeHtml(m.nextStep)}</div>`:''}
+    </div>`;
+  }).join('');
+  const label=scope==='filtered'?'Filtered':scope==='followup'?'Follow-up':'Full';
+  printHTML('Member Cards', `${repHead('Member Directory Cards', label+' · '+list.length+' members')}<div class="cards">${cards}</div>`);
+}
+
+// ---- first-time visitor quick capture ----
+let _visitorSeq=0;
+function genMemberId(){
+  let max=0;
+  members.forEach(m=>{ const mt=/^KG-(\d+)$/.exec(m.id||''); if(mt) max=Math.max(max,+mt[1]); });
+  _visitorSeq++;
+  return 'KG-'+String(max+_visitorSeq).padStart(3,'0');
+}
+function openVisitor(){
+  ['v-name','v-phone','v-email','v-invited'].forEach(id=>document.getElementById(id).value='');
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('v-date').value=today;
+  document.getElementById('v-nextstep').value='Welcome call';
+  const due=new Date(); due.setDate(due.getDate()+3);
+  document.getElementById('v-due').value=due.toISOString().slice(0,10);
+  document.getElementById('visitor-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('v-name').focus(),60);
+}
+function closeVisitor(){ document.getElementById('visitor-overlay').classList.remove('open'); }
+async function saveVisitor(another){
+  if(!requireAdmin()) return;
+  const name=document.getElementById('v-name').value.trim();
+  if(!name){ showToast('Name is required','error'); return; }
+  const invited=document.getElementById('v-invited').value.trim();
+  const visit=document.getElementById('v-date').value || new Date().toISOString().slice(0,10);
+  const nextStep=document.getElementById('v-nextstep').value.trim()||'Welcome call';
+  const due=document.getElementById('v-due').value||'';
+  const id=genMemberId();
+  const now=new Date().toISOString();
+  const data={ id, name,
+    phone:document.getElementById('v-phone').value.trim(),
+    email:document.getElementById('v-email').value.trim(),
+    ministry:'', status:'Visitor', dob:'', age:null, household:'', address:'',
+    skills:[], joined:visit, attendance:0,
+    nextStep, nextStepDue:due, stageSince:now,
+    notes:[{ts:now, text:'First-time visitor'+(visit?' on '+fmtDate(visit):'')+(invited?' · invited by '+invited:'')}],
+    baptismDate:'', membershipDate:'', weddingAnniversary:'',
+    updatedAt:now };
+  try{
+    await setDoc(doc(membersCol, id), data);
+    logAudit('Added first-time visitor', name);
+    showToast(`Welcome ${name}! Added as a Visitor`,'success');
+    if(another) openVisitor(); else closeVisitor();
+  }catch(e){ showToast('Could not save: '+e.message,'error'); }
+}
+
+// ---- bulk actions ----
+let selectMode=false;
+let selected=new Set();
+function toggleSelectMode(){
+  selectMode=!selectMode;
+  if(!selectMode) selected.clear();
+  else setView('table');
+  document.getElementById('select-toggle').classList.toggle('primary', selectMode);
+  const tw=document.querySelector('#members-page .table-wrap'); if(tw) tw.classList.toggle('select-mode', selectMode);
+  render(); updateBulkBar();
+}
+function toggleSelect(docId){
+  if(selected.has(docId)) selected.delete(docId); else selected.add(docId);
+  render(); updateBulkBar();
+}
+function updateBulkBar(){
+  const bar=document.getElementById('bulk-bar');
+  const show=selectMode && selected.size>0;
+  bar.classList.toggle('show', show);
+  document.getElementById('bulk-count').textContent=`${selected.size} selected`;
+}
+function clearSelection(){ selected.clear(); selectMode=false; document.getElementById('select-toggle').classList.remove('primary'); const tw=document.querySelector('#members-page .table-wrap'); if(tw) tw.classList.remove('select-mode'); render(); updateBulkBar(); }
+async function bulkDelete(){
+  if(!requireAdmin()) return;
+  const ids=[...selected]; if(!ids.length) return;
+  const ok=await confirmDialog(`Archive ${ids.length} selected member${ids.length!==1?'s':''}? You can restore them from the Archived view.`,{title:'Archive members',confirmText:'Archive'});
+  if(!ok) return;
+  let n=0; for(const id of ids){ try{ await setDoc(doc(membersCol,id),{archived:true,archivedAt:new Date().toISOString(),updatedAt:new Date().toISOString()},{merge:true}); n++; }catch(e){} }
+  logAudit('Bulk archived members', n+' members'); showToast(`${n} member${n!==1?'s':''} archived`,'success'); clearSelection();
+}
+async function bulkSetStatus(){
+  if(!requireAdmin()) return;
+  const ids=[...selected]; if(!ids.length) return;
+  const status=document.getElementById('bulk-status').value;
+  let n=0; for(const id of ids){ try{ await setDoc(doc(membersCol,id),{status, updatedAt:new Date().toISOString()},{merge:true}); n++; }catch(e){} }
+  logAudit('Bulk status change', n+' members → '+status); showToast(`${n} set to ${status}`,'success'); clearSelection();
+}
+
+// ---- auth + role enforcement ----
+let currentUser=null;
+let loggedInUser=null;
+function isAdmin(){ return currentRole==='admin'||currentRole==='superadmin'; }
+function isSuperAdmin(){ return currentRole==='superadmin'; }
+function requireAdmin(){
+  if(!isAdmin()){ showToast('Admin access required','error'); return false; }
+  return true;
+}
+function applyRoleVisibility(){
+  // Hide admin-only elements for readonly
+  document.querySelectorAll('.admin-only').forEach(el=>{
+    el.style.display=isAdmin()?'':'none';
+  });
+  // Hide Access nav for non-superadmin
+  const accessNav=document.getElementById('nav-access');
+  if(accessNav) accessNav.style.display=isSuperAdmin()?'':'none';
+  // Update top-right user avatar
+  const wrap=document.getElementById('user-avatar-wrap');
+  const btn=document.getElementById('user-avatar-btn');
+  const ddAv=document.getElementById('user-dropdown-av');
+  const ddName=document.getElementById('user-dropdown-name');
+  const ddRole=document.getElementById('user-dropdown-role');
+  if(loggedInUser && wrap){
+    const rc=loggedInUser.role==='superadmin'?'sa':loggedInUser.role==='admin'?'ad':'ro';
+    const rl=loggedInUser.role==='superadmin'?'Super Admin':loggedInUser.role==='admin'?'Admin':'Read Only';
+    const initials=(loggedInUser.display||loggedInUser.username).slice(0,2).toUpperCase();
+    btn.className='user-avatar-btn '+rc;
+    btn.textContent=initials;
+    ddAv.className='user-dropdown-av '+rc;
+    ddAv.textContent=initials;
+    ddName.textContent=loggedInUser.display||loggedInUser.username;
+    ddRole.textContent=rl;
+    wrap.style.display='block';
+    const ddAccess=document.getElementById('user-dd-access');
+    if(ddAccess) ddAccess.style.display=isSuperAdmin()?'flex':'none';
+  } else if(wrap){
+    wrap.style.display='none';
+  }
+}
+
+function handleLogin(){
+  const uname=document.getElementById('login-username').value.trim();
+  const pwd=document.getElementById('login-password').value;
+  const errEl=document.getElementById('login-error');
+  if(!uname||!pwd){ errEl.textContent='Please enter username and password.'; return; }
+  const users=getAccessUsers();
+  const match=users.find(u=>u.username.toLowerCase()===uname.toLowerCase()&&u.password===pwd);
+  if(!match){ errEl.textContent='Invalid username or password.'; return; }
+  errEl.textContent='';
+  loggedInUser=match;
+  currentRole=match.role;
+  currentUser={email:match.username, uid:match.id};
+  sessionStorage.setItem('kg_session',JSON.stringify({id:match.id,username:match.username,role:match.role}));
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app-layout').style.display='flex';
+  document.getElementById('mobile-nav').style.display='';
+  applyRoleVisibility();
+  showPage('overview');
+}
+
+function handleLogout(){
+  sessionStorage.removeItem('kg_session');
+  loggedInUser=null;
+  currentRole='readonly';
+  currentUser=null;
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app-layout').style.display='none';
+  document.getElementById('mobile-nav').style.display='none';
+  document.getElementById('login-form').reset();
+  document.getElementById('login-error').textContent='';
+  const wrap=document.getElementById('user-avatar-wrap');
+  if(wrap) wrap.style.display='none';
+  const dd=document.getElementById('user-dropdown');
+  if(dd) dd.classList.remove('open');
+}
+
+function restoreSession(){
+  try{
+    const s=JSON.parse(sessionStorage.getItem('kg_session'));
+    if(!s) return false;
+    const users=getAccessUsers();
+    const match=users.find(u=>u.id===s.id&&u.username===s.username);
+    if(!match) return false;
+    loggedInUser=match;
+    currentRole=match.role;
+    currentUser={email:match.username, uid:match.id};
+    return true;
+  }catch(e){ return false; }
+}
+function logAudit(action, detail){
+  try{
+    const id=Date.now()+'_'+Math.random().toString(36).slice(2,7);
+    const email=loggedInUser?loggedInUser.username:'unknown';
+    const uid=loggedInUser?loggedInUser.id:'';
+    setDoc(doc(auditCol,id),{ ts:new Date().toISOString(), email, uid, action, detail:detail||'' });
+  }catch(e){}
+}
+
+// ---- audit log viewer ----
+async function loadAuditLog(){
+  const host=document.getElementById('audit-list'); if(!host) return;
+  host.innerHTML='<div class="dash-empty">Loading…</div>';
+  try{
+    const snap=await getDocs(query(auditCol, orderBy('ts','desc'), limit(200)));
+    const rows=snap.docs.map(d=>d.data());
+    host.innerHTML=rows.length?rows.map(r=>`
+      <div class="dash-item" style="cursor:default">
+        <div class="dash-item-main"><div class="dash-item-name">${escapeHtml(r.action)}</div><div class="dash-item-sub">${escapeHtml(r.detail||'')}</div></div>
+        <div class="dash-item-tag" style="color:var(--slate-light);text-align:right;font-weight:500;">${escapeHtml(r.email||'')}<br><span style="font-size:.66rem;">${fmtNoteDate(r.ts)}</span></div>
+      </div>`).join(''):'<div class="dash-empty">No activity logged yet.</div>';
+  }catch(e){ host.innerHTML='<div class="dash-empty">Could not load activity.</div>'; }
+}
+
+// ---- saved filter views ----
+function loadSavedFilters(){ try{ return JSON.parse(localStorage.getItem('kg-saved-filters')||'[]'); }catch(e){ return []; } }
+function persistSavedFilters(a){ try{ localStorage.setItem('kg-saved-filters', JSON.stringify(a)); }catch(e){} }
+function renderSavedFilterOptions(){
+  const sel=document.getElementById('saved-filter-select'); if(!sel) return;
+  const arr=loadSavedFilters();
+  sel.innerHTML='<option value="">Saved views…</option>'+arr.map((f,i)=>`<option value="${i}">${escapeHtml(f.name)}</option>`).join('')+(arr.length?'<option value="__del">✕ Delete a view…</option>':'');
+}
+function saveCurrentFilter(){
+  const name=prompt('Name this view (saves the current filter + search):'); if(!name) return;
+  const arr=loadSavedFilters();
+  arr.push({name:name.trim(), filter, search:document.getElementById('search').value});
+  persistSavedFilters(arr); renderSavedFilterOptions(); showToast('View saved','success');
+}
+function applySavedFilter(v){
+  const sel=document.getElementById('saved-filter-select');
+  if(v==='') return;
+  const arr=loadSavedFilters();
+  if(v==='__del'){
+    if(sel) sel.value='';
+    if(!arr.length) return;
+    const name=prompt('Type the exact name of the view to delete:'); if(!name) return;
+    const idx=arr.findIndex(f=>f.name===name.trim());
+    if(idx<0){ showToast('No view by that name','error'); return; }
+    arr.splice(idx,1); persistSavedFilters(arr); renderSavedFilterOptions(); showToast('View deleted','success'); return;
+  }
+  const f=arr[+v]; if(!f) return;
+  filter=f.filter||'All';
+  document.getElementById('search').value=f.search||'';
+  document.querySelectorAll('.chip[data-f]').forEach(b=>b.classList.toggle('active', b.dataset.f===filter));
+  render();
+  if(sel) sel.value='';
+}
+
+// ════════ ACCESS MANAGEMENT ════════
+const ACCESS_KEY = 'kg_access_users';
+function getAccessUsers(){
+  try{ return JSON.parse(localStorage.getItem(ACCESS_KEY))||[]; }catch(e){ return []; }
+}
+function persistAccessUsers(arr){ localStorage.setItem(ACCESS_KEY, JSON.stringify(arr)); }
+
+// Seed defaults if empty
+(function seedDefaults(){
+  const u=getAccessUsers();
+  if(u.length) return;
+  const now=new Date().toISOString();
+  persistAccessUsers([
+    {id:'1', username:'readonly', display:'Read Only User', password:'readonly123', role:'readonly', created:now},
+    {id:'2', username:'admin', display:'Admin User', password:'admin1234', role:'admin', created:now},
+    {id:'3', username:'superadmin', display:'Super Admin', password:'super12345', role:'superadmin', created:now}
+  ]);
+})();
+
+function renderAccessPage(){
+  const users=getAccessUsers();
+  const tb=document.getElementById('access-tbody');
+  const ct=document.getElementById('access-count');
+  if(ct) ct.textContent=users.length+' account'+(users.length!==1?'s':'');
+  if(!tb) return;
+  if(!users.length){ tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--slate);padding:2rem;">No login accounts yet.</td></tr>'; return; }
+  tb.innerHTML=users.map(u=>{
+    const roleClass=u.role==='superadmin'?'superadmin':u.role==='admin'?'admin':'readonly';
+    const roleLabel=u.role==='superadmin'?'Super Admin':u.role==='admin'?'Admin':'Read Only';
+    const d=u.created?new Date(u.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'-';
+    return `<tr>
+      <td style="font-weight:600;">${escapeHtml(u.username)}</td>
+      <td>${escapeHtml(u.display||'-')}</td>
+      <td><span class="access-role-badge ${roleClass}">${roleLabel}</span></td>
+      <td style="color:var(--text-secondary);font-size:.8rem;">${d}</td>
+      <td style="text-align:right;">
+        <button class="top-btn" style="padding:.3rem .7rem;font-size:.74rem;margin-right:4px;" onclick="editAccessUser('${u.id}')">Edit</button>
+        <button class="top-btn" style="padding:.3rem .7rem;font-size:.74rem;color:var(--red);" onclick="deleteAccessUser('${u.id}')">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function saveAccessUser(){
+  const uname=document.getElementById('acc-username').value.trim();
+  const display=document.getElementById('acc-display').value.trim();
+  const pwd=document.getElementById('acc-password').value;
+  const role=document.getElementById('acc-role').value;
+  const editId=document.getElementById('acc-edit-id').value;
+  if(!uname||!pwd||pwd.length<6) return showToast('Username & password (min 6 chars) required','error');
+  const users=getAccessUsers();
+  // Check duplicate username
+  const dup=users.find(u=>u.username.toLowerCase()===uname.toLowerCase()&&u.id!==editId);
+  if(dup) return showToast('Username already exists','error');
+  if(editId){
+    const idx=users.findIndex(u=>u.id===editId);
+    if(idx>=0){ users[idx].username=uname; users[idx].display=display; users[idx].password=pwd; users[idx].role=role; }
+  } else {
+    users.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,6), username:uname, display:display, password:pwd, role:role, created:new Date().toISOString()});
+  }
+  persistAccessUsers(users);
+  resetAccessForm();
+  renderAccessPage();
+  showToast(editId?'User updated':'User added','success');
+}
+
+function editAccessUser(id){
+  const users=getAccessUsers();
+  const u=users.find(x=>x.id===id); if(!u) return;
+  document.getElementById('acc-username').value=u.username;
+  document.getElementById('acc-display').value=u.display||'';
+  document.getElementById('acc-password').value=u.password;
+  document.getElementById('acc-role').value=u.role;
+  document.getElementById('acc-edit-id').value=u.id;
+  document.getElementById('access-form-title').textContent='Edit Login';
+}
+
+function deleteAccessUser(id){
+  if(!confirm('Delete this login account?')) return;
+  const users=getAccessUsers().filter(u=>u.id!==id);
+  persistAccessUsers(users);
+  renderAccessPage();
+  showToast('User deleted','success');
+}
+
+function resetAccessForm(){
+  document.getElementById('access-form').reset();
+  document.getElementById('acc-edit-id').value='';
+  document.getElementById('access-form-title').textContent='Add Login';
+}
+
+function toggleAccPwd(){
+  const inp=document.getElementById('acc-password');
+  inp.type=inp.type==='password'?'text':'password';
+}
+
+// ---- expose new globals ----
+Object.assign(window, {
+  renderOverview, renderVolunteers, renderSchedules, addSchedule, deleteSchedule,
+  handleCSVImport, openGroupMessage, closeGroupMessage, copyText,
+  addMemberNote, deleteMemberNote, editAttRecord,
+  toggleSelectMode, toggleSelect, clearSelection, bulkDelete, bulkSetStatus,
+  confirmDialog,
+  toggleMarkGroup, toggleHousehold,
+  renderAssimilation, advanceStage, saveNextStep,
+  addPrayer, deletePrayer, togglePrayerAnswered, setPrayerKind,
+  openVisitor, closeVisitor, saveVisitor,
+  setTrendWeeks, setTrendEvent, setRecEventFilter,
+  renderReports, generateMonthlyPDF, generateMemberCardsPDF,
+  restoreMember, permanentDelete, loadAuditLog,
+  saveCurrentFilter, applySavedFilter,
+  renderAccessPage, saveAccessUser, editAccessUser, deleteAccessUser, resetAccessForm, toggleAccPwd,
+  handleLogin, handleLogout, toggleLoginPwd, toggleUserDropdown
+});
+
+function toggleLoginPwd(){
+  const inp=document.getElementById('login-password');
+  inp.type=inp.type==='password'?'text':'password';
+}
+
+function toggleUserDropdown(){
+  const dd=document.getElementById('user-dropdown');
+  if(dd) dd.classList.toggle('open');
+}
+// Close dropdown when clicking outside
+document.addEventListener('click',function(e){
+  const wrap=document.getElementById('user-avatar-wrap');
+  const dd=document.getElementById('user-dropdown');
+  if(wrap && dd && !wrap.contains(e.target)) dd.classList.remove('open');
+});
+
+// ---- init: restore session or show login ----
+renderSavedFilterOptions();
+if(restoreSession()){
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app-layout').style.display='flex';
+  applyRoleVisibility();
+  showPage('overview');
+} else {
+  document.getElementById('app-layout').style.display='none';
+  document.getElementById('mobile-nav').style.display='none';
+}
+
 </script>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav" id="mobile-nav">
+  <button class="mnav-item active" id="mnav-overview" onclick="showPage('overview')">
+    <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M3 10l7-7 7 7M5 8.5V17h10V8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Home</span>
+  </button>
+  <button class="mnav-item" id="mnav-members" onclick="showPage('members')">
+    <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM5 16a7 7 0 1114 0H5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span>Members</span>
+  </button>
+  <button class="mnav-item add admin-only" onclick="openModal()" aria-label="Add member">
+    <div class="mnav-add-circle">
+      <svg width="16" height="16" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#0D0F14" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </div>
+    <span>Add</span>
+  </button>
+  <button class="mnav-item" id="mnav-attendance" onclick="showPage('attendance')">
+    <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M17 20H3a2 2 0 01-2-2V6l4-4h12a2 2 0 012 2v14a2 2 0 01-2 2z" stroke="currentColor" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span>Attend</span>
+  </button>
+  <button class="mnav-item" id="mnav-theme" onclick="toggleTheme()" aria-label="Toggle theme">
+    <svg id="mnav-theme-icon" width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M10 1a9 9 0 109 9 7 7 0 01-9-9z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span id="mnav-theme-label">Theme</span>
+  </button>
+</nav>
+
 </body>
 </html>
