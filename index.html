@@ -833,7 +833,7 @@ tbody td {
 @media (max-width: 768px) {
   .sidebar { display: none; }
   .summary-row { grid-template-columns: repeat(2, 1fr); }
-  .topbar { padding: 0.75rem 1rem; }
+  .topbar { padding: 0.75rem 3.5rem 0.75rem 1rem; }
   .filters, .content { padding-left: 1rem; padding-right: 1rem; }
   .expanded-content { grid-template-columns: 1fr 1fr; }
 }
@@ -1231,7 +1231,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 .bulk-btn.danger{color:var(--red);border-color:rgba(248,113,113,.4);}
 .bulk-btn.danger:hover{background:var(--red-bg);}
 .bulk-btn.ghost{border:none;color:var(--text-secondary);}
-@media (max-width:768px){ .bulk-bar{bottom:5.5rem;flex-wrap:wrap;min-width:0;width:92vw;} }
+@media (max-width:768px){ .bulk-bar{display:none !important;} }
 
 /* select mode checkbox in member cell */
 .sel-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--border-strong);display:none;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;cursor:pointer;color:transparent;}
