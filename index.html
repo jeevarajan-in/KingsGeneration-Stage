@@ -1197,8 +1197,9 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 /* ════════════════════════════════════════════
    ✦ DASHBOARD / VOLUNTEERS / SCHEDULES / BULK / NOTES
    ════════════════════════════════════════════ */
-.ov-greeting{font-family:'Lora',serif;font-size:1.4rem;font-weight:600;color:var(--text-primary);margin-bottom:1.25rem;}
-.ov-greeting span{color:var(--gold);}
+.ov-greeting{font-family:'Lora',serif;font-size:1.15rem;font-weight:400;color:var(--text-primary);letter-spacing:0.01em;}
+.ov-greeting .greet-dash{color:var(--text-primary);margin:0 0.35em;font-weight:300;}
+.ov-greeting span{color:var(--gold);font-weight:600;}
 .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
 .dash-span-2{grid-column:1/-1;}
 .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow);}
@@ -1816,7 +1817,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 <div class="login-screen" id="login-screen">
   <div class="login-card">
     <img class="login-logo" src="KG_Logo.png" alt="Kings Generation">
-    <div class="login-sub">Member Portal Login</div>
+    <div class="login-sub">Portal Login</div>
     <form id="login-form" onsubmit="event.preventDefault();handleLogin()">
       <div class="login-field">
         <label>Username</label>
@@ -2138,7 +2139,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
   <div class="topbar">
     <div class="page-title">Dashboard</div>
     <div style="flex:1"></div>
-    <div id="ov-greeting" class="ov-greeting" style="font-size:.85rem;font-family:inherit;color:var(--text-secondary);"></div>
+    <div id="ov-greeting" class="ov-greeting"></div>
   </div>
   <div class="content" style="padding-top:1.5rem;">
 
@@ -4497,7 +4498,7 @@ function renderOverview(){
 
   // Greeting in topbar
   const g = document.getElementById('ov-greeting');
-  if(g) g.textContent = greet + ', ' + (loggedInUser?.display||loggedInUser?.username||'Pastor') + ' 👋';
+  if(g) g.innerHTML = greet + '<span class="greet-dash"> — </span><span>Kings Generation</span>';
 
   // ── Member growth (this month vs last month) ──
   const now = new Date();
