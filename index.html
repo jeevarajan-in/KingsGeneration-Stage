@@ -138,13 +138,13 @@ body {
 }
 
 .logo-area {
-  padding: 1.75rem 1.5rem 1.5rem;
+  padding: 1.25rem 1.5rem 1rem;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .logo-cross {
-  width: 120px; height: 120px;
-  margin-bottom: -15px;
+  width: 100px; height: 100px;
+  margin-bottom: -10px;
   object-fit: contain;
   mix-blend-mode: lighten;
 }
@@ -166,7 +166,7 @@ body {
   margin-top: 3px;
 }
 
-.nav { padding: 1rem 0.75rem; flex: 1; overflow-y: auto; }
+.nav { padding: 0.6rem 0.75rem; flex: 1; overflow-y: auto; }
 
 .nav-item {
   display: flex;
@@ -656,7 +656,7 @@ tbody td {
   display: none;
   position: fixed; inset: 0;
   background: rgba(15,31,61,0.4);
-  z-index: 200;
+  z-index: 400;
   align-items: center;
   justify-content: center;
   padding: 1rem;
@@ -1495,6 +1495,320 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 [data-theme="light"] .login-btn{background:linear-gradient(135deg,#B8922E,#9A7A20);color:#fff;}
 [data-theme="light"] .login-hint{color:rgba(0,0,0,.2);}
 </style>
+
+<style>
+/* ── FINANCE LEDGER ── */
+.fin-kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:1.5rem; }
+.fin-kpi {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+  padding:1.25rem 1.4rem; box-shadow:var(--shadow); position:relative;
+  overflow:hidden; transition:box-shadow .18s;
+}
+.fin-kpi:hover { box-shadow:var(--shadow-lg); }
+.fin-kpi-icon { width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px; }
+.fin-kpi-label { font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-light);margin-bottom:5px; }
+.fin-kpi-val { font-family:'Lora',serif;font-size:1.6rem;font-weight:600;line-height:1;margin-bottom:6px; }
+.fin-kpi-sub { font-size:.74rem;color:var(--text-secondary);display:flex;align-items:center;gap:5px; }
+.fin-kpi-bar { position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 var(--r-lg) var(--r-lg); }
+.fin-kpi-trend { font-size:.72rem;font-weight:600;padding:2px 7px;border-radius:20px; }
+.fin-kpi.income-card .fin-kpi-bar { background:var(--green); }
+.fin-kpi.expense-card .fin-kpi-bar { background:var(--red); }
+.fin-kpi.balance-card.surplus .fin-kpi-bar { background:var(--green); }
+.fin-kpi.balance-card.deficit .fin-kpi-bar { background:var(--red); }
+.fin-kpi.entries-card .fin-kpi-bar { background:var(--gold); }
+
+.fin-analytics-row { display:grid;grid-template-columns:1.1fr 1.9fr;gap:14px;margin-bottom:1.5rem; }
+.fin-donut-wrap { position:relative;display:flex;justify-content:center;align-items:center;margin:8px 0 12px; }
+.fin-donut-center { position:absolute;text-align:center;pointer-events:none; }
+.fin-donut-center-val { font-family:'Lora',serif;font-size:1.2rem;font-weight:600;color:var(--text-primary); }
+.fin-donut-center-lbl { font-size:.65rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:.08em; }
+.fin-legend { display:flex;flex-direction:column;gap:7px; }
+.fin-legend-item { display:flex;align-items:center;gap:8px;font-size:.78rem; }
+.fin-legend-dot { width:9px;height:9px;border-radius:50%;flex-shrink:0; }
+.fin-legend-name { flex:1;color:var(--text-secondary); }
+.fin-legend-amt { font-weight:600;color:var(--text-primary); }
+.fin-legend-pct { font-size:.7rem;color:var(--slate-light);min-width:30px;text-align:right; }
+
+.fin-flow-chart { display:flex;align-items:flex-end;gap:5px;height:130px;padding:0 4px;position:relative; }
+.fin-flow-bar-group { flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0; }
+.fin-flow-bars { width:100%;display:flex;gap:2px;align-items:flex-end;height:110px; }
+.fin-flow-bar { flex:1;border-radius:4px 4px 0 0;transition:height .4s ease;cursor:default;min-height:3px; }
+.fin-flow-month { font-size:.63rem;color:var(--slate-light);text-align:center; }
+.fin-chart-legend { display:flex;gap:12px;justify-content:flex-end;margin-bottom:8px; }
+.fin-chart-legend-item { display:flex;align-items:center;gap:5px;font-size:.73rem;color:var(--text-secondary); }
+.fin-chart-legend-dot { width:8px;height:8px;border-radius:2px; }
+
+.fin-search-bar { display:flex;align-items:center;gap:8px;flex:1;max-width:280px;position:relative; }
+.fin-search-bar input { width:100%;padding:.45rem .9rem .45rem 2.1rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.82rem;color:var(--text-primary);background:var(--surface2);outline:none;transition:border-color .15s; }
+.fin-search-bar input:focus { border-color:var(--gold); }
+.fin-search-bar svg { position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--slate-light);pointer-events:none; }
+
+.fin-running-bal { font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:4px; }
+.fin-type-pill { display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:.71rem;font-weight:600; }
+.fin-month-divider td { padding:.4rem 1.5rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-light);background:var(--surface2);border-bottom:1px solid var(--border);border-top:1px solid var(--border); }
+
+.fin-type-toggle { display:flex;background:var(--surface3);border-radius:10px;padding:4px;gap:4px;margin-bottom:12px; }
+.fin-type-btn { flex:1;padding:.5rem;border:none;border-radius:7px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;background:none;color:var(--text-secondary); }
+.fin-type-btn.income.active { background:#16a34a22;color:var(--green); }
+.fin-type-btn.expense.active { background:#dc262622;color:var(--red); }
+.fin-type-btn:not(.active):hover { background:var(--surface2);color:var(--text-primary); }
+
+.fin-amount-input-wrap { position:relative; }
+.fin-amount-input-wrap .fin-currency-prefix { position:absolute;left:11px;top:50%;transform:translateY(-50%);font-weight:700;font-size:.9rem;color:var(--slate-light);pointer-events:none; }
+.fin-amount-input-wrap input { padding-left:1.8rem !important;font-size:1.1rem !important;font-weight:700; }
+
+.fin-empty { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.5rem 2rem;gap:12px; }
+.fin-empty svg { opacity:.25; }
+.fin-empty-title { font-size:.95rem;font-weight:600;color:var(--text-secondary); }
+.fin-empty-sub { font-size:.8rem;color:var(--slate-light);text-align:center; }
+</style>
+
+<style>
+/* ══ CARE CELL MODULE ══ */
+/* KPI banner */
+.cc-kpi-band { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:1.75rem; }
+.cc-kpi-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+  padding:1.2rem 1.4rem; box-shadow:var(--shadow); position:relative; overflow:hidden;
+  transition:box-shadow .18s;
+}
+.cc-kpi-card:hover { box-shadow:var(--shadow-lg); }
+.cc-kpi-icon { width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px; }
+.cc-kpi-label { font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-light);margin-bottom:5px; }
+.cc-kpi-val { font-family:'Lora',serif;font-size:1.9rem;font-weight:600;line-height:1;color:var(--text-primary); }
+.cc-kpi-sub { font-size:.72rem;color:var(--text-secondary);margin-top:5px; }
+.cc-kpi-bar { position:absolute;bottom:0;left:0;right:0;height:3px; }
+
+/* Card grid */
+.cc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:18px; }
+.cc-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+  box-shadow:var(--shadow); overflow:hidden;
+  transition:box-shadow .2s,transform .2s,border-color .2s; cursor:pointer;
+  display:flex; flex-direction:column;
+}
+.cc-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-3px); }
+.cc-card-accent { height:4px; flex-shrink:0; }
+.cc-card-header {
+  padding:1.1rem 1.25rem .9rem;
+  display:flex; align-items:flex-start; gap:12px;
+}
+.cc-card-icon {
+  width:44px; height:44px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.cc-card-name { font-family:'Lora',serif;font-size:1.05rem;font-weight:600;color:var(--text-primary);line-height:1.25; }
+.cc-card-venue { font-size:.73rem;color:var(--text-secondary);margin-top:3px;display:flex;align-items:center;gap:4px; }
+.cc-card-body { padding:.75rem 1.25rem; display:flex; flex-direction:column; gap:0; flex:1; }
+.cc-card-row {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:.8rem; padding:.45rem 0; border-bottom:1px solid var(--border);
+}
+.cc-card-row:last-child { border-bottom:none; }
+.cc-card-row-label { color:var(--text-secondary); display:flex;align-items:center;gap:5px; }
+.cc-card-row-val { font-weight:600; color:var(--text-primary); }
+.cc-card-footer {
+  padding:.8rem 1.25rem; border-top:1px solid var(--border);
+  display:flex; gap:6px; align-items:center; background:var(--surface2);
+}
+.cc-member-stack { display:flex; }
+.cc-member-av {
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.62rem;font-weight:700;border:2px solid var(--surface);
+  margin-left:-7px;flex-shrink:0;
+}
+.cc-member-av:first-child { margin-left:0; }
+.cc-member-more { background:var(--surface3);color:var(--text-secondary); }
+.cc-att-sparkline { display:flex; align-items:flex-end; gap:3px; height:28px; }
+.cc-att-spark-bar { width:6px; border-radius:3px 3px 0 0; min-height:3px; transition:height .3s; }
+.cc-next-badge {
+  display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:600;
+  padding:2px 8px;border-radius:20px;
+}
+
+/* Detail side panel */
+.cc-detail-overlay {
+  display:none;position:fixed;inset:0;z-index:300;
+  background:rgba(5,8,18,.55);backdrop-filter:blur(4px);
+  align-items:stretch;justify-content:flex-end;
+}
+.cc-detail-overlay.open { display:flex; }
+#cc-modal-overlay,#cc-meeting-overlay,#cc-notify-overlay {
+  z-index:500;background:rgba(5,8,18,0.65);backdrop-filter:blur(4px);
+}
+.cc-detail-panel {
+  width:100%;max-width:540px;height:100vh;
+  background:var(--navy2);border-left:1px solid var(--border-strong);
+  display:flex;flex-direction:column;overflow:hidden;
+  animation:ccSlideIn .22s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes ccSlideIn { from{transform:translateX(48px);opacity:0} to{transform:none;opacity:1} }
+.cc-panel-head {
+  background:#10121A;border-bottom:1px solid var(--border);
+  padding:1.2rem 1.5rem;display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.cc-panel-head-accent { width:4px;height:28px;border-radius:2px;flex-shrink:0; }
+.cc-panel-title { font-family:'Lora',serif;font-size:1.15rem;font-weight:600;color:#fff;flex:1;line-height:1.2; }
+.cc-panel-body { flex:1;overflow-y:auto; }
+.cc-panel-section { padding:1.2rem 1.5rem;border-bottom:1px solid var(--border); }
+.cc-panel-section:last-child { border-bottom:none; }
+.cc-panel-section-label {
+  font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--purple);margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+
+/* Stats strip in panel */
+.cc-stat-strip { display:grid;grid-template-columns:repeat(3,1fr);gap:10px; }
+.cc-stat-pill {
+  background:var(--surface3);border-radius:var(--r);padding:.8rem .9rem;text-align:center;
+  border:1px solid var(--border);
+}
+.cc-stat-pill-val { font-family:'Lora',serif;font-size:1.5rem;font-weight:600;color:var(--text-primary); }
+.cc-stat-pill-lbl { font-size:.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.07em;margin-top:2px; }
+
+/* Attendance progress */
+.cc-att-progress-wrap { background:var(--mist);border-radius:4px;height:6px;overflow:hidden;margin-top:5px; }
+.cc-att-progress-bar { height:100%;border-radius:4px;transition:width .5s ease; }
+
+/* Info rows in panel */
+.cc-info-row {
+  display:flex;gap:10px;align-items:flex-start;font-size:.83rem;
+  padding:.4rem 0;border-bottom:1px solid var(--border);
+}
+.cc-info-row:last-child { border-bottom:none; }
+.cc-info-label { color:var(--text-secondary);min-width:90px;flex-shrink:0;font-size:.78rem;padding-top:1px; }
+.cc-info-val { font-weight:600;color:var(--text-primary);flex:1; }
+
+/* Member rows */
+.cc-member-row {
+  display:flex;align-items:center;gap:10px;
+  padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.83rem;
+}
+.cc-member-row:last-child { border-bottom:none; }
+.cc-member-row-name { flex:1;font-weight:500;color:var(--text-primary); }
+.cc-member-row-role { font-size:.68rem;padding:2px 8px;border-radius:20px;font-weight:700;letter-spacing:.03em; }
+.cc-role-leader { background:var(--purple-bg);color:var(--purple); }
+.cc-role-coleader { background:rgba(96,165,250,.13);color:var(--blue); }
+.cc-role-member { background:var(--surface3);color:var(--text-secondary); }
+
+/* Meeting history rows */
+.cc-meeting-card {
+  background:var(--surface3);border-radius:var(--r);padding:.75rem 1rem;
+  margin-bottom:8px;border:1px solid var(--border);
+  display:flex;flex-direction:column;gap:6px;
+}
+.cc-meeting-card:last-child { margin-bottom:0; }
+.cc-meeting-card-top { display:flex;align-items:center;gap:10px; }
+.cc-meeting-date { font-weight:700;font-size:.83rem;color:var(--text-primary); }
+.cc-meeting-topic { font-size:.78rem;color:var(--text-secondary);flex:1; }
+.cc-meeting-att-pill { font-size:.72rem;padding:2px 9px;border-radius:20px;font-weight:700; }
+.cc-meeting-notes { font-size:.74rem;color:var(--slate-light);font-style:italic; }
+
+/* Notify bar */
+.cc-notify-bar {
+  background:linear-gradient(135deg,rgba(167,139,250,.1),rgba(96,165,250,.06));
+  border:1px solid rgba(167,139,250,.25);border-radius:var(--r);
+  padding:1rem 1.1rem;display:flex;align-items:center;gap:12px;
+}
+.cc-notify-icon { width:36px;height:36px;border-radius:10px;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+
+/* Modal tabs */
+.cc-tab-bar { display:flex;background:var(--surface3);border-radius:10px;padding:4px;gap:4px; }
+.cc-tab-btn { flex:1;padding:.5rem;border:none;border-radius:7px;font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;background:none;color:var(--text-secondary); }
+.cc-tab-btn.active { background:var(--surface);color:var(--text-primary);box-shadow:0 1px 4px rgba(0,0,0,.35); }
+
+/* Attendance check items */
+.cc-att-grid { display:flex;flex-direction:column;gap:6px;max-height:270px;overflow-y:auto; }
+.cc-att-item {
+  display:flex;align-items:center;gap:10px;padding:.55rem .8rem;
+  border:1.5px solid var(--border);border-radius:9px;cursor:pointer;
+  transition:all .15s;font-size:.83rem;user-select:none;
+}
+.cc-att-item:hover { border-color:var(--border-strong);background:var(--surface2); }
+.cc-att-item.present { background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.35); }
+.cc-att-item-name { flex:1;font-weight:500; }
+.cc-att-check {
+  width:22px;height:22px;border-radius:6px;border:2px solid var(--border-strong);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .18s;background:var(--surface3);
+}
+.cc-att-check svg { opacity:0;transition:opacity .15s; }
+.cc-att-item.present .cc-att-check { background:var(--green);border-color:var(--green); }
+.cc-att-item.present .cc-att-check svg { opacity:1; }
+
+/* Member assign list */
+.cc-assign-list { display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto; }
+.cc-assign-item {
+  display:flex;align-items:center;gap:10px;padding:.45rem .7rem;
+  border-radius:8px;font-size:.82rem;cursor:pointer;transition:background .12s;
+  border:1px solid transparent;
+}
+.cc-assign-item:hover { background:var(--surface3); }
+.cc-assign-item.selected { background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.25); }
+.cc-assign-item input[type=checkbox] { accent-color:var(--purple);width:15px;height:15px;flex-shrink:0; }
+
+/* Empty state */
+.cc-empty { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;gap:12px; }
+.cc-empty svg { opacity:.18; }
+.cc-empty-title { font-size:.95rem;font-weight:600;color:var(--text-secondary); }
+.cc-empty-sub { font-size:.78rem;color:var(--slate-light);text-align:center;max-width:240px; }
+</style>
+
+<style>
+/* ── DASHBOARD ENHANCEMENTS ── */
+.dash-kpi-band { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:1.5rem; }
+.dash-kpi {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+  padding:1.1rem 1.25rem; box-shadow:var(--shadow); position:relative; overflow:hidden;
+  cursor:default; transition:box-shadow .18s;
+}
+.dash-kpi:hover { box-shadow:var(--shadow-lg); }
+.dash-kpi-icon { width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px; }
+.dash-kpi-label { font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-light);margin-bottom:4px; }
+.dash-kpi-val { font-family:'Lora',serif;font-size:1.75rem;font-weight:600;line-height:1;color:var(--text-primary); }
+.dash-kpi-sub { font-size:.72rem;color:var(--text-secondary);margin-top:5px;display:flex;align-items:center;gap:4px; }
+.dash-kpi-bar { position:absolute;bottom:0;left:0;right:0;height:3px; }
+.dash-kpi-trend { font-size:.7rem;font-weight:700;padding:1px 6px;border-radius:20px; }
+
+/* Sparkline inline bars */
+.dash-sparkline { display:flex;align-items:flex-end;gap:2px;height:24px; }
+.dash-spark-bar { border-radius:2px 2px 0 0;min-width:6px;min-height:2px;transition:height .4s; }
+
+/* Finance mini chart */
+.fin-mini-chart { display:flex;align-items:flex-end;gap:4px;height:56px;padding:4px 0 0; }
+.fin-mini-group { flex:1;display:flex;flex-direction:column;align-items:center;gap:3px; }
+.fin-mini-bars { width:100%;display:flex;gap:2px;align-items:flex-end;height:44px; }
+.fin-mini-bar { flex:1;border-radius:3px 3px 0 0;min-height:3px;transition:height .4s; }
+.fin-mini-lbl { font-size:.58rem;color:var(--slate-light); }
+
+/* Cell meetings list */
+.ov-cell-item {
+  display:flex;align-items:center;gap:10px;padding:.6rem 0;
+  border-bottom:1px solid var(--border);font-size:.82rem;
+}
+.ov-cell-item:last-child { border-bottom:none; }
+.ov-cell-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
+.ov-cell-name { font-weight:600;color:var(--text-primary);flex:1; }
+.ov-cell-day { font-size:.73rem;font-weight:600;padding:2px 8px;border-radius:20px; }
+
+/* Follow-up alert banner */
+.ov-followup-banner {
+  background:linear-gradient(135deg,rgba(248,113,113,.1),rgba(251,191,36,.06));
+  border:1px solid rgba(248,113,113,.25); border-radius:var(--r);
+  padding:.85rem 1.1rem; display:flex; align-items:center; gap:12px; margin-bottom:1.5rem;
+  cursor:pointer; transition:border-color .15s;
+}
+.ov-followup-banner:hover { border-color:rgba(248,113,113,.45); }
+.ov-followup-icon { width:36px;height:36px;border-radius:10px;background:rgba(248,113,113,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.ov-followup-count { font-family:'Lora',serif;font-size:1.6rem;font-weight:600;color:var(--red);line-height:1; }
+
+/* Growth trend badge */
+.growth-up { color:var(--green); }
+.growth-dn { color:var(--red); }
+.growth-flat { color:var(--slate-light); }
+</style>
 </head>
 <body>
 
@@ -1551,15 +1865,13 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
   <div class="logo-area">
     <img class="logo-cross" src="KG_Logo.png" alt="Kings Generation">
     <div class="logo-name">Kings Generation</div>
-    <div class="logo-sub">Member Portal</div>
   </div>
   <nav class="nav">
-    <div class="nav-section">Home</div>
+    <div class="nav-section">Member Directory</div>
     <button class="nav-item" id="nav-overview" onclick="showPage('overview')">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M3 10l7-7 7 7M5 8.5V17h10V8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Dashboard
     </button>
-    <div class="nav-section">Directory</div>
     <button class="nav-item active" id="nav-members" onclick="showPage('members')">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM5 16a7 7 0 1114 0H5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       Members
@@ -1568,16 +1880,24 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M17 20H3a2 2 0 01-2-2V6l4-4h12a2 2 0 012 2v14a2 2 0 01-2 2z" stroke="currentColor" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       Attendance
     </button>
+    <button class="nav-item" id="nav-reports" onclick="showPage('reports')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M5 2h7l4 4v12a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 2v4h4M7 11h6M7 14h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Reports &amp; PDF
+    </button>
     <div class="nav-section">Care</div>
+    <button class="nav-item admin-only" id="nav-carecell" onclick="showPage('carecell')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M10 2a4 4 0 100 8 4 4 0 000-8zM4 14c0-2.5 2.7-4 6-4s6 1.5 6 4v1H4v-1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M16 7a2 2 0 110 4M18 14c0-1.5-1-2.5-2-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Care Cells
+    </button>
     <button class="nav-item" id="nav-assimilation" onclick="showPage('assimilation')">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M3 16c0-3 2.5-4.5 4-4.5s4 1.5 4 4.5M9 6.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM13 11l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Assimilation
     </button>
 
-    <div class="nav-section">Reports</div>
-    <button class="nav-item" id="nav-reports" onclick="showPage('reports')">
-      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M5 2h7l4 4v12a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 2v4h4M7 11h6M7 14h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      Reports &amp; PDF
+    <div class="nav-section">Finance</div>
+    <button class="nav-item admin-only" id="nav-finance" onclick="showPage('finance')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 9h16M6 13h2M10 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Finance Ledger
     </button>
   </nav>
   <div class="sidebar-bottom">
@@ -1818,24 +2138,31 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
   <div class="topbar">
     <div class="page-title">Dashboard</div>
     <div style="flex:1"></div>
-    <button class="top-btn" onclick="openMarkAttendance()">
-      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M6 8l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/></svg>
-      Mark Attendance
-    </button>
-    <button class="top-btn admin-only" onclick="openVisitor()">
-      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M7 9c1.7 0 3-1.3 3-3S8.7 3 7 3 4 4.3 4 6s1.3 3 3 3zM2 14c0-2.2 2.2-3.5 5-3.5M12 10v4M10 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Welcome Visitor
-    </button>
-    <button class="top-btn primary admin-only" onclick="openModal()">
-      <svg width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-      Add Member
-    </button>
+    <div id="ov-greeting" class="ov-greeting" style="font-size:.85rem;font-family:inherit;color:var(--text-secondary);"></div>
   </div>
   <div class="content" style="padding-top:1.5rem;">
-    <div id="ov-greeting" class="ov-greeting"></div>
-    <div id="ov-stats" class="summary-row"></div>
-    <div class="dash-grid">
-      <div class="dash-card dash-span-2">
+
+    <!-- Overdue follow-up alert banner (hidden when 0) -->
+    <div id="ov-followup-banner" style="display:none;" class="ov-followup-banner" onclick="showPage('members')">
+      <div class="ov-followup-icon">
+        <svg width="18" height="18" fill="none" viewBox="0 0 20 20"><path d="M10 3a7 7 0 100 14A7 7 0 0010 3z" stroke="#F87171" stroke-width="1.6"/><path d="M10 7v4M10 13h.01" stroke="#F87171" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <span class="ov-followup-count" id="ov-followup-count">0</span>
+          <span style="font-size:.85rem;font-weight:600;color:var(--red);">members need follow-up</span>
+        </div>
+        <div style="font-size:.74rem;color:var(--text-secondary);margin-top:2px;">Overdue or stalled in the assimilation pipeline — click to view</div>
+      </div>
+      <div style="font-size:.78rem;font-weight:600;color:var(--red);white-space:nowrap;">View Members →</div>
+    </div>
+
+    <!-- KPI Band -->
+    <div class="dash-kpi-band" id="ov-kpi-band"></div>
+
+    <!-- Row 1: Attendance Trend (wide) + Care Cell Meetings -->
+    <div class="dash-grid" style="grid-template-columns:2fr 1fr;margin-bottom:1.25rem;">
+      <div class="dash-card">
         <div class="dash-card-head" style="flex-wrap:wrap;gap:8px;align-items:center;">
           <div class="dash-card-title">Attendance Trend</div>
           <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;">
@@ -1851,17 +2178,35 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
         </div>
         <div id="ov-trend"></div>
       </div>
-    </div>
-    <div class="dash-grid">
       <div class="dash-card">
-        <div class="dash-card-head"><div class="dash-card-title">🗓 Reach Out This Week</div></div>
+        <div class="dash-card-head">
+          <div class="dash-card-title">Care Cell Meetings</div>
+          <div class="dash-card-sub" style="cursor:pointer;color:var(--purple);" onclick="showPage('carecell')">View all →</div>
+        </div>
+        <div id="ov-cell-meetings" class="dash-list"></div>
+      </div>
+    </div>
+
+    <!-- Row 2: Finance Snapshot + Reach Out + Upcoming Dates -->
+    <div class="dash-grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:1.25rem;">
+      <div class="dash-card">
+        <div class="dash-card-head">
+          <div class="dash-card-title">Finance Snapshot</div>
+          <div class="dash-card-sub" id="ov-fin-month" style="cursor:pointer;color:var(--gold);" onclick="showPage('finance')">View →</div>
+        </div>
+        <div id="ov-finance-snap"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">Reach Out This Week</div></div>
         <div id="ov-reachout" class="dash-list"></div>
       </div>
-            <div class="dash-card">
-        <div class="dash-card-head"><div class="dash-card-title">🎂 Upcoming Dates</div><div class="dash-card-sub">next 45 days</div></div>
+      <div class="dash-card">
+        <div class="dash-card-head"><div class="dash-card-title">Upcoming Dates</div><div class="dash-card-sub">next 45 days</div></div>
         <div id="ov-birthdays" class="dash-list"></div>
       </div>
     </div>
+
+    <!-- Row 3: Pipeline + Recent Services -->
     <div class="dash-grid">
       <div class="dash-card">
         <div class="dash-card-head"><div class="dash-card-title">Assimilation Pipeline</div><div class="dash-card-sub" style="cursor:pointer;color:var(--gold)" onclick="showPage('assimilation')">Open →</div></div>
@@ -1872,6 +2217,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
         <div id="ov-recent" class="dash-list"></div>
       </div>
     </div>
+
     <div id="followup-section"></div>
   </div>
 </div>
@@ -2028,6 +2374,365 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
           </table>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINANCE LEDGER PAGE -->
+<div id="finance-page" class="main" style="display:none;flex-direction:column;min-width:0;">
+  <div class="topbar">
+    <div class="page-title">Finance Ledger</div>
+    <div style="flex:1"></div>
+    <div class="fin-search-bar">
+      <svg width="13" height="13" fill="none" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M14 14l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" id="fin-search" placeholder="Search description, category..." oninput="renderFinance()">
+    </div>
+    <select id="fin-year-filter" class="trend-select" onchange="renderFinance()" style="font-size:.82rem;padding:.45rem .8rem;"></select>
+    <select id="fin-month-filter" class="trend-select" onchange="renderFinance()" style="font-size:.82rem;padding:.45rem .8rem;">
+      <option value="">All Months</option>
+      <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+      <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+      <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+      <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+    </select>
+    <button class="top-btn admin-only" onclick="exportFinanceCSV()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Export
+    </button>
+    <button class="top-btn primary admin-only" onclick="openFinanceModal()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      Add Entry
+    </button>
+  </div>
+  <div class="content" style="padding-top:1.5rem;">
+    <div class="fin-kpi-grid" id="fin-kpi-grid"></div>
+    <div class="fin-analytics-row">
+      <div class="dash-card" style="min-width:0;">
+        <div class="dash-card-head">
+          <div class="dash-card-title">Expense Breakdown</div>
+          <div class="dash-card-sub" id="fin-donut-sub"></div>
+        </div>
+        <div class="fin-donut-wrap">
+          <svg id="fin-donut-svg" viewBox="0 0 160 160" width="150" height="150"></svg>
+          <div class="fin-donut-center">
+            <div class="fin-donut-center-val" id="fin-donut-total">0</div>
+            <div class="fin-donut-center-lbl">Expenses</div>
+          </div>
+        </div>
+        <div class="fin-legend" id="fin-donut-legend"></div>
+      </div>
+      <div class="dash-card" style="min-width:0;">
+        <div class="dash-card-head" style="flex-wrap:wrap;gap:6px;">
+          <div>
+            <div class="dash-card-title">Monthly Cash Flow</div>
+            <div class="dash-card-sub" id="fin-flow-sub"></div>
+          </div>
+          <div style="margin-left:auto;">
+            <div class="fin-chart-legend">
+              <div class="fin-chart-legend-item"><div class="fin-chart-legend-dot" style="background:var(--green);"></div>Income</div>
+              <div class="fin-chart-legend-item"><div class="fin-chart-legend-dot" style="background:var(--red);"></div>Expense</div>
+            </div>
+          </div>
+        </div>
+        <div class="fin-flow-chart" id="fin-bar-chart"></div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header" style="flex-wrap:wrap;gap:8px;">
+        <span class="table-header-title" id="fin-ledger-title">Ledger Entries</span>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-left:auto;">
+          <div style="display:flex;gap:4px;">
+            <button class="chip active" data-ft="all" onclick="setFinFilter(this)">All</button>
+            <button class="chip" data-ft="income" onclick="setFinFilter(this)">Income</button>
+            <button class="chip" data-ft="expense" onclick="setFinFilter(this)">Expense</button>
+          </div>
+          <select id="fin-cat-filter" class="trend-select" onchange="renderFinance()" style="font-size:.78rem;padding:.35rem .7rem;">
+            <option value="">All Categories</option>
+            <optgroup label="Income">
+              <option>Tithe</option><option>Offering</option><option>Special Offering</option>
+              <option>Donation</option><option>Event Income</option><option>Other Income</option>
+            </optgroup>
+            <optgroup label="Expense">
+              <option>Rent / Venue</option><option>Utilities</option><option>Sound &amp; Media</option>
+              <option>Stationery</option><option>Outreach</option><option>Welfare</option>
+              <option>Salary</option><option>Travel</option><option>Maintenance</option><option>Other Expense</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead><tr>
+          <th style="padding:.65rem 1.2rem .65rem 1.5rem;text-align:left;font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);background:#141720;border-bottom:1px solid var(--border);white-space:nowrap;">Date</th>
+          <th style="padding:.65rem 1.2rem;text-align:left;font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);background:#141720;border-bottom:1px solid var(--border);">Description</th>
+          <th style="padding:.65rem 1.2rem;text-align:left;font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);background:#141720;border-bottom:1px solid var(--border);">Category</th>
+          <th style="padding:.65rem 1.2rem;text-align:right;font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);background:#141720;border-bottom:1px solid var(--border);white-space:nowrap;">Amount</th>
+          <th style="padding:.65rem 1.2rem;text-align:right;font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);background:#141720;border-bottom:1px solid var(--border);white-space:nowrap;">Running Balance</th>
+          <th style="padding:.65rem 1.2rem;text-align:left;font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);background:#141720;border-bottom:1px solid var(--border);">Recorded By</th>
+          <th style="padding:.65rem 1rem;background:#141720;border-bottom:1px solid var(--border);"></th>
+        </tr></thead>
+        <tbody id="fin-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Finance Entry Modal -->
+<div class="overlay" id="fin-overlay" onclick="if(event.target===this)closeFinanceModal()">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-head">
+      <div class="modal-head-title" id="fin-modal-title">New Finance Entry</div>
+      <button class="modal-close" onclick="closeFinanceModal()">
+        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-section" style="padding-bottom:.75rem;">
+      <div class="fin-type-toggle">
+        <button class="fin-type-btn income active" id="fin-btn-income" onclick="setFinType('income')">
+          <svg width="13" height="13" fill="none" viewBox="0 0 16 16" style="vertical-align:middle;margin-right:4px;"><path d="M8 13V3M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Income
+        </button>
+        <button class="fin-type-btn expense" id="fin-btn-expense" onclick="setFinType('expense')">
+          <svg width="13" height="13" fill="none" viewBox="0 0 16 16" style="vertical-align:middle;margin-right:4px;"><path d="M8 3v10M4 9l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Expense
+        </button>
+      </div>
+      <input type="hidden" id="fin-type" value="income">
+      <div class="modal-section-label" style="margin-top:4px;">Entry Details</div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Amount</label>
+        <div class="fin-amount-input-wrap">
+          <span class="fin-currency-prefix">&#8377;</span>
+          <input type="number" id="fin-amount" placeholder="0.00" min="0" step="0.01" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;color:var(--text-primary);background:var(--surface2);outline:none;">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="fin-date" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <select id="fin-category" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+            <optgroup label="Income">
+              <option value="Tithe">Tithe</option><option value="Offering">Offering</option>
+              <option value="Special Offering">Special Offering</option><option value="Donation">Donation</option>
+              <option value="Event Income">Event Income</option><option value="Other Income">Other Income</option>
+            </optgroup>
+            <optgroup label="Expense">
+              <option value="Rent / Venue">Rent / Venue</option><option value="Utilities">Utilities</option>
+              <option value="Sound &amp; Media">Sound &amp; Media</option><option value="Stationery">Stationery</option>
+              <option value="Outreach">Outreach</option><option value="Welfare">Welfare</option>
+              <option value="Salary">Salary</option><option value="Travel">Travel</option>
+              <option value="Maintenance">Maintenance</option><option value="Other Expense">Other Expense</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <input type="text" id="fin-desc" placeholder="e.g. Sunday Offering, Staff Salary..." style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+      </div>
+      <div class="field">
+        <label>Reference / Notes <span style="font-weight:400;color:var(--slate-light);">(optional)</span></label>
+        <input type="text" id="fin-notes" placeholder="Cheque no., invoice ref, donor name..." style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+      </div>
+      <input type="hidden" id="fin-edit-id">
+    </div>
+    <hr class="modal-divider">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeFinanceModal()">Cancel</button>
+      <button class="btn-save" id="fin-save-btn" onclick="saveFinanceEntry()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- CARE CELL PAGE -->
+<div id="carecell-page" class="main" style="display:none;flex-direction:column;min-width:0;">
+  <div class="topbar">
+    <div class="page-title">Care Cells</div>
+    <div style="flex:1"></div>
+    <div class="fin-search-bar">
+      <svg width="13" height="13" fill="none" viewBox="0 0 20 20"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M14 14l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" id="cc-search" placeholder="Search cell, leader, venue..." oninput="renderCareCells()">
+    </div>
+    <button class="top-btn admin-only" onclick="exportCellsCSV()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Export
+    </button>
+    <button class="top-btn primary admin-only" onclick="openCellModal()">
+      <svg width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      New Cell
+    </button>
+  </div>
+  <div class="content" style="padding-top:1.5rem;">
+    <div class="cc-kpi-band" id="cc-kpi-band"></div>
+    <div id="cc-grid" class="cc-grid"></div>
+  </div>
+</div>
+
+<!-- Cell detail side panel -->
+<div class="cc-detail-overlay" id="cc-detail-overlay" onclick="if(event.target===this)closeCellDetail()">
+  <div class="cc-detail-panel" id="cc-detail-panel">
+    <div class="cc-panel-head">
+      <div class="cc-panel-title" id="cc-panel-title">Cell Details</div>
+      <button class="top-btn admin-only" style="padding:.3rem .7rem;font-size:.74rem;" onclick="editCurrentCell()">Edit</button>
+      <button class="modal-close" onclick="closeCellDetail()" style="margin-left:6px;">
+        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="cc-panel-body" id="cc-panel-body"></div>
+  </div>
+</div>
+
+<!-- Add/Edit Cell Modal -->
+<div class="overlay" id="cc-modal-overlay" onclick="if(event.target===this)closeCellModal()">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-head">
+      <div class="modal-head-title" id="cc-modal-title">New Care Cell</div>
+      <button class="modal-close" onclick="closeCellModal()">
+        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="cc-tab-bar" style="margin:1rem 1.5rem 0;">
+      <button class="cc-tab-btn active" id="cc-tab-info" onclick="setCellTab('info')">Cell Info</button>
+      <button class="cc-tab-btn" id="cc-tab-members" onclick="setCellTab('members')">Members</button>
+    </div>
+    <!-- Tab: Info -->
+    <div id="cc-tab-info-body" class="modal-section" style="padding-top:.5rem;">
+      <div class="modal-section-label">Basic Details</div>
+      <div class="field">
+        <label>Cell Name</label>
+        <input type="text" id="cc-name" placeholder="e.g. Hope Cell, Grace Cell..." style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Cell Leader</label>
+          <select id="cc-leader" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;"></select>
+        </div>
+        <div class="field">
+          <label>Co-Leader (optional)</label>
+          <select id="cc-coleader" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;"><option value="">None</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Meeting Day</label>
+          <select id="cc-day" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+            <option>Sunday</option><option>Monday</option><option>Tuesday</option>
+            <option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Meeting Time</label>
+          <input type="time" id="cc-time" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+        </div>
+      </div>
+      <div class="field">
+        <label>Venue / Location</label>
+        <input type="text" id="cc-venue" placeholder="e.g. 12 Nehru St, Anna Nagar or Church Hall" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+      </div>
+      <div class="field">
+        <label>Description / Notes</label>
+        <input type="text" id="cc-desc" placeholder="Any notes about this cell group..." style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+      </div>
+      <input type="hidden" id="cc-edit-id">
+    </div>
+    <!-- Tab: Members -->
+    <div id="cc-tab-members-body" class="modal-section" style="padding-top:.5rem;display:none;">
+      <div class="modal-section-label">Assign Members</div>
+      <div style="position:relative;margin-bottom:8px;">
+        <svg width="13" height="13" fill="none" viewBox="0 0 20 20" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--slate-light);pointer-events:none;"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M14 14l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input type="text" id="cc-member-search" placeholder="Search members..." oninput="renderMemberAssignList()" style="width:100%;padding:.45rem .9rem .45rem 2rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.82rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+      </div>
+      <div class="cc-assign-list" id="cc-assign-list"></div>
+      <div style="margin-top:8px;font-size:.75rem;color:var(--text-secondary);" id="cc-assign-count"></div>
+    </div>
+    <hr class="modal-divider">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeCellModal()">Cancel</button>
+      <button class="btn-save" id="cc-save-btn" onclick="saveCellModal()">Save Cell</button>
+    </div>
+  </div>
+</div>
+
+<!-- Record Meeting Modal -->
+<div class="overlay" id="cc-meeting-overlay" onclick="if(event.target===this)closeMeetingModal()">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-head">
+      <div class="modal-head-title" id="cc-meeting-modal-title">Record Meeting</div>
+      <button class="modal-close" onclick="closeMeetingModal()">
+        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Meeting Details</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="cc-meet-date" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+        </div>
+        <div class="field">
+          <label>Topic / Title</label>
+          <input type="text" id="cc-meet-topic" placeholder="e.g. Faith &amp; Prayer" style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+        </div>
+      </div>
+      <div class="modal-section-label" style="margin-top:8px;">Mark Attendance</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:.75rem;color:var(--text-secondary);" id="cc-att-count">0 present</span>
+        <div style="display:flex;gap:8px;">
+          <button onclick="ccMarkAll(true)" style="border:none;background:none;font-family:inherit;font-size:.74rem;font-weight:600;color:var(--green);cursor:pointer;">All Present</button>
+          <button onclick="ccMarkAll(false)" style="border:none;background:none;font-family:inherit;font-size:.74rem;font-weight:600;color:var(--slate-light);cursor:pointer;">Clear</button>
+        </div>
+      </div>
+      <div class="cc-att-grid" id="cc-att-grid"></div>
+      <div class="field" style="margin-top:12px;">
+        <label>Notes / Report</label>
+        <input type="text" id="cc-meet-notes" placeholder="Prayer requests, decisions, highlights..." style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;">
+      </div>
+      <input type="hidden" id="cc-meet-cell-id">
+      <input type="hidden" id="cc-meet-edit-id">
+    </div>
+    <hr class="modal-divider">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeMeetingModal()">Cancel</button>
+      <button class="btn-save" id="cc-meet-save-btn" onclick="saveMeetingRecord()">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notify Modal -->
+<div class="overlay" id="cc-notify-overlay" onclick="if(event.target===this)closeNotifyModal()">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-head">
+      <div class="modal-head-title">Send Notification</div>
+      <button class="modal-close" onclick="closeNotifyModal()">
+        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Message Details</div>
+      <div class="field">
+        <label>Cell</label>
+        <input type="text" id="cc-notify-cell-name" readonly style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-secondary);background:var(--surface3);outline:none;">
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea id="cc-notify-message" rows="4" placeholder="Type your reminder or announcement..." style="width:100%;padding:.55rem .75rem;border:1px solid var(--border-strong);border-radius:8px;font-family:inherit;font-size:.85rem;color:var(--text-primary);background:var(--surface2);outline:none;resize:vertical;"></textarea>
+      </div>
+      <div id="cc-notify-members-list" style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;margin-top:4px;"></div>
+      <div style="margin-top:8px;font-size:.75rem;color:var(--text-secondary);" id="cc-notify-count"></div>
+    </div>
+    <hr class="modal-divider">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeNotifyModal()">Cancel</button>
+      <button class="top-btn" onclick="sendCellWhatsApp()" style="gap:6px;">
+        <svg width="14" height="14" fill="none" viewBox="0 0 20 20"><path d="M10 2a8 8 0 018 8c0 4.4-3.6 8-8 8a7.9 7.9 0 01-4-.99L2 18l.99-3.9A7.9 7.9 0 012 10 8 8 0 0110 2z" stroke="#4ADE80" stroke-width="1.5"/><path d="M7.5 8.5c.5 1 1.5 2.5 3 3l1-.8c.3-.3.8-.3 1.1 0l1.2 1.2c.3.3.3.8 0 1.1-.5.5-1.2.8-2 .7-2.6-.3-5-2.7-5.3-5.3C6.4 7.6 6.8 6.9 7.3 6.4c.3-.3.8-.3 1.1 0L9.6 7.6c.3.3.3.8 0 1.1L8.8 9.5" stroke="#4ADE80" stroke-width="1.4" stroke-linecap="round"/></svg>
+        WhatsApp
+      </button>
+      <button class="top-btn" onclick="sendCellSMS()" style="gap:6px;">
+        <svg width="14" height="14" fill="none" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v9a1 1 0 01-1 1H7l-4 3V4z" stroke="#60A5FA" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        SMS
+      </button>
     </div>
   </div>
 </div>
@@ -2284,6 +2989,9 @@ const membersCol = collection(db, 'members');
 const attendanceCol = collection(db, 'attendance_records');
 const auditCol = collection(db, 'audit_log');
 const accessCol = collection(db, 'access_users');
+const financeCol = collection(db, 'finance_ledger');
+const careCellsCol = collection(db, 'care_cells');
+const cellMeetingsCol = collection(db, 'cell_meetings');
 
 // App runs in open mode (no sign-in).
 let currentRole = 'admin';
@@ -2992,8 +3700,8 @@ window.toggleTheme=toggleTheme;
 window.ageFromDob=ageFromDob;
 
 // ── Page routing ──
-const PAGES = ['overview','members','attendance','assimilation','reports','access'];
-const NAV_MAP = {overview:'nav-overview', members:'nav-members', attendance:'nav-attendance', assimilation:'nav-assimilation', reports:'nav-reports', access:'nav-access'};
+const PAGES = ['overview','members','attendance','assimilation','reports','access','finance','carecell'];
+const NAV_MAP = {overview:'nav-overview', members:'nav-members', attendance:'nav-attendance', assimilation:'nav-assimilation', reports:'nav-reports', access:'nav-access', finance:'nav-finance', carecell:'nav-carecell'};
 const MNAV_MAP = {overview:'mnav-overview', members:'mnav-members', attendance:'mnav-attendance'};
 let attTierFilter = 'all';
 function showPage(page) {
@@ -3010,6 +3718,8 @@ function showPage(page) {
   else if(page==='attendance') renderAttendance();
   else if(page==='assimilation') renderAssimilation();
 
+  else if(page==='finance') loadFinanceEntries();
+  else if(page==='carecell') loadCareCells();
   else if(page==='reports') renderReports();
   else if(page==='access') renderAccessPage();
   else render();
@@ -3777,26 +4487,200 @@ function setTrendEvent(v){ trendEvent=v; renderTrend(); }
 
 // ---- dashboard ----
 function renderOverview(){
-  const total=live().length;
-  const active=live().filter(m=>m.status==='Active').length;
-  const tracked=live().filter(m=>m._attReal!=null);
-  const avg=tracked.length?Math.round(tracked.reduce((s,m)=>s+m._attReal,0)/tracked.length):(total?Math.round(members.reduce((s,m)=>s+(m.attendance||0),0)/total):0);
-  const hour=new Date().getHours();
-  const greet=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
-  const g=document.getElementById('ov-greeting'); if(g) g.innerHTML=`${greet} — <span>Kings Generation</span>`;
-  const stats=document.getElementById('ov-stats');
-  if(stats) stats.innerHTML=`
-    <div class="stat-card"><div class="stat-card-label">Total Members</div><div class="stat-card-val">${total}</div><div class="stat-card-sub"><span class="stat-dot" style="background:var(--green)"></span>${active} active</div></div>
-    <div class="stat-card"><div class="stat-card-label">Avg Attendance</div><div class="stat-card-val">${avg}%</div><div class="stat-card-sub">from records</div></div>
-    <div class="stat-card"><div class="stat-card-label">Services Logged</div><div class="stat-card-val">${attendanceRecords.length}</div><div class="stat-card-sub">all time</div></div>
-    <div class="stat-card"><div class="stat-card-label">Need Follow-up</div><div class="stat-card-val" style="color:${atRiskList().length?'var(--red)':'var(--text-primary)'}">${atRiskList().length}</div><div class="stat-card-sub">members</div></div>`;
+  const total  = live().length;
+  const active = live().filter(m=>m.status==='Active').length;
+  const tracked= live().filter(m=>m._attReal!=null);
+  const avg    = tracked.length ? Math.round(tracked.reduce((s,m)=>s+m._attReal,0)/tracked.length)
+                                : (total ? Math.round(members.reduce((s,m)=>s+(m.attendance||0),0)/total) : 0);
+  const hour   = new Date().getHours();
+  const greet  = hour<12 ? 'Good morning' : hour<17 ? 'Good afternoon' : 'Good evening';
+
+  // Greeting in topbar
+  const g = document.getElementById('ov-greeting');
+  if(g) g.textContent = greet + ', ' + (loggedInUser?.display||loggedInUser?.username||'Pastor') + ' 👋';
+
+  // ── Member growth (this month vs last month) ──
+  const now = new Date();
+  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth()-1, 1).toISOString().slice(0,10);
+  const thisMonthNew = members.filter(m=>m.joined&&m.joined>=thisMonthStart&&!m.archived).length;
+  const lastMonthNew = members.filter(m=>m.joined&&m.joined>=lastMonthStart&&m.joined<thisMonthStart&&!m.archived).length;
+  const growthDiff = thisMonthNew - lastMonthNew;
+  const growthArrow = growthDiff>0 ? '▲' : growthDiff<0 ? '▼' : '—';
+  const growthCls   = growthDiff>0 ? 'growth-up' : growthDiff<0 ? 'growth-dn' : 'growth-flat';
+
+  // ── Overdue follow-ups ──
+  const overdue = atRiskList ? atRiskList() : [];
+  const banner = document.getElementById('ov-followup-banner');
+  const bannerCount = document.getElementById('ov-followup-count');
+  if(banner){
+    banner.style.display = overdue.length ? 'flex' : 'none';
+    if(bannerCount) bannerCount.textContent = overdue.length;
+  }
+
+  // ── Finance snapshot (current month) ──
+  const finMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const monthName = now.toLocaleString('en-IN',{month:'long',year:'numeric'});
+  const finEl = document.getElementById('ov-fin-month');
+  if(finEl) finEl.textContent = monthName + ' →';
+  const monthFin = financeEntries ? financeEntries.filter(e=>e.date&&e.date.startsWith(finMonth)) : [];
+  const finIncome  = monthFin.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const finExpense = monthFin.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  const finBalance = finIncome - finExpense;
+  const fmtK = n => n>=1000 ? '₹'+(n/1000).toFixed(1)+'k' : '₹'+Math.round(n);
+  // Last 6 months for mini-chart
+  const finSnapEl = document.getElementById('ov-finance-snap');
+  if(finSnapEl){
+    const months6 = [];
+    for(let i=5;i>=0;i--){
+      const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+      const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      const lbl = d.toLocaleString('en-IN',{month:'short'});
+      const inc = financeEntries ? financeEntries.filter(e=>e.date&&e.date.startsWith(key)&&e.type==='income').reduce((s,e)=>s+e.amount,0) : 0;
+      const exp = financeEntries ? financeEntries.filter(e=>e.date&&e.date.startsWith(key)&&e.type==='expense').reduce((s,e)=>s+e.amount,0) : 0;
+      months6.push({lbl, inc, exp});
+    }
+    const maxFin = Math.max(1, ...months6.map(m=>Math.max(m.inc,m.exp)));
+    finSnapEl.innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+        <div>
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);">Income</div>
+          <div style="font-family:'Lora',serif;font-size:1.3rem;font-weight:600;color:var(--green);">${fmtK(finIncome)}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-light);">Expense</div>
+          <div style="font-family:'Lora',serif;font-size:1.3rem;font-weight:600;color:var(--red);">${fmtK(finExpense)}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;border-radius:var(--r);background:${finBalance>=0?'rgba(74,222,128,.08)':'rgba(248,113,113,.08)'};border:1px solid ${finBalance>=0?'rgba(74,222,128,.2)':'rgba(248,113,113,.2)'};margin-bottom:10px;">
+        <span style="font-size:.75rem;color:var(--text-secondary);">Net Balance</span>
+        <span style="font-weight:700;font-size:.9rem;color:${finBalance>=0?'var(--green)':'var(--red)'};">${finBalance<0?'-':''}${fmtK(Math.abs(finBalance))}</span>
+      </div>
+      <div class="fin-mini-chart">
+        ${months6.map(m=>{
+          const ih = Math.max(4,Math.round(m.inc/maxFin*44));
+          const eh = Math.max(4,Math.round(m.exp/maxFin*44));
+          return `<div class="fin-mini-group">
+            <div class="fin-mini-bars">
+              <div class="fin-mini-bar" style="height:${ih}px;background:var(--green);opacity:.8;" title="Income ${fmtK(m.inc)}"></div>
+              <div class="fin-mini-bar" style="height:${eh}px;background:var(--red);opacity:.8;" title="Expense ${fmtK(m.exp)}"></div>
+            </div>
+            <div class="fin-mini-lbl">${m.lbl}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <span style="font-size:.7rem;color:var(--text-secondary);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:var(--green);border-radius:2px;display:inline-block;opacity:.8;"></span>Income</span>
+        <span style="font-size:.7rem;color:var(--text-secondary);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:var(--red);border-radius:2px;display:inline-block;opacity:.8;"></span>Expense</span>
+      </div>`;
+  }
+
+  // ── KPI Band ──
+  const kpiEl = document.getElementById('ov-kpi-band');
+  if(kpiEl){
+    // Member growth sparkline (last 6 months)
+    const spark6 = [];
+    for(let i=5;i>=0;i--){
+      const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+      const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      spark6.push(members.filter(m=>m.joined&&m.joined.startsWith(key)&&!m.archived).length);
+    }
+    const maxSpark = Math.max(1,...spark6);
+    const sparkHTML = spark6.map((v,i)=>{
+      const h = Math.max(3,Math.round(v/maxSpark*22));
+      const isLast = i===5;
+      return `<div class="dash-spark-bar" style="height:${h}px;background:${isLast?'var(--blue)':'rgba(96,165,250,.45)'};flex:1;"></div>`;
+    }).join('');
+
+    kpiEl.innerHTML = `
+      <div class="dash-kpi" style="border-bottom:3px solid var(--purple);">
+        <div class="dash-kpi-icon" style="background:rgba(167,139,250,.13);">
+          <svg width="16" height="16" fill="none" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM5 16a7 7 0 1114 0H5z" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="dash-kpi-label">Total Members</div>
+        <div class="dash-kpi-val" style="color:var(--purple);">${total}</div>
+        <div class="dash-kpi-sub"><span style="color:var(--green);">${active}</span>&nbsp;active members</div>
+      </div>
+      <div class="dash-kpi" style="border-bottom:3px solid var(--blue);">
+        <div class="dash-kpi-icon" style="background:rgba(96,165,250,.13);">
+          <svg width="16" height="16" fill="none" viewBox="0 0 20 20"><path d="M3 16c0-3 2.7-4.5 6-4.5S15 13 15 16M9 3a4 4 0 100 8 4 4 0 000-8zM17 11l2 2 2-2" stroke="#60A5FA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="dash-kpi-label">New This Month</div>
+        <div class="dash-kpi-val" style="color:var(--blue);">${thisMonthNew}</div>
+        <div class="dash-kpi-sub">
+          <span class="${growthCls}">${growthArrow} ${Math.abs(growthDiff)}</span>
+          &nbsp;vs last month
+          <div class="dash-sparkline" style="margin-left:auto;">${sparkHTML}</div>
+        </div>
+      </div>
+      <div class="dash-kpi" style="border-bottom:3px solid var(--gold);">
+        <div class="dash-kpi-icon" style="background:var(--gold-light);">
+          <svg width="16" height="16" fill="none" viewBox="0 0 20 20"><path d="M6 8l2 2 4-4" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="2" width="16" height="16" rx="3" stroke="var(--gold)" stroke-width="1.5"/></svg>
+        </div>
+        <div class="dash-kpi-label">Avg Attendance</div>
+        <div class="dash-kpi-val" style="color:var(--gold);">${avg}%</div>
+        <div class="dash-kpi-sub">${attendanceRecords.length} services recorded</div>
+      </div>
+      <div class="dash-kpi" style="border-bottom:3px solid ${overdue.length?'var(--red)':'var(--green)'}; cursor:${overdue.length?'pointer':'default'};" ${overdue.length?'onclick="showPage(\'members\')"':''}>
+        <div class="dash-kpi-icon" style="background:${overdue.length?'rgba(248,113,113,.13)':'rgba(74,222,128,.13)'};">
+          <svg width="16" height="16" fill="none" viewBox="0 0 20 20"><path d="M10 3a7 7 0 100 14A7 7 0 0010 3z" stroke="${overdue.length?'#F87171':'#4ADE80'}" stroke-width="1.5"/><path d="M10 7v4M10 13h.01" stroke="${overdue.length?'#F87171':'#4ADE80'}" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="dash-kpi-label">Need Follow-up</div>
+        <div class="dash-kpi-val" style="color:${overdue.length?'var(--red)':'var(--green)'};">${overdue.length}</div>
+        <div class="dash-kpi-sub">${overdue.length?'Click to view members':'All caught up!'}</div>
+      </div>`;
+  }
+
   const trend=document.getElementById('ov-trend'); if(trend) renderTrend();
 
-  // reach out this week (nextStepDue within 7 days or overdue)
+  // ── Care Cell Meetings (this week) ──
+  const cellEl = document.getElementById('ov-cell-meetings');
+  if(cellEl){
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const today = new Date().getDay();
+    const CC_COLORS_OV = ['#A78BFA','#60A5FA','#4ADE80','#F472B6','#FB923C','#38BDF8','#FBBF24','#34D399'];
+    if(!careCells || !careCells.length){
+      cellEl.innerHTML = '<div class="dash-empty">No care cells created yet. <span style="color:var(--purple);cursor:pointer;" onclick="showPage(\'carecell\')">Create one →</span></div>';
+    } else {
+      const sorted = [...careCells].sort((a,b)=>{
+        const da = days.indexOf(a.meetingDay||'Sunday');
+        const db = days.indexOf(b.meetingDay||'Sunday');
+        return ((da - today + 7) % 7) - ((db - today + 7) % 7);
+      });
+      cellEl.innerHTML = sorted.slice(0,6).map((cell,idx)=>{
+        const color = CC_COLORS_OV[idx % CC_COLORS_OV.length];
+        const cellDay = days.indexOf(cell.meetingDay||'Sunday');
+        const diff = (cellDay - today + 7) % 7 || 7;
+        const nextDate = new Date(); nextDate.setDate(nextDate.getDate()+diff);
+        const dateStr = nextDate.toLocaleDateString('en-IN',{weekday:'short',day:'2-digit',month:'short'});
+        const isToday = diff === 7 && cellDay === today;
+        const isTomorrow = diff === 1;
+        const urgency = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : dateStr;
+        const urgencyBg = isToday ? 'rgba(248,113,113,.15)' : isTomorrow ? 'rgba(251,191,36,.13)' : color+'18';
+        const urgencyClr = isToday ? 'var(--red)' : isTomorrow ? 'var(--amber)' : color;
+        const memberCount = (cell.memberIds||[]).length;
+        return `<div class="ov-cell-item" onclick="showPage('carecell')" style="cursor:pointer;">
+          <div class="ov-cell-dot" style="background:${color};"></div>
+          <div style="flex:1;min-width:0;">
+            <div class="ov-cell-name">${escapeHtml(cell.name)}</div>
+            <div style="font-size:.72rem;color:var(--text-secondary);">
+              ${escapeHtml(cell.leaderName||'No leader')} · ${memberCount} member${memberCount!==1?'s':''}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+            <span class="ov-cell-day" style="background:${urgencyBg};color:${urgencyClr};">${urgency}</span>
+            ${cell.meetingTime?`<span style="font-size:.68rem;color:var(--slate-light);">${cell.meetingTime}</span>`:''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ── Reach Out This Week ──
   const roEl=document.getElementById('ov-reachout');
   if(roEl){
-    const today=new Date(); today.setHours(0,0,0,0);
-    const weekEnd=new Date(today); weekEnd.setDate(weekEnd.getDate()+7);
+    const today2=new Date(); today2.setHours(0,0,0,0);
+    const weekEnd=new Date(today2); weekEnd.setDate(weekEnd.getDate()+7);
     const reachList=live().filter(m=>{
       if(!m.nextStepDue) return false;
       const d=new Date(m.nextStepDue+'T23:59:59');
@@ -3806,46 +4690,31 @@ function renderOverview(){
       if(aDone!==bDone) return aDone-bDone;
       return a.nextStepDue.localeCompare(b.nextStepDue);
     });
-    roEl.innerHTML=reachList.length?reachList.slice(0,10).map(m=>{
+    roEl.innerHTML=reachList.length?reachList.slice(0,6).map(m=>{
       const dueDate=new Date(m.nextStepDue+'T23:59:59');
-      const overdue=dueDate<new Date();
-      const dLabel=fmtDate(m.nextStepDue);
+      const overdueFlag=dueDate<new Date();
       const done=!!m.nextStepDone;
       const phoneDigits=m.phone?(m.phone+'').replace(/[^0-9]/g,''):'';
-      return `<div class="dash-item ${done?'ro-completed':''}" style="flex-wrap:wrap;gap:6px;" onclick="viewMemberHistory('${m._docId}')">
+      return `<div class="dash-item ${done?'ro-completed':''}" onclick="viewMemberHistory('${m._docId}')">
         <button class="ro-status" onclick="event.stopPropagation();toggleReachOutDone('${m._docId}')" title="${done?'Mark pending':'Mark done'}">
           <span class="ro-check ${done?'done':''}"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${done?'':' style="display:none"'}><path d="M2.5 6l2.5 2.5 4.5-5"/></svg></span>
           <span class="${done?'ro-done':'ro-pending'}">${done?'Done':'Pending'}</span>
         </button>
-        ${avatarHtml(m,34)}
-        <div class="dash-item-main"><div class="dash-item-name">${escapeHtml(m.name)}</div><div class="dash-item-sub">${escapeHtml(m.nextStep||'Follow up')} · ${m.status}</div></div>
-        <div class="dash-item-tag" style="color:${done?'var(--green)':overdue?'var(--red)':'var(--slate-light)'}; font-size:.68rem;">${done?'✓ Done':overdue?'overdue':dLabel}</div>
-        ${!done&&m.phone?`<div style="display:flex;gap:6px;width:100%;padding-left:70px;">
-          <a class="assim-contact-btn" href="tel:${encodeURIComponent(m.phone)}" onclick="event.stopPropagation()" title="Call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
-          <a class="assim-contact-btn whatsapp" href="https://wa.me/${phoneDigits}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp</a>
-        </div>`:``}
+        ${avatarHtml(m,30)}
+        <div class="dash-item-main"><div class="dash-item-name">${escapeHtml(m.name)}</div><div class="dash-item-sub">${escapeHtml(m.nextStep||'Follow up')}</div></div>
+        <div class="dash-item-tag" style="color:${done?'var(--green)':overdueFlag?'var(--red)':'var(--slate-light)'}; font-size:.68rem;">${done?'✓':overdueFlag?'Overdue':fmtDate(m.nextStepDue)}</div>
       </div>`;
     }).join(''):'<div class="dash-empty">No follow-ups due this week.</div>';
   }
 
-  // upcoming dates (next 45 days, all types)
+  // ── Upcoming Dates ──
   const bdays=upcomingDates(45);
   const bEl=document.getElementById('ov-birthdays');
-  if(bEl) bEl.innerHTML=bdays.length?bdays.slice(0,10).map(dateEventItem).join(''):'<div class="dash-empty">No key dates on file yet. Add birthdays or anniversaries.</div>';
+  if(bEl) bEl.innerHTML=bdays.length?bdays.slice(0,6).map(dateEventItem).join(''):'<div class="dash-empty">No key dates on file yet.</div>';
 
-  // followup (full card grid)
   renderFollowUp();
 
-  // open prayer requests
-  const prayers=openPrayerList();
-  const pEl=document.getElementById('ov-prayers');
-  if(pEl) pEl.innerHTML=prayers.length?prayers.slice(0,8).map(({m,p})=>`
-    <div class="dash-item" onclick="viewMemberHistory('${m._docId}')">
-      ${avatarHtml(m,34)}
-      <div class="dash-item-main"><div class="dash-item-name">${m.name}</div><div class="dash-item-sub">${escapeHtml(p.text).slice(0,60)}</div></div>
-    </div>`).join(''):'<div class="dash-empty">No open prayer requests. Add them from a member\u2019s profile.</div>';
-
-  // pipeline snapshot
+  // ── Pipeline snapshot ──
   const pipeEl=document.getElementById('ov-pipeline');
   if(pipeEl){
     const order=[['Visitor','#FBD324'],['New','var(--blue)'],['Active','var(--green)']];
@@ -3855,8 +4724,8 @@ function renderOverview(){
       <div class="pipe-row"><span class="pipe-label">${s}</span><div class="pipe-bar-wrap"><div class="pipe-bar" style="width:${Math.round(counts[i]/max*100)}%;background:${c}"></div></div><span class="pipe-num">${counts[i]}</span></div>`).join('')}</div>`;
   }
 
-  // recent services
-  const recent=[...attendanceRecords].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+  // ── Recent Services ──
+  const recent=[...attendanceRecords].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
   const rEl=document.getElementById('ov-recent');
   if(rEl) rEl.innerHTML=recent.length?recent.map(r=>{ const pct=r.percentage||0; const col=pct>80?'#4ADE80':pct>=30?'#FBD324':'#F87171'; return `
     <div class="dash-item" onclick="showPage('attendance')">
@@ -3864,7 +4733,6 @@ function renderOverview(){
       <div class="dash-item-tag" style="color:${col}">${pct}%</div>
     </div>`;}).join(''):'<div class="dash-empty">No services logged yet.</div>';
 }
-
 // ---- assimilation pipeline ----
 const STAGE_THRESHOLD={Visitor:14, New:30}; // days before a stage is "stale"
 function daysInStage(m){
@@ -4565,6 +5433,874 @@ function toggleAccPwd(){
   inp.type=inp.type==='password'?'text':'password';
 }
 
+
+// ════════ FINANCE LEDGER ════════
+let financeEntries = [];
+let finFilter = 'all';
+
+const FIN_CAT_COLORS = {
+  'Tithe':'#4ADE80','Offering':'#34D399','Special Offering':'#6EE7B7',
+  'Donation':'#A78BFA','Event Income':'#60A5FA','Other Income':'#38BDF8',
+  'Rent / Venue':'#F87171','Utilities':'#FB923C','Sound & Media':'#FBBF24',
+  'Stationery':'#A3E635','Outreach':'#818CF8','Welfare':'#E879F9',
+  'Salary':'#F472B6','Travel':'#94A3B8','Maintenance':'#64748B','Other Expense':'#475569'
+};
+
+function setFinType(type) {
+  document.getElementById('fin-type').value = type;
+  document.getElementById('fin-btn-income').classList.toggle('active', type === 'income');
+  document.getElementById('fin-btn-expense').classList.toggle('active', type === 'expense');
+  const incCats = ['Tithe','Offering','Special Offering','Donation','Event Income','Other Income'];
+  const expCats = ['Rent / Venue','Utilities','Sound & Media','Stationery','Outreach','Welfare','Salary','Travel','Maintenance','Other Expense'];
+  const pool = type === 'income' ? incCats : expCats;
+  const cat = document.getElementById('fin-category');
+  if (!pool.includes(cat.value)) cat.value = pool[0];
+}
+
+function openFinanceModal(id) {
+  document.getElementById('fin-date').value = new Date().toISOString().split('T')[0];
+  if (id) {
+    const e = financeEntries.find(x => x._id === id);
+    if (!e) return;
+    document.getElementById('fin-modal-title').textContent = 'Edit Finance Entry';
+    setFinType(e.type);
+    document.getElementById('fin-date').value = e.date;
+    document.getElementById('fin-desc').value = e.description;
+    document.getElementById('fin-category').value = e.category;
+    document.getElementById('fin-amount').value = e.amount;
+    document.getElementById('fin-notes').value = e.notes || '';
+    document.getElementById('fin-edit-id').value = id;
+  } else {
+    document.getElementById('fin-modal-title').textContent = 'New Finance Entry';
+    setFinType('income');
+    document.getElementById('fin-desc').value = '';
+    document.getElementById('fin-category').value = 'Offering';
+    document.getElementById('fin-amount').value = '';
+    document.getElementById('fin-notes').value = '';
+    document.getElementById('fin-edit-id').value = '';
+  }
+  document.getElementById('fin-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('fin-amount').focus(), 80);
+}
+
+function closeFinanceModal() {
+  document.getElementById('fin-overlay').classList.remove('open');
+}
+
+async function saveFinanceEntry() {
+  if (!requireAdmin()) return;
+  const type = document.getElementById('fin-type').value;
+  const date = document.getElementById('fin-date').value;
+  const description = document.getElementById('fin-desc').value.trim();
+  const category = document.getElementById('fin-category').value;
+  const amount = parseFloat(document.getElementById('fin-amount').value);
+  const notes = document.getElementById('fin-notes').value.trim();
+  const editId = document.getElementById('fin-edit-id').value;
+  if (!date || !description || isNaN(amount) || amount <= 0)
+    return showToast('Date, description and a valid amount are required', 'error');
+  const btn = document.getElementById('fin-save-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  const data = {
+    type, date, description, category, amount, notes,
+    recordedBy: loggedInUser ? loggedInUser.display || loggedInUser.username : 'Unknown',
+    recordedById: loggedInUser ? loggedInUser.id : '',
+    createdAt: editId ? (financeEntries.find(x=>x._id===editId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    const docId = editId || (Date.now() + '_' + Math.random().toString(36).slice(2, 6));
+    await setDoc(doc(financeCol, docId), data);
+    logAudit(editId ? 'Updated finance entry' : 'Added finance entry', description + ' Rs.' + amount);
+    closeFinanceModal();
+    await loadFinanceEntries();
+    showToast(editId ? 'Entry updated' : 'Entry added', 'success');
+  } catch(e) {
+    showToast('Save failed: ' + e.message, 'error');
+  } finally { btn.disabled = false; btn.textContent = 'Save Entry'; }
+}
+
+async function deleteFinanceEntry(id) {
+  if (!requireAdmin()) return;
+  const e = financeEntries.find(x => x._id === id);
+  const ok = await confirmDialog('Delete "' + (e?.description || 'this entry') + '"? This cannot be undone.', {title:'Delete entry', confirmText:'Delete'});
+  if (!ok) return;
+  try {
+    await deleteDoc(doc(financeCol, id));
+    logAudit('Deleted finance entry', e?.description || id);
+    await loadFinanceEntries();
+    showToast('Entry deleted', 'success');
+  } catch(err) { showToast('Delete failed: ' + err.message, 'error'); }
+}
+
+async function loadFinanceEntries() {
+  try {
+    const snap = await getDocs(query(financeCol, orderBy('date', 'desc')));
+    financeEntries = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+  } catch(e) { financeEntries = []; }
+  renderFinance();
+}
+
+function setFinFilter(btn) {
+  document.querySelectorAll('[data-ft]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  finFilter = btn.dataset.ft;
+  renderFinance();
+}
+
+function renderFinance() {
+  const fmtINR = n => String.fromCharCode(8377) + Math.abs(n).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const yearSel = document.getElementById('fin-year-filter');
+  const years = [...new Set(financeEntries.map(e => e.date && e.date.slice(0,4)))].filter(Boolean).sort((a,b)=>b-a);
+  const curYear = new Date().getFullYear().toString();
+  if (!years.includes(curYear)) years.unshift(curYear);
+  const prevYear = yearSel.value;
+  yearSel.innerHTML = years.map(y => '<option value="'+y+'"'+(y===(prevYear||curYear)?' selected':'')+'>'+y+'</option>').join('');
+  const selYear = yearSel.value || curYear;
+  const selMonth = document.getElementById('fin-month-filter').value;
+  const selCat = document.getElementById('fin-cat-filter').value;
+  const searchQ = (document.getElementById('fin-search') ? document.getElementById('fin-search').value : '').toLowerCase();
+
+  const yearEntries = financeEntries.filter(e => e.date && e.date.startsWith(selYear));
+
+  let filtered = yearEntries.filter(e => {
+    if (selMonth && e.date.slice(5,7) !== selMonth) return false;
+    if (finFilter === 'income' && e.type !== 'income') return false;
+    if (finFilter === 'expense' && e.type !== 'expense') return false;
+    if (selCat && e.category !== selCat) return false;
+    if (searchQ && !(e.description||'').toLowerCase().includes(searchQ) && !(e.category||'').toLowerCase().includes(searchQ) && !(e.notes||'').toLowerCase().includes(searchQ)) return false;
+    return true;
+  });
+
+  const totalIncome  = filtered.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+  const totalExpense = filtered.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+  const balance = totalIncome - totalExpense;
+  const months = new Set(filtered.map(e=>e.date&&e.date.slice(0,7)));
+  const avgMonthly = months.size > 0 ? totalIncome / months.size : 0;
+
+  // KPI Cards
+  document.getElementById('fin-kpi-grid').innerHTML =
+    '<div class="fin-kpi income-card"><div class="fin-kpi-icon" style="background:rgba(74,222,128,.13);"><svg width="18" height="18" fill="none" viewBox="0 0 20 20"><path d="M10 17V3M5 8l5-5 5 5" stroke="#4ADE80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="fin-kpi-label">Total Income</div><div class="fin-kpi-val" style="color:var(--green);">'+fmtINR(totalIncome)+'</div><div class="fin-kpi-sub"><span style="color:var(--green);">'+filtered.filter(e=>e.type==="income").length+'</span> transactions</div><div class="fin-kpi-bar"></div></div>' +
+    '<div class="fin-kpi expense-card"><div class="fin-kpi-icon" style="background:rgba(248,113,113,.13);"><svg width="18" height="18" fill="none" viewBox="0 0 20 20"><path d="M10 3v14M5 12l5 5 5-5" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="fin-kpi-label">Total Expense</div><div class="fin-kpi-val" style="color:var(--red);">'+fmtINR(totalExpense)+'</div><div class="fin-kpi-sub"><span style="color:var(--red);">'+filtered.filter(e=>e.type==="expense").length+'</span> transactions</div><div class="fin-kpi-bar"></div></div>' +
+    '<div class="fin-kpi balance-card '+(balance>=0?'surplus':'deficit')+'"><div class="fin-kpi-icon" style="background:'+(balance>=0?'rgba(74,222,128,.13)':'rgba(248,113,113,.13)')+'"><svg width="18" height="18" fill="none" viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="12" rx="2" stroke="'+(balance>=0?'#4ADE80':'#F87171')+'" stroke-width="1.6"/><path d="M2 9h16" stroke="'+(balance>=0?'#4ADE80':'#F87171')+'" stroke-width="1.4" stroke-linecap="round"/></svg></div><div class="fin-kpi-label">Net Balance</div><div class="fin-kpi-val" style="color:'+(balance>=0?'var(--green)':'var(--red)')+';">'+(balance<0?'-':'')+fmtINR(balance)+'</div><div class="fin-kpi-sub"><span class="fin-kpi-trend" style="background:'+(balance>=0?'rgba(74,222,128,.13)':'rgba(248,113,113,.13)')+';color:'+(balance>=0?'var(--green)':'var(--red)')+';">'+(balance>=0?'Surplus':'Deficit')+'</span></div><div class="fin-kpi-bar"></div></div>' +
+    '<div class="fin-kpi entries-card"><div class="fin-kpi-icon" style="background:var(--gold-light);"><svg width="18" height="18" fill="none" viewBox="0 0 20 20"><path d="M5 4h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="var(--gold)" stroke-width="1.6"/><path d="M7 9h6M7 12h4" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="fin-kpi-label">Avg Monthly Income</div><div class="fin-kpi-val" style="color:var(--gold);font-size:1.3rem;">'+fmtINR(avgMonthly)+'</div><div class="fin-kpi-sub">'+filtered.length+' total entries</div><div class="fin-kpi-bar"></div></div>';
+
+  // Donut chart
+  const expCatMap = {};
+  filtered.filter(e=>e.type==='expense').forEach(e => { expCatMap[e.category] = (expCatMap[e.category]||0) + e.amount; });
+  const expCatArr = Object.entries(expCatMap).sort((a,b)=>b[1]-a[1]);
+  const totalExp = expCatArr.reduce((s,[,v])=>s+v,0) || 1;
+  document.getElementById('fin-donut-sub').textContent = expCatArr.length + ' categories';
+  document.getElementById('fin-donut-total').textContent = fmtINR(totalExpense);
+  const donutSvg = document.getElementById('fin-donut-svg');
+  const R=68,cx=80,cy=80,stroke=22,circ=2*Math.PI*R;
+  let offset=0;
+  if (!expCatArr.length) {
+    donutSvg.innerHTML = '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="var(--mist)" stroke-width="'+stroke+'"/>';
+  } else {
+    donutSvg.innerHTML = expCatArr.map(([cat,val]) => {
+      const pct=val/totalExp, da=pct*circ, color=FIN_CAT_COLORS[cat]||'#94A3B8';
+      const seg='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="'+color+'" stroke-width="'+stroke+'" stroke-dasharray="'+da+' '+(circ-da)+'" stroke-dashoffset="'+(-offset+circ/4)+'" stroke-linecap="butt"><title>'+cat+': '+fmtINR(val)+' ('+Math.round(pct*100)+'%)</title></circle>';
+      offset+=da; return seg;
+    }).join('') + '<circle cx="'+cx+'" cy="'+cy+'" r="'+(R-stroke/2-1)+'" fill="var(--surface)"/>';
+  }
+  document.getElementById('fin-donut-legend').innerHTML = expCatArr.slice(0,6).map(([cat,val]) => {
+    const color=FIN_CAT_COLORS[cat]||'#94A3B8', pct=Math.round(val/totalExp*100);
+    return '<div class="fin-legend-item"><div class="fin-legend-dot" style="background:'+color+';"></div><div class="fin-legend-name">'+escapeHtml(cat)+'</div><div class="fin-legend-amt">'+fmtINR(val)+'</div><div class="fin-legend-pct">'+pct+'%</div></div>';
+  }).join('') || '<div style="color:var(--slate-light);font-size:.78rem;padding:.5rem 0;">No expense data for this period.</div>';
+
+  // Bar chart
+  const monthTotals = {};
+  yearEntries.filter(e=>!selMonth||e.date.slice(5,7)===selMonth).forEach(e=>{
+    const m=e.date.slice(5,7);
+    if (!monthTotals[m]) monthTotals[m]={income:0,expense:0};
+    monthTotals[m][e.type]+=e.amount;
+  });
+  const activeMonths = (selMonth?[selMonth]:[...Array(12)].map((_,i)=>(i+1).toString().padStart(2,'0'))).filter(m=>monthTotals[m]);
+  const maxBar = activeMonths.reduce((mx,m)=>Math.max(mx,monthTotals[m].income,monthTotals[m].expense),0)||1;
+  document.getElementById('fin-flow-sub').textContent = selYear + ' Monthly Overview';
+  document.getElementById('fin-bar-chart').innerHTML = activeMonths.length ? activeMonths.map(m=>{
+    const d=monthTotals[m], ih=Math.max(2,Math.round(d.income/maxBar*100)), eh=Math.max(2,Math.round(d.expense/maxBar*100));
+    return '<div class="fin-flow-bar-group"><div class="fin-flow-bars"><div class="fin-flow-bar" style="background:var(--green);height:'+ih+'%;opacity:.85;" title="'+monthNames[parseInt(m)-1]+' Income: '+fmtINR(d.income)+'"></div><div class="fin-flow-bar" style="background:var(--red);height:'+eh+'%;opacity:.85;" title="'+monthNames[parseInt(m)-1]+' Expense: '+fmtINR(d.expense)+'"></div></div><div class="fin-flow-month">'+monthNames[parseInt(m)-1]+'</div></div>';
+  }).join('') : '<div style="color:var(--slate-light);font-size:.82rem;margin:auto;padding:2rem;">No data for this period.</div>';
+
+  // Ledger table with running balance
+  const selMonthName = selMonth ? monthNames[parseInt(selMonth)-1]+' '+selYear : selYear;
+  document.getElementById('fin-ledger-title').textContent = 'Ledger - ' + selMonthName;
+  const tbody = document.getElementById('fin-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="fin-empty"><svg width="40" height="40" fill="none" viewBox="0 0 40 40"><rect x="6" y="8" width="28" height="26" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M13 16h14M13 22h10M13 28h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><div class="fin-empty-title">No entries found</div><div class="fin-empty-sub">Adjust filters or add a new entry.</div></div></td></tr>';
+    return;
+  }
+  const sorted = [...filtered].sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  let runBal=0;
+  const withBal = sorted.map(e=>{ runBal += e.type==='income'?e.amount:-e.amount; return {...e, runBal}; });
+  withBal.reverse();
+  let lastMonth=null;
+  tbody.innerHTML = withBal.map(e=>{
+    const isInc=e.type==='income';
+    const dateStr=e.date?new Date(e.date+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'-';
+    const monthKey=e.date?e.date.slice(0,7):'';
+    const monthLabel=e.date?new Date(e.date+'T00:00:00').toLocaleDateString('en-IN',{month:'long',year:'numeric'}):'';
+    const catColor=FIN_CAT_COLORS[e.category]||'#94A3B8';
+    let div='';
+    if (monthKey!==lastMonth) {
+      lastMonth=monthKey;
+      const mI=withBal.filter(x=>x.date&&x.date.startsWith(monthKey)&&x.type==='income').reduce((s,x)=>s+x.amount,0);
+      const mE=withBal.filter(x=>x.date&&x.date.startsWith(monthKey)&&x.type==='expense').reduce((s,x)=>s+x.amount,0);
+      div='<tr class="fin-month-divider"><td colspan="7">'+monthLabel+'<span style="margin-left:12px;color:var(--green);font-weight:600;">+'+fmtINR(mI)+'</span><span style="margin-left:8px;color:var(--red);font-weight:600;">-'+fmtINR(mE)+'</span></td></tr>';
+    }
+    return div+'<tr><td style="font-size:.8rem;color:var(--text-secondary);white-space:nowrap;">'+dateStr+'</td><td><div style="font-weight:600;font-size:.85rem;">'+escapeHtml(e.description)+'</div>'+(e.notes?'<div style="font-size:.7rem;color:var(--slate-light);margin-top:2px;">'+escapeHtml(e.notes)+'</div>':'')+'</td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:600;color:'+catColor+';"><span style="width:7px;height:7px;border-radius:50%;background:'+catColor+';display:inline-block;flex-shrink:0;"></span>'+escapeHtml(e.category)+'</span></td><td style="text-align:right;font-weight:700;font-size:.9rem;color:'+(isInc?'var(--green)':'var(--red)');+'"><span style="font-size:.72rem;opacity:.7;">'+(isInc?'&#9650;':'&#9660;')+'</span> '+fmtINR(e.amount)+'</td><td style="text-align:right;"><span class="fin-running-bal" style="background:'+(e.runBal>=0?'rgba(74,222,128,.1)':'rgba(248,113,113,.1)')+';color:'+(e.runBal>=0?'var(--green)':'var(--red)')+';">'+(e.runBal<0?'-':'')+fmtINR(e.runBal)+'</span></td><td style="font-size:.75rem;color:var(--text-secondary);">'+escapeHtml(e.recordedBy||'-')+'</td><td style="text-align:right;white-space:nowrap;"><button class="action-btn admin-only" onclick="openFinanceModal(\''+e._id+'\')">Edit</button><button class="action-btn admin-only" style="color:var(--red);" onclick="deleteFinanceEntry(\''+e._id+'\')">Del</button></td></tr>';
+  }).join('');
+  applyRoleVisibility();
+}
+
+function exportFinanceCSV() {
+  const selYear = document.getElementById('fin-year-filter').value;
+  const selMonth = document.getElementById('fin-month-filter').value;
+  let rows = [...financeEntries].filter(e=>{
+    if (!e.date || !e.date.startsWith(selYear)) return false;
+    if (selMonth && e.date.slice(5,7)!==selMonth) return false;
+    return true;
+  }).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  let rb=0;
+  rows = rows.map(e=>{ rb+=e.type==='income'?e.amount:-e.amount; return {...e,runBal:rb}; });
+  const hdr=['Date','Description','Category','Type','Amount','Running Balance','Notes','Recorded By'];
+  const lines=[hdr.join(','),...rows.map(e=>[e.date,'"'+(e.description||'').replace(/"/g,'""')+'"','"'+(e.category||'')+'"',e.type,e.amount.toFixed(2),e.runBal.toFixed(2),'"'+(e.notes||'').replace(/"/g,'""')+'"','"'+(e.recordedBy||'')+'"'].join(','))];
+  const blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='KG_Finance_'+selYear+(selMonth?'_'+selMonth:'')+'.csv'; a.click();
+}
+
+
+// ════════ CARE CELL MODULE ════════
+let careCells = [];
+let cellMeetings = {};   // keyed by cellId -> array of meetings
+let currentCellId = null;
+let ccAttPresent = new Set();
+
+const CC_COLORS = ['#A78BFA','#60A5FA','#4ADE80','#F472B6','#FB923C','#38BDF8','#FBBF24','#34D399'];
+
+function ccColor(idx){ return CC_COLORS[idx % CC_COLORS.length]; }
+
+// ── Load ──
+async function loadCareCells(){
+  try {
+    const snap = await getDocs(query(careCellsCol, orderBy('name')));
+    careCells = snap.docs.map(d => ({ _id:d.id, ...d.data() }));
+  } catch(e){ careCells = []; }
+  // Load all meetings
+  try {
+    const mSnap = await getDocs(query(cellMeetingsCol, orderBy('date','desc')));
+    cellMeetings = {};
+    mSnap.docs.forEach(d => {
+      const data = { _id:d.id, ...d.data() };
+      if (!cellMeetings[data.cellId]) cellMeetings[data.cellId] = [];
+      cellMeetings[data.cellId].push(data);
+    });
+  } catch(e){ cellMeetings = {}; }
+  renderCareCells();
+}
+
+// ── Render grid ──
+function renderCareCells(){
+  const q = (document.getElementById('cc-search')?.value||'').toLowerCase();
+  const filtered = careCells.filter(c =>
+    !q || c.name?.toLowerCase().includes(q) ||
+    c.leaderName?.toLowerCase().includes(q) ||
+    c.venue?.toLowerCase().includes(q)
+  );
+
+  const totalCells = careCells.length;
+  const totalMembers = careCells.reduce((s,c)=>s+(c.memberIds||[]).length,0);
+  const totalMeetings = Object.values(cellMeetings).reduce((s,arr)=>s+arr.length,0);
+  const avgAtt = (()=>{
+    let sum=0,count=0;
+    Object.values(cellMeetings).forEach(arr=>arr.forEach(m=>{
+      if(m.presentIds){sum+=m.presentIds.length;count++;}
+    }));
+    return count?Math.round(sum/count):0;
+  })();
+  const activeCells = careCells.filter(c=>{
+    const meets = cellMeetings[c._id]||[];
+    return meets.some(m=>{ const d=new Date(m.date); const now=new Date(); return (now-d)<1000*60*60*24*60; });
+  }).length;
+
+  // KPI Band
+  document.getElementById('cc-kpi-band').innerHTML = [
+    {lbl:'Care Cells',val:totalCells,sub:activeCells+' active this month',icon:'<path d="M10 2a4 4 0 100 8 4 4 0 000-8zM4 14c0-2.5 2.7-4 6-4s6 1.5 6 4v1H4v-1z" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/><path d="M16 7a2 2 0 110 4M18 14c0-1.5-1-2.5-2-3" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/>',clr:'#A78BFA',bg:'rgba(167,139,250,.13)'},
+    {lbl:'Total Members',val:totalMembers,sub:'across all cells',icon:'<path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM3 14a5 5 0 0110 0H3zM14 8a2 2 0 110 4M17 14c0-1.5-1-2.5-2-3" stroke="#60A5FA" stroke-width="1.5" stroke-linecap="round"/>',clr:'#60A5FA',bg:'rgba(96,165,250,.13)'},
+    {lbl:'Meetings Held',val:totalMeetings,sub:'total recorded',icon:'<rect x="2" y="3" width="16" height="14" rx="2" stroke="#4ADE80" stroke-width="1.5"/><path d="M2 7h16M7 1v4M13 1v4M6 11h4M6 14h6" stroke="#4ADE80" stroke-width="1.4" stroke-linecap="round"/>',clr:'#4ADE80',bg:'rgba(74,222,128,.13)'},
+    {lbl:'Avg Attendance',val:avgAtt,sub:'per meeting',icon:'<path d="M2 15L6 9l4 4 4-6 4 4" stroke="#FBBF24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',clr:'#FBBF24',bg:'rgba(251,191,36,.13)'},
+  ].map(({lbl,val,sub,icon,clr,bg})=>`
+    <div class="cc-kpi-card">
+      <div class="cc-kpi-icon" style="background:${bg};">
+        <svg width="18" height="18" fill="none" viewBox="0 0 20 20">${icon}</svg>
+      </div>
+      <div class="cc-kpi-label">${lbl}</div>
+      <div class="cc-kpi-val" style="color:${clr};">${val}</div>
+      <div class="cc-kpi-sub">${sub}</div>
+      <div class="cc-kpi-bar" style="background:${clr};opacity:.6;"></div>
+    </div>`).join('');
+
+  const grid = document.getElementById('cc-grid');
+  if(!filtered.length){
+    grid.innerHTML = `<div class="cc-empty" style="grid-column:1/-1;">
+      <svg width="56" height="56" fill="none" viewBox="0 0 56 56"><circle cx="28" cy="18" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M8 48c0-9 9-15 20-15s20 6 20 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <div class="cc-empty-title">No care cells yet</div>
+      <div class="cc-empty-sub">Create your first cell group to start tracking members, meetings and attendance.</div>
+      <button class="top-btn primary admin-only" onclick="openCellModal()" style="margin-top:4px;">
+        <svg width="12" height="12" fill="none" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        New Cell
+      </button>
+    </div>`;
+    applyRoleVisibility(); return;
+  }
+
+  grid.innerHTML = filtered.map((cell,idx)=>{
+    const color = ccColor(idx);
+    const meetings = cellMeetings[cell._id]||[];
+    const memberIds = cell.memberIds||[];
+    const memberObjs = memberIds.slice(0,5).map(id=>members.find(m=>m._docId===id||m.id===id)).filter(Boolean);
+    const extra = memberIds.length > 5 ? memberIds.length-5 : 0;
+    const avClasses = ['av-a','av-b','av-c','av-d','av-e','av-f'];
+
+    // Sparkline for last 5 meetings
+    const sparks = [...meetings].slice(0,5).reverse().map(m=>{
+      const pct = memberIds.length ? Math.round((m.presentIds||[]).length/memberIds.length*100) : 0;
+      const h = Math.max(4, Math.round(pct/100*26));
+      const c = pct>=70?'var(--green)':pct>=40?'var(--amber)':'var(--red)';
+      return `<div class="cc-att-spark-bar" style="height:${h}px;background:${c};" title="${new Date(m.date+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}: ${pct}%"></div>`;
+    }).join('');
+
+    // Next meeting
+    const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const today=new Date().getDay();
+    const cellDay=days.indexOf(cell.meetingDay||'Sunday');
+    let diff=(cellDay-today+7)%7||7;
+    const nextDate=new Date(); nextDate.setDate(nextDate.getDate()+diff);
+    const nextStr=nextDate.toLocaleDateString('en-IN',{weekday:'short',day:'2-digit',month:'short'});
+    const isToday=diff===7&&cellDay===today;
+    const isSoon=diff<=2;
+
+    // Overall attendance rate
+    const allPresent = meetings.reduce((s,m)=>s+(m.presentIds||[]).length,0);
+    const allPossible = meetings.length * memberIds.length;
+    const attRate = allPossible ? Math.round(allPresent/allPossible*100) : null;
+
+    return `<div class="cc-card" onclick="openCellDetail('${cell._id}')">
+      <div class="cc-card-accent" style="background:linear-gradient(90deg,${color},${color}88);"></div>
+      <div class="cc-card-header">
+        <div class="cc-card-icon" style="background:${color}18;">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 22V12h6v10" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div class="cc-card-name">${escapeHtml(cell.name)}</div>
+          <div class="cc-card-venue">
+            <svg width="10" height="10" fill="none" viewBox="0 0 16 16"><path d="M8 1a5 5 0 015 5c0 4-5 9-5 9S3 10 3 6a5 5 0 015-5z" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6" r="1.5" fill="currentColor"/></svg>
+            ${escapeHtml(cell.venue||'No venue set')}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+          <span style="font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:20px;background:${color}18;color:${color};">${memberIds.length} members</span>
+          ${attRate!==null?`<span style="font-size:.68rem;color:var(--slate-light);">${attRate}% att. rate</span>`:''}
+        </div>
+      </div>
+
+      <div class="cc-card-body">
+        <div class="cc-card-row">
+          <span class="cc-card-row-label">
+            <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M2 14c0-3 2.7-4.5 6-4.5s6 1.5 6 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Leader
+          </span>
+          <span class="cc-card-row-val">${escapeHtml(cell.leaderName||'Unassigned')}</span>
+        </div>
+        <div class="cc-card-row">
+          <span class="cc-card-row-label">
+            <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 6h12M6 1v3M10 1v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Schedule
+          </span>
+          <span class="cc-card-row-val">${escapeHtml(cell.meetingDay||'TBD')}${cell.meetingTime?' · '+cell.meetingTime:''}</span>
+        </div>
+        <div class="cc-card-row">
+          <span class="cc-card-row-label">
+            <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M8 4v4l2.5 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Next Meeting
+          </span>
+          <span class="cc-next-badge" style="background:${isSoon?color+'18':'var(--surface3)'};color:${isSoon?color:'var(--text-secondary)'};">${nextStr}</span>
+        </div>
+        ${meetings.length?`<div class="cc-card-row">
+          <span class="cc-card-row-label">Last Meeting</span>
+          <span class="cc-card-row-val" style="font-size:.78rem;">${new Date(meetings[0].date+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+        </div>`:''}
+      </div>
+
+      <div class="cc-card-footer">
+        <div class="cc-member-stack">
+          ${memberObjs.map(m=>{
+            const initials=(m.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+            const av=avClasses[Math.abs((m.name||'').charCodeAt(0)||0)%avClasses.length];
+            return `<div class="cc-member-av ${av}" title="${escapeHtml(m.name)}">${initials}</div>`;
+          }).join('')}
+          ${extra?`<div class="cc-member-av cc-member-more" title="${extra} more">+${extra}</div>`:''}
+        </div>
+        <div style="flex:1"></div>
+        ${sparks?`<div class="cc-att-sparkline" title="Recent attendance">${sparks}</div>`:''}
+        <div style="display:flex;gap:4px;margin-left:8px;">
+          <button class="action-btn admin-only" onclick="event.stopPropagation();openMeetingModal('${cell._id}')" style="font-size:.71rem;padding:3px 8px;">
+            <svg width="10" height="10" fill="none" viewBox="0 0 14 14" style="vertical-align:middle;"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Meeting
+          </button>
+          <button class="action-btn admin-only" onclick="event.stopPropagation();openNotifyModal('${cell._id}')" style="font-size:.71rem;padding:3px 8px;">
+            <svg width="10" height="10" fill="none" viewBox="0 0 14 14" style="vertical-align:middle;"><path d="M2 3a1 1 0 011-1h8a1 1 0 011 1v6a1 1 0 01-1 1H5l-3 2V3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            Notify
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  applyRoleVisibility();
+}
+
+// ── Cell Detail Panel ──
+function openCellDetail(cellId){
+  currentCellId = cellId;
+  const cell = careCells.find(c=>c._id===cellId);
+  if(!cell) return;
+  const meetings = cellMeetings[cellId]||[];
+  const memberIds = cell.memberIds||[];
+  const color = ccColor(careCells.indexOf(cell));
+  const totalMeets = meetings.length;
+  const allPresent = meetings.reduce((s,m)=>s+(m.presentIds||[]).length,0);
+  const allPossible = totalMeets * memberIds.length;
+  const attRate = allPossible ? Math.round(allPresent/allPossible*100) : 0;
+  const avgPerMeet = totalMeets ? Math.round(allPresent/totalMeets) : 0;
+
+  document.getElementById('cc-panel-title').textContent = cell.name;
+  document.getElementById('cc-detail-overlay').classList.add('open');
+
+  const avClasses=['av-a','av-b','av-c','av-d','av-e','av-f'];
+
+  document.getElementById('cc-panel-body').innerHTML = `
+    <!-- Stats strip -->
+    <div class="cc-panel-section" style="background:linear-gradient(135deg,${color}10,transparent);">
+      <div class="cc-panel-section-label">
+        <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><path d="M2 12L5 7l3 3 3-4.5 3 3" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Overview
+      </div>
+      <div class="cc-stat-strip">
+        <div class="cc-stat-pill"><div class="cc-stat-pill-val" style="color:${color};">${memberIds.length}</div><div class="cc-stat-pill-lbl">Members</div></div>
+        <div class="cc-stat-pill"><div class="cc-stat-pill-val">${totalMeets}</div><div class="cc-stat-pill-lbl">Meetings</div></div>
+        <div class="cc-stat-pill"><div class="cc-stat-pill-val">${avgPerMeet}</div><div class="cc-stat-pill-lbl">Avg / Meet</div></div>
+      </div>
+      ${allPossible?`<div style="margin-top:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:.74rem;margin-bottom:5px;">
+          <span style="color:var(--text-secondary);">Overall Attendance Rate</span>
+          <span style="font-weight:700;color:${attRate>=70?'var(--green)':attRate>=40?'var(--amber)':'var(--red)'};">${attRate}%</span>
+        </div>
+        <div class="cc-att-progress-wrap"><div class="cc-att-progress-bar" style="width:${attRate}%;background:${attRate>=70?'var(--green)':attRate>=40?'var(--amber)':'var(--red)'};"></div></div>
+      </div>`:''}
+    </div>
+
+    <!-- Cell info -->
+    <div class="cc-panel-section">
+      <div class="cc-panel-section-label">
+        <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="5" r="3" stroke="${color}" stroke-width="1.4"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="${color}" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Cell Info
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div class="cc-info-row"><span class="cc-info-label">Leader</span><span class="cc-info-val">${escapeHtml(cell.leaderName||'Unassigned')}</span></div>
+        ${cell.coLeaderName?`<div class="cc-info-row"><span class="cc-info-label">Co-Leader</span><span class="cc-info-val">${escapeHtml(cell.coLeaderName)}</span></div>`:''}
+        <div class="cc-info-row"><span class="cc-info-label">Schedule</span><span class="cc-info-val">${escapeHtml(cell.meetingDay||'TBD')} ${cell.meetingTime||''}</span></div>
+        <div class="cc-info-row"><span class="cc-info-label">Venue</span><span class="cc-info-val">${escapeHtml(cell.venue||'—')}</span></div>
+        ${cell.description?`<div class="cc-info-row"><span class="cc-info-label">Notes</span><span class="cc-info-val" style="font-weight:400;color:var(--text-secondary);">${escapeHtml(cell.description)}</span></div>`:''}
+      </div>
+    </div>
+
+    <!-- Notify bar -->
+    <div class="cc-panel-section">
+      <div class="cc-notify-bar">
+        <div class="cc-notify-icon">
+          <svg width="16" height="16" fill="none" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v9a1 1 0 01-1 1H7l-4 3V4z" stroke="#A78BFA" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:.82rem;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Send Reminder / Announcement</div>
+          <div style="font-size:.74rem;color:var(--text-secondary);">Reach all ${memberIds.length} members via WhatsApp or SMS</div>
+        </div>
+        <button class="top-btn primary admin-only" style="padding:.35rem .8rem;font-size:.74rem;" onclick="openNotifyModal('${cellId}')">Notify</button>
+      </div>
+    </div>
+
+    <!-- Members -->
+    <div class="cc-panel-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="cc-panel-section-label" style="margin-bottom:0;">
+          <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><path d="M10 5a3 3 0 11-6 0 3 3 0 016 0zM3 13a5 5 0 0110 0H3z" stroke="${color}" stroke-width="1.4" stroke-linecap="round"/></svg>
+          Members (${memberIds.length})
+        </div>
+        <button class="top-btn admin-only" style="padding:.28rem .65rem;font-size:.72rem;" onclick="openCellModal('${cellId}')">Manage</button>
+      </div>
+      ${memberIds.length ? memberIds.map(id=>{
+        const m=members.find(x=>x._docId===id||x.id===id);
+        if(!m) return '';
+        const isLeader=cell.leaderId===id, isCo=cell.coLeaderId===id;
+        const initials=(m.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        const av=avClasses[Math.abs((m.name||'').charCodeAt(0)||0)%avClasses.length];
+        // Member attendance rate
+        const mAtt = meetings.length ? Math.round(meetings.filter(mt=>(mt.presentIds||[]).includes(id)).length/meetings.length*100) : null;
+        return `<div class="cc-member-row">
+          <div class="avatar ${av}" style="width:32px;height:32px;font-size:.72rem;flex-shrink:0;">${initials}</div>
+          <div class="cc-member-row-name">${escapeHtml(m.name)}</div>
+          ${isLeader?'<span class="cc-member-row-role cc-role-leader">Leader</span>':isCo?'<span class="cc-member-row-role cc-role-coleader">Co-Leader</span>':'<span class="cc-member-row-role cc-role-member">Member</span>'}
+          ${mAtt!==null?`<span style="font-size:.68rem;color:var(--slate-light);min-width:34px;text-align:right;">${mAtt}%</span>`:''}
+          ${m.phone?`<a href="tel:${m.phone}" onclick="event.stopPropagation();" style="color:var(--slate-light);font-size:.7rem;text-decoration:none;padding:2px 6px;border:1px solid var(--border-strong);border-radius:5px;">${m.phone}</a>`:''}
+        </div>`;
+      }).join('') : '<div style="color:var(--slate-light);font-size:.82rem;padding:.5rem 0;">No members assigned yet.</div>'}
+    </div>
+
+    <!-- Meeting history -->
+    <div class="cc-panel-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="cc-panel-section-label" style="margin-bottom:0;">
+          <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><rect x="1" y="3" width="14" height="12" rx="2" stroke="${color}" stroke-width="1.4"/><path d="M1 7h14M5 1v4M11 1v4" stroke="${color}" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Meeting History (${totalMeets})
+        </div>
+        <button class="top-btn primary admin-only" style="padding:.28rem .65rem;font-size:.72rem;" onclick="openMeetingModal('${cellId}')">+ Record</button>
+      </div>
+      ${meetings.length ? meetings.map(m=>{
+        const pct = memberIds.length ? Math.round((m.presentIds||[]).length/memberIds.length*100) : 0;
+        const attClr = pct>=70?'var(--green)':pct>=40?'var(--amber)':'var(--red)';
+        const attBg  = pct>=70?'var(--green-bg)':pct>=40?'var(--amber-bg)':'var(--red-bg)';
+        const dateStr = new Date(m.date+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+        return `<div class="cc-meeting-card">
+          <div class="cc-meeting-card-top">
+            <div class="cc-meeting-date">${dateStr}</div>
+            ${m.topic?`<div class="cc-meeting-topic">${escapeHtml(m.topic)}</div>`:'<div class="cc-meeting-topic"></div>'}
+            <span class="cc-meeting-att-pill" style="background:${attBg};color:${attClr};">${(m.presentIds||[]).length}/${memberIds.length} · ${pct}%</span>
+            <button class="action-btn admin-only" onclick="deleteMeetingRecord('${m._id}','${cellId}')" style="font-size:.68rem;color:var(--red);padding:2px 5px;margin-left:2px;">✕</button>
+          </div>
+          <div class="cc-att-progress-wrap"><div class="cc-att-progress-bar" style="width:${pct}%;background:${attClr};opacity:.7;"></div></div>
+          ${m.notes?`<div class="cc-meeting-notes">📝 ${escapeHtml(m.notes)}</div>`:''}
+        </div>`;
+      }).join('') : '<div style="color:var(--slate-light);font-size:.82rem;padding:.5rem 0;">No meetings recorded yet.</div>'}
+    </div>
+    <!-- Delete cell (danger zone) -->
+    <div class="cc-panel-section" style="background:rgba(248,113,113,.04);">
+      <div style="display:flex;align-items:center;justify-content:space-between;font-size:.82rem;">
+        <span style="color:var(--text-secondary);">Permanently delete this cell and all its records</span>
+        <button class="action-btn admin-only" style="color:var(--red);border-color:rgba(248,113,113,.35);" onclick="deleteCellConfirm('${cellId}')">Delete Cell</button>
+      </div>
+    </div>`;
+  applyRoleVisibility();
+}
+
+function closeCellDetail(){
+  document.getElementById('cc-detail-overlay').classList.remove('open');
+  currentCellId = null;
+}
+
+function editCurrentCell(){
+  if(currentCellId) openCellModal(currentCellId);
+}
+// ── Cell Modal ──
+let ccCurrentTab = 'info';
+let ccSelectedMemberIds = new Set();
+
+function setCellTab(tab){
+  ccCurrentTab = tab;
+  document.getElementById('cc-tab-info').classList.toggle('active', tab==='info');
+  document.getElementById('cc-tab-members').classList.toggle('active', tab==='members');
+  document.getElementById('cc-tab-info-body').style.display = tab==='info'?'':'none';
+  document.getElementById('cc-tab-members-body').style.display = tab==='members'?'':'none';
+  if(tab==='members') renderMemberAssignList();
+}
+
+function openCellModal(id){
+  ccCurrentTab = 'info';
+  setCellTab('info');
+  ccSelectedMemberIds = new Set();
+  // Populate leader dropdowns
+  const leaderSel = document.getElementById('cc-leader');
+  const coSel = document.getElementById('cc-coleader');
+  const opts = members.filter(m=>!m.archived).map(m=>`<option value="${m._docId||m.id}">${escapeHtml(m.name)}</option>`).join('');
+  leaderSel.innerHTML = '<option value="">Select leader...</option>' + opts;
+  coSel.innerHTML = '<option value="">None</option>' + opts;
+
+  if(id){
+    const cell = careCells.find(c=>c._id===id);
+    if(!cell) return;
+    document.getElementById('cc-modal-title').textContent = 'Edit Care Cell';
+    document.getElementById('cc-name').value = cell.name||'';
+    document.getElementById('cc-leader').value = cell.leaderId||'';
+    document.getElementById('cc-coleader').value = cell.coLeaderId||'';
+    document.getElementById('cc-day').value = cell.meetingDay||'Sunday';
+    document.getElementById('cc-time').value = cell.meetingTime||'';
+    document.getElementById('cc-venue').value = cell.venue||'';
+    document.getElementById('cc-desc').value = cell.description||'';
+    document.getElementById('cc-edit-id').value = id;
+    ccSelectedMemberIds = new Set(cell.memberIds||[]);
+  } else {
+    document.getElementById('cc-modal-title').textContent = 'New Care Cell';
+    document.getElementById('cc-name').value='';
+    document.getElementById('cc-leader').value='';
+    document.getElementById('cc-coleader').value='';
+    document.getElementById('cc-day').value='Sunday';
+    document.getElementById('cc-time').value='';
+    document.getElementById('cc-venue').value='';
+    document.getElementById('cc-desc').value='';
+    document.getElementById('cc-edit-id').value='';
+  }
+  document.getElementById('cc-modal-overlay').classList.add('open');
+}
+
+function closeCellModal(){
+  document.getElementById('cc-modal-overlay').classList.remove('open');
+}
+
+function renderMemberAssignList(){
+  const q = (document.getElementById('cc-member-search')?.value||'').toLowerCase();
+  const list = members.filter(m=>!m.archived && (!q || m.name?.toLowerCase().includes(q)));
+  document.getElementById('cc-assign-list').innerHTML = list.map(m=>{
+    const id = m._docId||m.id;
+    const checked = ccSelectedMemberIds.has(id);
+    return `<label class="cc-assign-item">
+      <input type="checkbox" ${checked?'checked':''} onchange="ccToggleMember('${id}',this.checked)">
+      <span>${escapeHtml(m.name)}</span>
+      <span style="font-size:.72rem;color:var(--slate-light);margin-left:auto;">${escapeHtml(m.ministry||'')}</span>
+    </label>`;
+  }).join('');
+  document.getElementById('cc-assign-count').textContent = ccSelectedMemberIds.size + ' member(s) selected';
+}
+
+function ccToggleMember(id, checked){
+  if(checked) ccSelectedMemberIds.add(id);
+  else ccSelectedMemberIds.delete(id);
+  document.getElementById('cc-assign-count').textContent = ccSelectedMemberIds.size + ' member(s) selected';
+}
+
+async function saveCellModal(){
+  if(!requireAdmin()) return;
+  const name = document.getElementById('cc-name').value.trim();
+  if(!name) return showToast('Cell name is required','error');
+  const leaderId = document.getElementById('cc-leader').value;
+  const leaderMember = members.find(m=>(m._docId||m.id)===leaderId);
+  const coLeaderId = document.getElementById('cc-coleader').value;
+  const coLeaderMember = members.find(m=>(m._docId||m.id)===coLeaderId);
+  const editId = document.getElementById('cc-edit-id').value;
+  const btn = document.getElementById('cc-save-btn');
+  btn.disabled=true; btn.textContent='Saving...';
+
+  const data = {
+    name, leaderId, leaderName: leaderMember?.name||'',
+    coLeaderId: coLeaderId||'', coLeaderName: coLeaderMember?.name||'',
+    meetingDay: document.getElementById('cc-day').value,
+    meetingTime: document.getElementById('cc-time').value,
+    venue: document.getElementById('cc-venue').value.trim(),
+    description: document.getElementById('cc-desc').value.trim(),
+    memberIds: [...ccSelectedMemberIds],
+    updatedAt: new Date().toISOString(),
+    createdAt: editId ? (careCells.find(c=>c._id===editId)?.createdAt||new Date().toISOString()) : new Date().toISOString()
+  };
+  try {
+    const docId = editId || (Date.now()+'_'+Math.random().toString(36).slice(2,6));
+    await setDoc(doc(careCellsCol, docId), data);
+    logAudit(editId?'Updated care cell':'Created care cell', name);
+    closeCellModal();
+    await loadCareCells();
+    showToast(editId?'Cell updated':'Cell created','success');
+  } catch(e){ showToast('Save failed: '+e.message,'error'); }
+  finally { btn.disabled=false; btn.textContent='Save Cell'; }
+}
+
+async function deleteCellConfirm(id){
+  if(!requireAdmin()) return;
+  const cell = careCells.find(c=>c._id===id);
+  const ok = await confirmDialog('Delete "'+( cell?.name||'this cell')+'"? All meeting records will also be removed.', {title:'Delete Cell', confirmText:'Delete'});
+  if(!ok) return;
+  try {
+    await deleteDoc(doc(careCellsCol, id));
+    const meets = cellMeetings[id]||[];
+    for(const m of meets) await deleteDoc(doc(cellMeetingsCol, m._id));
+    logAudit('Deleted care cell', cell?.name||id);
+    closeCellDetail();
+    await loadCareCells();
+    showToast('Cell deleted','success');
+  } catch(e){ showToast('Delete failed: '+e.message,'error'); }
+}
+
+// ── Meeting Modal ──
+function openMeetingModal(cellId, meetId){
+  const cell = careCells.find(c=>c._id===cellId);
+  if(!cell) return;
+  ccAttPresent = new Set();
+  document.getElementById('cc-meet-cell-id').value = cellId;
+  document.getElementById('cc-meet-edit-id').value = '';
+  document.getElementById('cc-meet-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('cc-meet-topic').value = '';
+  document.getElementById('cc-meet-notes').value = '';
+  document.getElementById('cc-meeting-modal-title').textContent = 'Record Meeting — '+cell.name;
+
+  const memberIds = cell.memberIds||[];
+  document.getElementById('cc-att-grid').innerHTML = memberIds.map(id=>{
+    const m = members.find(x=>x._docId===id||x.id===id);
+    if(!m) return '';
+    return `<div class="cc-att-item" id="cc-att-${id}" onclick="ccToggleAtt('${id}')">
+      <div class="cc-att-check">
+        <svg width="11" height="11" fill="none" viewBox="0 0 11 11"><path d="M1.5 5.5l2.8 2.8 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="cc-att-item-name">${escapeHtml(m.name)}</span>
+      <span style="font-size:.72rem;color:var(--slate-light);">${escapeHtml(m.ministry||'')}</span>
+    </div>`;
+  }).join('');
+  ccUpdateAttCount();
+  document.getElementById('cc-meeting-overlay').classList.add('open');
+}
+
+function ccToggleAtt(id){
+  if(ccAttPresent.has(id)) ccAttPresent.delete(id);
+  else ccAttPresent.add(id);
+  const el = document.getElementById('cc-att-'+id);
+  if(el) el.classList.toggle('present', ccAttPresent.has(id));
+  ccUpdateAttCount();
+}
+
+function ccMarkAll(val){
+  const cellId = document.getElementById('cc-meet-cell-id').value;
+  const cell = careCells.find(c=>c._id===cellId);
+  const ids = cell?.memberIds||[];
+  ccAttPresent = val ? new Set(ids) : new Set();
+  ids.forEach(id=>{
+    const el=document.getElementById('cc-att-'+id);
+    if(el) el.classList.toggle('present', val);
+  });
+  ccUpdateAttCount();
+}
+
+function ccUpdateAttCount(){
+  const cellId = document.getElementById('cc-meet-cell-id').value;
+  const cell = careCells.find(c=>c._id===cellId);
+  const total = (cell?.memberIds||[]).length;
+  document.getElementById('cc-att-count').textContent = ccAttPresent.size+' / '+total+' present';
+}
+
+function closeMeetingModal(){
+  document.getElementById('cc-meeting-overlay').classList.remove('open');
+}
+
+async function saveMeetingRecord(){
+  if(!requireAdmin()) return;
+  const cellId = document.getElementById('cc-meet-cell-id').value;
+  const date = document.getElementById('cc-meet-date').value;
+  const topic = document.getElementById('cc-meet-topic').value.trim();
+  const notes = document.getElementById('cc-meet-notes').value.trim();
+  if(!date) return showToast('Date is required','error');
+  const btn = document.getElementById('cc-meet-save-btn');
+  btn.disabled=true; btn.textContent='Saving...';
+  const data = {
+    cellId, date, topic, notes,
+    presentIds: [...ccAttPresent],
+    recordedBy: loggedInUser?loggedInUser.display||loggedInUser.username:'Unknown',
+    createdAt: new Date().toISOString()
+  };
+  try {
+    const docId = Date.now()+'_'+Math.random().toString(36).slice(2,6);
+    await setDoc(doc(cellMeetingsCol, docId), data);
+    logAudit('Recorded cell meeting', topic||date);
+    closeMeetingModal();
+    await loadCareCells();
+    if(currentCellId===cellId) openCellDetail(cellId);
+    showToast('Meeting recorded','success');
+  } catch(e){ showToast('Save failed: '+e.message,'error'); }
+  finally { btn.disabled=false; btn.textContent='Save Record'; }
+}
+
+async function deleteMeetingRecord(meetId, cellId){
+  if(!requireAdmin()) return;
+  if(!confirm('Delete this meeting record?')) return;
+  try {
+    await deleteDoc(doc(cellMeetingsCol, meetId));
+    await loadCareCells();
+    if(currentCellId===cellId) openCellDetail(cellId);
+    showToast('Meeting deleted','success');
+  } catch(e){ showToast('Delete failed: '+e.message,'error'); }
+}
+
+// ── Notify Modal ──
+function openNotifyModal(cellId){
+  const cell = careCells.find(c=>c._id===cellId);
+  if(!cell) return;
+  document.getElementById('cc-notify-cell-name').value = cell.name;
+  document.getElementById('cc-notify-message').value = 'Dear '+cell.name+' family,\n\nReminder: Our cell meeting is this '+cell.meetingDay+(cell.meetingTime?' at '+cell.meetingTime:'')+(cell.venue?' at '+cell.venue:'')+'.\n\nSee you there! 🙏';
+  const memberIds = cell.memberIds||[];
+  const memberList = memberIds.map(id=>{
+    const m=members.find(x=>x._docId===id||x.id===id);
+    if(!m) return '';
+    return `<div style="display:flex;align-items:center;gap:8px;padding:.3rem 0;font-size:.8rem;border-bottom:1px solid var(--border);">
+      <span style="flex:1;font-weight:500;">${escapeHtml(m.name)}</span>
+      <span style="color:var(--slate-light);">${m.phone||'No phone'}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('cc-notify-members-list').innerHTML = memberList;
+  document.getElementById('cc-notify-count').textContent = memberIds.length+' members in this cell';
+  document.getElementById('cc-notify-overlay').dataset.cellId = cellId;
+  document.getElementById('cc-notify-overlay').classList.add('open');
+}
+
+function closeNotifyModal(){
+  document.getElementById('cc-notify-overlay').classList.remove('open');
+}
+
+function sendCellWhatsApp(){
+  const msg = document.getElementById('cc-notify-message').value.trim();
+  const cellId = document.getElementById('cc-notify-overlay').dataset.cellId;
+  const cell = careCells.find(c=>c._id===cellId);
+  const phones = (cell?.memberIds||[]).map(id=>{
+    const m=members.find(x=>x._docId===id||x.id===id);
+    return m?.phone;
+  }).filter(Boolean);
+  if(!phones.length) return showToast('No phone numbers found for this cell','error');
+  const encoded = encodeURIComponent(msg);
+  window.open('https://wa.me/?text='+encoded,'_blank');
+  logAudit('Sent WhatsApp notification', cell?.name||cellId);
+  closeNotifyModal();
+  showToast('Opening WhatsApp...','success');
+}
+
+function sendCellSMS(){
+  const msg = document.getElementById('cc-notify-message').value.trim();
+  const cellId = document.getElementById('cc-notify-overlay').dataset.cellId;
+  const cell = careCells.find(c=>c._id===cellId);
+  const phones = (cell?.memberIds||[]).map(id=>{
+    const m=members.find(x=>x._docId===id||x.id===id);
+    return m?.phone;
+  }).filter(Boolean);
+  if(!phones.length) return showToast('No phone numbers found for this cell','error');
+  window.open('sms:'+phones.join(',')+'?body='+encodeURIComponent(msg),'_blank');
+  logAudit('Sent SMS notification', cell?.name||cellId);
+  closeNotifyModal();
+  showToast('Opening SMS...','success');
+}
+
+// ── Export ──
+function exportCellsCSV(){
+  const rows = careCells.map(cell=>{
+    const meets = cellMeetings[cell._id]||[];
+    const avgAtt = meets.length ? Math.round(meets.reduce((s,m)=>s+(m.presentIds||[]).length,0)/meets.length) : 0;
+    return [
+      '"'+(cell.name||'').replace(/"/g,'""')+'"',
+      '"'+(cell.leaderName||'').replace(/"/g,'""')+'"',
+      '"'+(cell.meetingDay||'')+' '+(cell.meetingTime||'')+'"',
+      '"'+(cell.venue||'').replace(/"/g,'""')+'"',
+      (cell.memberIds||[]).length, meets.length, avgAtt
+    ].join(',');
+  });
+  const header = 'Cell Name,Leader,Schedule,Venue,Members,Meetings,Avg Attendance';
+  const blob = new Blob(['\uFEFF'+header+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='KG_CareCells_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+}
+
 // ---- expose new globals ----
 Object.assign(window, {
   renderOverview,
@@ -4581,7 +6317,14 @@ Object.assign(window, {
   renderReports, generateMonthlyPDF, generateMemberCardsPDF,
   restoreMember, permanentDelete, loadAuditLog,
   renderAccessPage, saveAccessUser, editAccessUser, deleteAccessUser, resetAccessForm, toggleAccPwd,
-  handleLogin, handleLogout, toggleLoginPwd, toggleUserDropdown
+  handleLogin, handleLogout, toggleLoginPwd, toggleUserDropdown,
+  openFinanceModal, closeFinanceModal, saveFinanceEntry, deleteFinanceEntry,
+  loadFinanceEntries, renderFinance, setFinFilter, exportFinanceCSV, setFinType,
+  loadCareCells, renderCareCells, openCellModal, closeCellModal, saveCellModal, setCellTab,
+  openCellDetail, closeCellDetail, editCurrentCell, deleteCellConfirm,
+  openMeetingModal, closeMeetingModal, saveMeetingRecord, deleteMeetingRecord,
+  ccToggleAtt, ccMarkAll, ccToggleMember, renderMemberAssignList,
+  openNotifyModal, closeNotifyModal, sendCellWhatsApp, sendCellSMS, exportCellsCSV
 });
 
 function toggleLoginPwd(){
