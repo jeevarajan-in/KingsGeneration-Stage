@@ -1931,6 +1931,10 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       Import
     </button>
     <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="handleCSVImport(event)">
+    <button class="top-btn admin-only" onclick="deleteAllMembers()" style="border-color:#ef4444;color:#ef4444;" title="Permanently delete all members">
+      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M2 4h12M6 4V2h4v2M5 4l1 9h4l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Delete All
+    </button>
     <button class="top-btn" onclick="openGroupMessage()" title="Message the filtered members">
       <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M2 4a1 1 0 011-1h10a1 1 0 011 1v7a1 1 0 01-1 1H6l-3 3V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
       Message
@@ -1987,7 +1991,6 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
               </th>
               <th class="sortable" data-sort="status" onclick="sortBy('status')">Status<span class="sort-ind"></span></th>
               <th class="sortable" data-sort="attendance" onclick="sortBy('attendance')">Attendance<span class="sort-ind"></span></th>
-              <th class="sortable" data-sort="joined" onclick="sortBy('joined')">Joined<span class="sort-ind"></span></th>
               <th></th>
             </tr>
           </thead>
@@ -2883,18 +2886,21 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       </div>
       <div class="field-row">
         <div class="field"><label>Family Tag</label><input id="f-household" placeholder="e.g. John Jebaraj" list="household-list"><datalist id="household-list"></datalist></div>
-        <div class="field"><label>Address / Area</label><input id="f-address" placeholder="Coimbatore"></div>
+        <div class="field"><label>Relationship</label><select id="f-relationship"><option value="">-- Select --</option><option>Head of Family</option><option>Spouse</option><option>Son</option><option>Daughter</option><option>Parent</option><option>Sibling</option><option>Other</option></select></div>
       </div>
-      <div class="field"><label>Additional Skills / Gifts</label><input id="f-skills" placeholder="e.g. Keyboard, Teaching, Counselling"></div>
       <div class="field-row">
-        <div class="field"><label>Date Joined</label><input id="f-joined" type="date"></div>
+        <div class="field"><label>Address / Area</label><input id="f-address" placeholder="e.g. 12, Gandhi Nagar, Saravanampatti"></div>
+        <div class="field"><label>City</label><input id="f-city" placeholder="e.g. Coimbatore"></div>
       </div>
+      <div class="field"><label>Occupation</label><input id="f-occupation" placeholder="e.g. Software Engineer, Teacher, Business"></div>
     </div>
     <hr class="modal-divider">
     <div class="modal-section" style="padding-top:1rem;">
       <div class="modal-section-label">Pastoral &amp; Key Dates</div>
       <div class="field-row">
         <div class="field"><label>Membership Date</label><input id="f-membership" type="date"></div>
+      </div>
+      <div class="field-row">
         <div class="field"><label>Wedding Anniversary</label><input id="f-wedding" type="date"></div>
       </div>
       <div class="field"><label>Next Step <span style="font-weight:500;color:var(--slate-light);text-transform:none;letter-spacing:0;">(assimilation)</span></label><input id="f-nextstep" placeholder="e.g. Invite to small group, schedule welcome call" list="nextstep-list"><datalist id="nextstep-list"><option value="Welcome call"><option value="Invite to small group"><option value="Coffee with pastor"><option value="Newcomers class"><option value="Membership class"><option value="Connect to a ministry"><option value="Home visit"></datalist></div>
@@ -2967,7 +2973,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 <!-- Firebase SDKs -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, getDocs, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, getDocs, writeBatch, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ─────────────────────────────────────────────
 // 🔧 PASTE YOUR FIREBASE CONFIG HERE
@@ -3068,9 +3074,10 @@ async function saveMember() {
     dob:        dob || '',
     age,
     household:  document.getElementById('f-household').value.trim(),
+    relationship: document.getElementById('f-relationship').value.trim(),
     address:    document.getElementById('f-address').value.trim(),
-    skills:     document.getElementById('f-skills').value.split(',').map(s => s.trim()).filter(Boolean),
-    joined:     document.getElementById('f-joined').value,
+    city:       document.getElementById('f-city').value.trim(),
+    occupation: document.getElementById('f-occupation').value.trim(),
     membershipDate:     document.getElementById('f-membership').value || '',
     weddingAnniversary: document.getElementById('f-wedding').value || '',
     nextStep:           document.getElementById('f-nextstep').value.trim(),
@@ -3219,9 +3226,9 @@ function filtered(){
   const filtered1 = ministryFilter ? base.filter(m=>(m.ministry||'')===ministryFilter) : base;
   const list = filtered1.filter(m => {
     if(!q) return true;
-    const skills=(m.skills||[]).join(' ').toLowerCase();
+    const occupation=(m.occupation||'').toLowerCase();
     return m.name.toLowerCase().includes(q) || (m.id||'').toLowerCase().includes(q) || (m.ministry||'').toLowerCase().includes(q)
-      || (m.address||'').toLowerCase().includes(q) || skills.includes(q);
+      || (m.address||'').toLowerCase().includes(q) || (m.city||'').toLowerCase().includes(q) || occupation.includes(q);
   });
   const k = sortState.key, dir = sortState.dir;
   list.sort((a,b)=>{
@@ -3470,7 +3477,6 @@ function renderTable(list){
         <div class="bar-track"><div class="bar-fill ${barClass(m.attendance||0)}" style="width:${m.attendance||0}%"></div></div>
         <span class="bar-pct">${m.attendance||0}%</span>
       </div></td>
-      <td style="color:var(--slate-light);font-size:0.82rem">${fmtDate(m.joined)}</td>
       <td style="white-space:nowrap">
         <button class="hist-btn" onclick="event.stopPropagation();viewMemberHistory('${m._docId}')" title="Attendance History">
           <svg width="11" height="11" fill="none" viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
@@ -3495,7 +3501,7 @@ function renderTable(list){
           <div>
             <div class="exp-block-label">Personal</div>
             <div class="exp-block-val">${m.age ? m.age+' yrs' : '—'}${m.dob?' · '+fmtDate(m.dob):''}</div>
-            <div class="exp-block-sub">${m.address||'—'}${m.household?' · '+m.household:''}</div>
+            <div class="exp-block-sub">${[m.address,m.city].filter(Boolean).join(', ')||'—'}${m.household?' · '+m.household:''}</div>
           </div>
           <div>
             <div class="exp-block-label">Skills / Gifts</div>
@@ -3540,10 +3546,6 @@ function renderGrid(list){
         <span class="card-row-label">Attendance</span>
         <span class="card-row-val">${m.attendance||0}%</span>
       </div>
-      <div class="card-row">
-        <span class="card-row-label">Joined</span>
-        <span class="card-row-val">${fmtDate(m.joined)}</span>
-      </div>
       <button class="expand-more" onclick="toggleCard('${m._docId}',this)">
         <svg width="11" height="11" fill="none" viewBox="0 0 11 11" id="arrow-${m._docId}" style="transition:transform 0.2s;transform:${open?'rotate(180deg)':'rotate(0)'}"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         ${open?'Less info':'More info'}
@@ -3551,8 +3553,11 @@ function renderGrid(list){
       <div class="card-extra ${open?'open':''}" id="cex-${m._docId}">
         <div class="card-row"><span class="card-row-label">Phone</span><span class="card-row-val">${m.phone||'—'}</span></div>
         <div class="card-row"><span class="card-row-label">Age</span><span class="card-row-val">${m.age?m.age+' yrs':'—'}</span></div>
-        <div class="card-row"><span class="card-row-label">Area</span><span class="card-row-val">${m.address||'—'}</span></div>
+        <div class="card-row"><span class="card-row-label">Address</span><span class="card-row-val">${m.address||'—'}</span></div>
+        ${m.city?`<div class="card-row"><span class="card-row-label">City</span><span class="card-row-val">${m.city}</span></div>`:''}
+        ${m.occupation?`<div class="card-row"><span class="card-row-label">Occupation</span><span class="card-row-val">${m.occupation}</span></div>`:''}
         ${m.household?`<div class="card-row"><span class="card-row-label">Family Tag</span><span class="card-row-val">${m.household}</span></div>`:''}
+        ${m.relationship?`<div class="card-row"><span class="card-row-label">Relationship</span><span class="card-row-val">${m.relationship}</span></div>`:''}
         <div class="contact-row">${contactButtons(m)}</div>
         <div style="margin-top:8px"><div class="exp-block-label" style="font-size:0.65rem">Skills / Gifts</div>
         <div class="skills-row">${(m.skills||[]).map(s=>`<span class="skill-tag">${s}</span>`).join('')||'<span style="color:var(--slate-light);font-size:0.75rem">None on file</span>'}</div></div>
@@ -3590,7 +3595,7 @@ function openModal(m=null){
   editDocId = m ? m._docId : null;
   document.getElementById('modal-title').textContent = m ? 'Edit Member' : 'Add Member';
   document.getElementById('f-name').value = m?.name||'';
-  document.getElementById('f-id').value = m?.id || `KG-${String(members.length+1).padStart(3,'0')}`;
+  document.getElementById('f-id').value = m?.id || genMemberId();
   document.getElementById('f-phone').value = m?.phone||'';
   document.getElementById('f-email').value = m?.email||'';
   document.getElementById('f-ministry').value = m?.ministry||'';
@@ -3598,12 +3603,13 @@ function openModal(m=null){
   document.getElementById('f-age').value = m?.age||'';
   document.getElementById('f-dob').value = m?.dob||'';
   document.getElementById('f-household').value = m?.household||'';
+  document.getElementById('f-relationship').value = m?.relationship||'';
   document.getElementById('f-address').value = m?.address||'';
+  document.getElementById('f-city').value = m?.city||'';
+  document.getElementById('f-occupation').value = m?.occupation||'';
   // household autocomplete suggestions
   const hh=[...new Set(members.map(x=>x.household).filter(Boolean))].sort();
   document.getElementById('household-list').innerHTML = hh.map(h=>`<option value="${h}">`).join('');
-  document.getElementById('f-skills').value = m?.skills?.join(', ')||'';
-  document.getElementById('f-joined').value = m?.joined||'';
   document.getElementById('f-membership').value = m?.membershipDate||'';
   document.getElementById('f-wedding').value = m?.weddingAnniversary||'';
   document.getElementById('f-nextstep').value = m?.nextStep||'';
@@ -3632,8 +3638,8 @@ function closeModal(){ document.getElementById('modal-overlay').classList.remove
 function closeOutside(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
 
 function exportCSV(){
-  const rows = [['ID','Name','Phone','Email','Ministry','Status','DOB','Age','Family Tag','Address','Skills','Joined','Attendance%','Baptism','Membership','Anniversary','NextStep']];
-  members.forEach(m=>rows.push([m.id,m.name,m.phone||'',m.email||'',m.ministry||'',m.status,m.dob||'',m.age||'',m.household||'',m.address||'',(m.skills||[]).join('; '),m.joined||'',m.attendance||'',m.baptismDate||'',m.membershipDate||'',m.weddingAnniversary||'',m.nextStep||'']));
+  const rows = [['ID','Name','Phone','Email','Ministry','Status','DOB','Age','Family Tag','Relationship','Address','City','Occupation','Attendance%','Baptism','Membership','Anniversary','NextStep']];
+  members.forEach(m=>rows.push([m.id,m.name,m.phone||'',m.email||'',m.ministry||'',m.status,m.dob||'',m.age||'',m.household||'',m.relationship||'',m.address||'',m.city||'',m.occupation||'',m.attendance||'',m.baptismDate||'',m.membershipDate||'',m.weddingAnniversary||'',m.nextStep||'']));
   const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
@@ -3643,7 +3649,30 @@ function exportCSV(){
 
 // Expose to global scope (needed because module scope is isolated)
 window.saveMember = saveMember;
+async function deleteAllMembers(){
+  if(!requireAdmin()) return;
+  const total = members.length;
+  if(!total){ showToast('No members to delete','error'); return; }
+  const ok = await confirmDialog(
+    `Permanently delete all ${total} member${total!==1?'s':''}? This cannot be undone.`,
+    {title:'Delete all members', danger:true, confirmText:'Delete all'}
+  );
+  if(!ok) return;
+  showToast('Deleting…','success');
+  const snap = await getDocs(membersCol);
+  const CHUNK = 500;
+  const docs = snap.docs;
+  for(let i=0; i<docs.length; i+=CHUNK){
+    const batch = writeBatch(db);
+    docs.slice(i,i+CHUNK).forEach(d=>batch.delete(d.ref));
+    await batch.commit();
+  }
+  logAudit('Deleted all members', `${total} members permanently deleted`);
+  showToast(`All ${total} members deleted`,'success');
+}
+
 window.deleteMember = deleteMember;
+window.deleteAllMembers = deleteAllMembers;
 window.openModal = openModal;
 window.openEditModal = openEditModal;
 window.closeModal = closeModal;
@@ -4840,9 +4869,9 @@ async function handleCSVImport(e){
   const col=(names)=>{ for(const n of names){ const i=headers.indexOf(n); if(i>=0) return i; } return -1; };
   const ix={ id:col(['id','member id']), name:col(['name','full name']), phone:col(['phone']), email:col(['email']),
     ministry:col(['ministry','ministry / role','role']), status:col(['status']), dob:col(['dob','date of birth']),
-    age:col(['age']), household:col(['household','family']), address:col(['address','address / area','area']),
-    skills:col(['skills','skills / gifts']), joined:col(['joined','date joined']), attendance:col(['attendance%','attendance']),
-    baptism:col(['baptism','baptism date']), membership:col(['membership','membership date']), wedding:col(['anniversary','wedding anniversary','wedding']), nextStep:col(['nextstep','next step']) };
+    age:col(['age']), household:col(['household','family','family tag']), relationship:col(['relationship']), address:col(['address','address / area','area']), city:col(['city','place']), occupation:col(['occupation','skills','skills / gifts']),
+    skills:col(['skills','skills / gifts']), attendance:col(['attendance%','attendance']),
+    baptism:col(['baptism','baptism date']), membership:col(['membership','membership date','joined','date joined','since year','since']), wedding:col(['anniversary','wedding anniversary','wedding']), nextStep:col(['nextstep','next step']) };
   if(ix.name<0){ showToast('CSV needs at least a "Name" column','error'); return; }
   const data=rows.slice(1);
   const ok=await confirmDialog(`Import ${data.length} row${data.length!==1?'s':''}? Existing members with the same ID will be updated.`,{title:'Import members',confirmText:'Import'});
@@ -4852,7 +4881,7 @@ async function handleCSVImport(e){
   for(const r of data){
     try{
       const name=(r[ix.name]||'').trim(); if(!name) continue;
-      let id=ix.id>=0?(r[ix.id]||'').trim():''; if(!id) id='KG-'+Date.now().toString(36)+Math.floor(Math.random()*1000);
+      let id=ix.id>=0?(r[ix.id]||'').trim():''; if(!id) id=genMemberId();
       const exists=members.find(x=>(x.id||'')===id);
       const dob=ix.dob>=0?(r[ix.dob]||'').trim():'';
       const rec={ id, name,
@@ -4862,9 +4891,11 @@ async function handleCSVImport(e){
         status:ix.status>=0?((r[ix.status]||'').trim()||'Active'):'Active',
         dob, age:dob?ageFromDob(dob):(ix.age>=0?parseInt(r[ix.age])||null:null),
         household:ix.household>=0?(r[ix.household]||'').trim():'',
+        relationship:ix.relationship>=0?(r[ix.relationship]||'').trim():'',
+        city:ix.city>=0?(r[ix.city]||'').trim():'',
+        occupation:ix.occupation>=0?(r[ix.occupation]||'').trim():'',
         address:ix.address>=0?(r[ix.address]||'').trim():'',
         skills:ix.skills>=0?(r[ix.skills]||'').split(/[;,]/).map(s=>s.trim()).filter(Boolean):[],
-        joined:ix.joined>=0?(r[ix.joined]||'').trim():'',
         attendance:ix.attendance>=0?parseInt(r[ix.attendance])||0:0,
         baptismDate:ix.baptism>=0?(r[ix.baptism]||'').trim():'',
         membershipDate:ix.membership>=0?(r[ix.membership]||'').trim():'',
@@ -5138,7 +5169,7 @@ function genMemberId(){
   let max=0;
   members.forEach(m=>{ const mt=/^KG-(\d+)$/.exec(m.id||''); if(mt) max=Math.max(max,+mt[1]); });
   _visitorSeq++;
-  return 'KG-'+String(max+_visitorSeq).padStart(3,'0');
+  return 'KG-'+(max+_visitorSeq);
 }
 function openVisitor(){
   ['v-name','v-phone','v-email','v-invited'].forEach(id=>document.getElementById(id).value='');
