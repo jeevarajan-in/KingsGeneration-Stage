@@ -96,7 +96,10 @@
 [data-theme="light"] .nav-section { color: rgba(0,0,0,0.3); }
 [data-theme="light"] .sidebar-bottom { border-top-color: rgba(0,0,0,0.08); }
 [data-theme="light"] .stats-pill { background: rgba(184,146,46,0.10); }
-[data-theme="light"] .stats-pill-label { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .stats-pill-label {
+  font-size: .7rem;
+  color: var(--text-secondary);
+}
 
 [data-theme="light"] .topbar { background: #FFFFFF; border-bottom-color: rgba(0,0,0,0.08); }
 
@@ -205,14 +208,15 @@ body {
 }
 
 .stats-pill {
-  background: rgba(200,168,75,0.15);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  background: rgba(200,168,75,0.12);
+  border-radius: 6px;
+  padding: 0.45rem 0.75rem;
+  display:flex;align-items:center;gap:8px;
 }
 
 .stats-pill-num {
-  font-size: 1.4rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--gold);
   font-family: 'Lora', serif;
   line-height: 1;
@@ -1013,6 +1017,19 @@ body{
 
 /* — Keyboard focus rings (accessibility) — */
 button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible,
+
+/* ── Attendance-only: disabled nav items ── */
+.nav-item.nav-disabled{
+  opacity:0.35;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+.nav-item.nav-disabled .nav-lock{
+  margin-left:auto;
+  opacity:0.6;
+  flex-shrink:0;
+}
+
 .nav-item:focus-visible, .chip:focus-visible, [tabindex]:focus-visible{
   outline:2px solid var(--gold);
   outline-offset:2px;
@@ -1361,6 +1378,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 .access-table tr:hover td{background:var(--gold-pale);}
 .access-role-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:600;letter-spacing:.02em;}
 .access-role-badge.readonly{background:var(--blue-bg);color:var(--blue);}
+.access-role-badge.attendance{background:var(--green-bg);color:var(--green);}
 .access-role-badge.admin{background:var(--green-bg);color:var(--green);}
 .access-role-badge.superadmin{background:var(--gold-light);color:var(--gold);}
 .access-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
@@ -1854,6 +1872,10 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><rect x="3" y="9" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.5" fill="currentColor"/></svg>
       Access Management
     </button>
+    <button class="user-dropdown-item" id="user-dd-change-pwd" onclick="openChangePwd();toggleUserDropdown();" style="display:none;">
+      <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><rect x="3" y="9" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.5" fill="currentColor"/></svg>
+      Change Password
+    </button>
     <button class="user-dropdown-item danger" onclick="handleLogout()">
       <svg width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M7 19H3a1 1 0 01-1-1V2a1 1 0 011-1h4M13 15l5-5-5-5M18 10H7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Sign Out
@@ -1865,7 +1887,6 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 <aside class="sidebar">
   <div class="logo-area">
     <img class="logo-cross" src="KG_Logo.png" alt="Kings Generation">
-    <div class="logo-name">Kings Generation</div>
   </div>
   <nav class="nav">
     <div class="nav-section">Member Directory</div>
@@ -1908,7 +1929,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       <div class="theme-toggle-track"><div class="theme-toggle-thumb"></div></div>
     </button>
     <div id="sidebar-user-info"></div>
-    <div class="stats-pill" style="margin-top:8px;">
+    <div class="stats-pill" style="margin-top:6px;">
       <div class="stats-pill-num" id="sidebar-count">0</div>
       <div class="stats-pill-label">Total Members</div>
     </div>
@@ -1931,10 +1952,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       Import
     </button>
     <input type="file" id="csv-import-input" accept=".csv,text/csv" style="display:none" onchange="handleCSVImport(event)">
-    <button class="top-btn admin-only" onclick="deleteAllMembers()" style="border-color:#ef4444;color:#ef4444;" title="Permanently delete all members">
-      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M2 4h12M6 4V2h4v2M5 4l1 9h4l1-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Delete All
-    </button>
+
     <button class="top-btn" onclick="openGroupMessage()" title="Message the filtered members">
       <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M2 4a1 1 0 011-1h10a1 1 0 011 1v7a1 1 0 01-1 1H6l-3 3V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
       Message
@@ -2285,10 +2303,26 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       </div>
     </div>
     <div class="dash-grid" style="grid-template-columns:1fr;">
-      <div class="dash-card dash-span-2">
+      <!-- SUPERADMIN: full activity log -->
+      <div class="dash-card dash-span-2" id="audit-log-card" style="display:none;">
         <div class="dash-card-head"><div class="dash-card-title">🧾 Activity Log</div><button class="top-btn" onclick="loadAuditLog()" style="padding:.35rem .8rem;font-size:.74rem;">Load activity</button></div>
         <div style="font-size:.78rem;color:var(--text-secondary);margin-bottom:8px;">Who changed what. Recorded when sign-in is enabled; admins can review the last 200 actions.</div>
         <div id="audit-list" class="dash-list"><div class="dash-empty">Tap "Load activity" to view recent changes.</div></div>
+      </div>
+      <!-- NON-SUPERADMIN: locked placeholder -->
+      <div class="dash-card dash-span-2" id="audit-log-locked" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div class="dash-card-title" style="opacity:.55;font-size:.72rem;letter-spacing:.08em;">🧾 ACTIVITY LOG</div>
+          <span style="display:inline-flex;align-items:center;gap:5px;font-size:.72rem;color:var(--slate);background:var(--surface2);padding:4px 12px;border-radius:20px;border:1px solid var(--border);">
+            <svg width="11" height="11" fill="none" viewBox="0 0 20 20"><rect x="5" y="9" width="10" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            Super Admin only
+          </span>
+        </div>
+        <div style="padding:2.5rem 1rem;text-align:center;background:var(--surface2);border-radius:12px;border:1.5px dashed var(--border-strong);">
+          <svg width="34" height="34" fill="none" viewBox="0 0 20 20" style="opacity:.25;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto;"><rect x="5" y="9" width="10" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.5" fill="currentColor"/></svg>
+          <div style="font-size:.84rem;color:var(--slate);font-weight:600;">Activity Log is restricted.</div>
+          <div style="font-size:.74rem;color:var(--slate);margin-top:5px;opacity:.7;">Contact your Super Admin to review audit history.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -2326,6 +2360,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
             <label>Role</label>
             <select id="acc-role" required>
               <option value="readonly">Read Only</option>
+              <option value="attendance">Attendance Only</option>
               <option value="admin">Admin</option>
               <option value="superadmin">Super Admin</option>
             </select>
@@ -2348,6 +2383,13 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
             <div class="access-desc-body">
               <div class="access-desc-title" style="color:var(--blue)">Read Only</div>
               <div class="access-desc-sub">Can mark attendence and Can view members, attendance, reports &amp; dashboards. Cannot add, edit or delete any data.</div>
+            </div>
+          </div>
+          <div class="access-desc-item">
+            <div class="access-desc-icon" style="background:var(--green-bg);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">🗓️</div>
+            <div class="access-desc-body">
+              <div class="access-desc-title" style="color:var(--green)">Attendance Only</div>
+              <div class="access-desc-sub">Can access Members, Attendance and Reports &amp; PDF tabs only. All other tabs are visible but locked.</div>
             </div>
           </div>
           <div class="access-desc-item">
@@ -2377,6 +2419,40 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
             <tbody id="access-tbody"></tbody>
           </table>
         </div>
+      </div>
+    </div>
+    <!-- LOGIN ACTIVITY LOG (Super Admin only) -->
+  <div class="dash-grid" style="grid-template-columns:1fr;margin-top:1.5rem;">
+    <div class="dash-card">
+      <div class="dash-card-head" style="flex-wrap:wrap;gap:10px;">
+        <div>
+          <div class="dash-card-title">Login Activity</div>
+          <div class="dash-card-sub" id="login-log-meta">—</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto;">
+          <select id="login-log-month-filter" onchange="filterLoginLog()" style="padding:.35rem .7rem;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface2);color:var(--text-primary);font-family:inherit;font-size:.78rem;outline:none;cursor:pointer;"></select>
+          <button class="top-btn" onclick="exportLoginLog()">
+            <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Export CSV
+          </button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;margin-top:1rem;">
+        <table class="access-table" style="width:100%;">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Display Name</th>
+              <th>Role</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Device / Browser</th>
+            </tr>
+          </thead>
+          <tbody id="login-log-tbody">
+            <tr><td colspan="6" style="text-align:center;color:var(--slate);padding:2rem;">Loading…</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -2999,6 +3075,7 @@ const accessCol = collection(db, 'access_users');
 const financeCol = collection(db, 'finance_ledger');
 const careCellsCol = collection(db, 'care_cells');
 const cellMeetingsCol = collection(db, 'cell_meetings');
+const loginLogsCol = collection(db, 'login_logs');
 
 // App runs in open mode (no sign-in).
 let currentRole = 'admin';
@@ -3045,7 +3122,7 @@ onSnapshot(q, (snapshot) => {
 
 // ── Save (add or edit) ──
 async function saveMember() {
-  if(!requireAdmin()) return;
+  if(!canEditMembers()) return;
   const name = document.getElementById('f-name').value.trim();
   const memberId = document.getElementById('f-id').value.trim();
   if (!name || !memberId) { showToast('Name and Member ID are required', 'error'); return; }
@@ -3105,7 +3182,7 @@ async function saveMember() {
 
 // ── Archive (soft delete) with undo ──
 async function deleteMember(docId) {
-  if(!requireAdmin()) return;
+  if(!canEditMembers()) return;
   const m = members.find(x=>x._docId===docId);
   const ok = await confirmDialog(`Archive ${m?m.name:'this member'}? They'll be hidden from lists but kept on record, and you can restore them anytime from the Archived view.`, {title:'Archive member', confirmText:'Archive'});
   if (!ok) return;
@@ -3122,7 +3199,7 @@ async function deleteMember(docId) {
   }
 }
 async function restoreMember(docId){
-  if(!requireAdmin()) return;
+  if(!canEditMembers()) return;
   const m = members.find(x=>x._docId===docId);
   try{
     await setDoc(doc(membersCol, docId), {archived:false, archivedAt:null, updatedAt:new Date().toISOString()}, {merge:true});
@@ -3131,7 +3208,7 @@ async function restoreMember(docId){
   }catch(e){ showToast('Restore failed: '+e.message,'error'); }
 }
 async function permanentDelete(docId){
-  if(!requireAdmin()) return;
+  if(!canEditMembers()) return;
   const m = members.find(x=>x._docId===docId);
   const ok = await confirmDialog(`Permanently delete ${m?m.name:'this member'}? This cannot be undone.`, {title:'Delete forever', danger:true, confirmText:'Delete forever'});
   if(!ok) return;
@@ -3737,6 +3814,8 @@ let attTierFilter = 'all';
 function showPage(page) {
   if(!PAGES.includes(page)) page='members';
   if(page==='access'&&!isSuperAdmin()){ page='overview'; showToast('Super Admin access required','error'); }
+  const ATT_ALLOWED=['members','attendance','reports'];
+  if(isAttendanceOnly()&&!ATT_ALLOWED.includes(page)){ page='attendance'; showToast('Access restricted to Attendance role tabs only','error'); }
   PAGES.forEach(p=>{ const el=document.getElementById(p+'-page'); if(el) el.style.display=(p===page)?'flex':'none'; });
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const nb=document.getElementById(NAV_MAP[page]); if(nb) nb.classList.add('active');
@@ -4106,7 +4185,7 @@ function updateMarkAttStats(){
 }
 
 async function saveAttendanceRecord(){
-  if(!requireAdmin()) return;
+  if(!canEditMembers()) return;
   const date=document.getElementById('mark-att-date').value;
   const event=document.getElementById('mark-att-event').value;
   if(!date){showToast('Please select a date','error');return;}
@@ -4197,7 +4276,7 @@ let recEventFilter='all';
 function setRecEventFilter(v){ recEventFilter=v; renderAttendanceRecords(); }
 
 async function deleteAttRecord(docId){
-  if(!requireAdmin()) return;
+  if(!canEditMembers()) return;
   const ok = await confirmDialog('Delete this attendance record? This cannot be undone.', {title:'Delete record', danger:true, confirmText:'Delete'});
   if(!ok) return;
   try{
@@ -4237,6 +4316,12 @@ window.saveAttendanceRecord=saveAttendanceRecord;
 window.deleteAttRecord=deleteAttRecord;
 window.renderMarkAttList=renderMarkAttList;
 window.showPage=showPage;
+window.openChangePwd=openChangePwd;
+window.filterLoginLog=filterLoginLog;
+window.exportLoginLog=exportLoginLog;
+window.closeChangePwd=closeChangePwd;
+window.saveChangePwd=saveChangePwd;
+window.toggleCpwdVis=toggleCpwdVis;
 window.setAttFilter=setAttFilter;
 window.renderAttendance=renderAttendance;
 window.viewMemberHistory=viewMemberHistory;
@@ -4859,7 +4944,7 @@ function parseCSV(text){
   return rows.filter(r=>r.some(c=>c.trim()!==''));
 }
 async function handleCSVImport(e){
-  if(!requireAdmin()) return;
+  if(!canEditMembers()) return;
   const file=e.target.files[0]; if(!file) return;
   e.target.value='';
   const text=await file.text();
@@ -5183,7 +5268,7 @@ function openVisitor(){
 }
 function closeVisitor(){ document.getElementById('visitor-overlay').classList.remove('open'); }
 async function saveVisitor(another){
-  if(!requireAdmin()) return;
+  if(!canEditMembers()) return;
   const name=document.getElementById('v-name').value.trim();
   if(!name){ showToast('Name is required','error'); return; }
   const invited=document.getElementById('v-invited').value.trim();
@@ -5252,18 +5337,68 @@ let currentUser=null;
 let loggedInUser=null;
 function isAdmin(){ return currentRole==='admin'||currentRole==='superadmin'; }
 function isSuperAdmin(){ return currentRole==='superadmin'; }
+function isAttendanceOnly(){ return currentRole==='attendance'; }
 function requireAdmin(){
   if(!isAdmin()){ showToast('Admin access required','error'); return false; }
   return true;
 }
+function canEditMembers(){
+  // Admin, SuperAdmin and Attendance-Only can add/edit/delete members
+  if(isAdmin()||isAttendanceOnly()) return true;
+  showToast('Access restricted','error'); return false;
+}
 function applyRoleVisibility(){
-  // Hide admin-only elements for readonly
+  // For attendance-only: show all admin-only elements (they have full access in their 3 tabs)
+  // For readonly: hide admin-only elements
+  // For admin/superadmin: show all
   document.querySelectorAll('.admin-only').forEach(el=>{
-    el.style.display=isAdmin()?'':'none';
+    if(isAttendanceOnly()){
+      el.style.display=''; // full access within allowed tabs
+    } else {
+      el.style.display=isAdmin()?'':'none';
+    }
   });
   // Hide Access nav for non-superadmin
   const accessNav=document.getElementById('nav-access');
   if(accessNav) accessNav.style.display=isSuperAdmin()?'':'none';
+  // Attendance-only: Members + Attendance + Reports enabled; rest visible but locked
+  const lockSvg=`<svg class="nav-lock" width="12" height="12" fill="none" viewBox="0 0 20 20"><rect x="5" y="9" width="10" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M7 9V6a3 3 0 116 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+  const attAllowed=['nav-members','nav-attendance','nav-reports'];
+  const attLocked=['nav-overview','nav-carecell','nav-assimilation','nav-finance'];
+  if(isAttendanceOnly()){
+    // Show all locked tabs (some are admin-only, force visible)
+    attLocked.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      el.style.display='';
+      el.classList.add('nav-disabled');
+      if(!el.querySelector('.nav-lock')) el.insertAdjacentHTML('beforeend',lockSvg);
+    });
+    // Enable allowed tabs
+    attAllowed.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      el.classList.remove('nav-disabled');
+      const lk=el.querySelector('.nav-lock'); if(lk) lk.remove();
+    });
+    // Hide mobile overview
+    const movOv=document.getElementById('mnav-overview'); if(movOv) movOv.style.display='none';
+  } else {
+    // Remove any locks when switching role
+    [...attLocked,...attAllowed].forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      el.classList.remove('nav-disabled');
+      const lk=el.querySelector('.nav-lock'); if(lk) lk.remove();
+    });
+    const movOv=document.getElementById('mnav-overview'); if(movOv) movOv.style.display='';
+  }
+  // Show/hide Activity Log card based on role
+  const auditCard=document.getElementById('audit-log-card');
+  const auditLocked=document.getElementById('audit-log-locked');
+  if(auditCard) auditCard.style.display=isSuperAdmin()?'':'none';
+  if(auditLocked) auditLocked.style.display=!isSuperAdmin()?'':'none';
+
   // Update top-right user avatar
   const wrap=document.getElementById('user-avatar-wrap');
   const btn=document.getElementById('user-avatar-btn');
@@ -5272,7 +5407,7 @@ function applyRoleVisibility(){
   const ddRole=document.getElementById('user-dropdown-role');
   if(loggedInUser && wrap){
     const rc=loggedInUser.role==='superadmin'?'sa':loggedInUser.role==='admin'?'ad':'ro';
-    const rl=loggedInUser.role==='superadmin'?'Super Admin':loggedInUser.role==='admin'?'Admin':'Read Only';
+    const rl=loggedInUser.role==='superadmin'?'Super Admin':loggedInUser.role==='admin'?'Admin':loggedInUser.role==='attendance'?'Attendance Only':'Read Only';
     const initials=(loggedInUser.display||loggedInUser.username).slice(0,2).toUpperCase();
     btn.className='user-avatar-btn '+rc;
     btn.textContent=initials;
@@ -5283,6 +5418,8 @@ function applyRoleVisibility(){
     wrap.style.display='block';
     const ddAccess=document.getElementById('user-dd-access');
     if(ddAccess) ddAccess.style.display=isSuperAdmin()?'flex':'none';
+    const ddChgPwd=document.getElementById('user-dd-change-pwd');
+    if(ddChgPwd) ddChgPwd.style.display=isAttendanceOnly()?'flex':'none';
   } else if(wrap){
     wrap.style.display='none';
   }
@@ -5301,11 +5438,12 @@ async function handleLogin(){
   currentRole=match.role;
   currentUser={email:match.username, uid:match.id};
   sessionStorage.setItem('kg_session',JSON.stringify({id:match.id,username:match.username,role:match.role}));
+  logLoginEntry(match);
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('app-layout').style.display='flex';
   document.getElementById('mobile-nav').style.display='';
   applyRoleVisibility();
-  showPage('overview');
+  showPage(isAttendanceOnly()?'attendance':'overview');
 }
 
 function handleLogout(){
@@ -5348,6 +5486,7 @@ function logAudit(action, detail){
 
 // ---- audit log viewer ----
 async function loadAuditLog(){
+  if(!isSuperAdmin()){ showToast('Super Admin access required','error'); return; }
   const host=document.getElementById('audit-list'); if(!host) return;
   host.innerHTML='<div class="dash-empty">Loading…</div>';
   try{
@@ -5380,7 +5519,8 @@ async function seedDefaults(){
   const defaults=[
     {id:'1', username:'readonly', display:'Read Only User', password:'readonly123', role:'readonly', created:now},
     {id:'2', username:'admin', display:'Admin User', password:'admin1234', role:'admin', created:now},
-    {id:'3', username:'superadmin', display:'Super Admin', password:'super12345', role:'superadmin', created:now}
+    {id:'3', username:'superadmin', display:'Super Admin', password:'super12345', role:'superadmin', created:now},
+    {id:'4', username:'attendance', display:'Attendance User', password:'attend123', role:'attendance', created:now}
   ];
   for(const u of defaults){
     await setDoc(doc(accessCol, u.id), { username:u.username, display:u.display, password:u.password, role:u.role, created:u.created });
@@ -5389,6 +5529,7 @@ async function seedDefaults(){
 }
 
 async function renderAccessPage(){
+  if(isSuperAdmin()) loadLoginLogs();
   const users=await getAccessUsers();
   const tb=document.getElementById('access-tbody');
   const ct=document.getElementById('access-count');
@@ -5396,8 +5537,8 @@ async function renderAccessPage(){
   if(!tb) return;
   if(!users.length){ tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--slate);padding:2rem;">No login accounts yet.</td></tr>'; return; }
   tb.innerHTML=users.map(u=>{
-    const roleClass=u.role==='superadmin'?'superadmin':u.role==='admin'?'admin':'readonly';
-    const roleLabel=u.role==='superadmin'?'Super Admin':u.role==='admin'?'Admin':'Read Only';
+    const roleClass=u.role==='superadmin'?'superadmin':u.role==='admin'?'admin':u.role==='attendance'?'attendance':'readonly';
+    const roleLabel=u.role==='superadmin'?'Super Admin':u.role==='admin'?'Admin':u.role==='attendance'?'Attendance Only':'Read Only';
     const d=u.created?new Date(u.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'-';
     return `<tr>
       <td style="font-weight:600;">${escapeHtml(u.username)}</td>
@@ -6375,6 +6516,146 @@ document.addEventListener('click',function(e){
   if(wrap && dd && !wrap.contains(e.target)) dd.classList.remove('open');
 });
 
+
+// ── Change Password (Attendance Only) ──
+function openChangePwd(){
+  document.getElementById('cpwd-current').value='';
+  document.getElementById('cpwd-new').value='';
+  document.getElementById('cpwd-confirm').value='';
+  document.getElementById('cpwd-error').textContent='';
+  const cpwdOv=document.getElementById('change-pwd-overlay'); cpwdOv.style.display='flex'; cpwdOv.style.alignItems='center'; cpwdOv.style.justifyContent='center';
+}
+function closeChangePwd(){
+  document.getElementById('change-pwd-overlay').style.display='none';
+}
+function toggleCpwdVis(inputId, eyeId){
+  const inp=document.getElementById(inputId);
+  inp.type=inp.type==='password'?'text':'password';
+}
+async function saveChangePwd(){
+  const current=document.getElementById('cpwd-current').value;
+  const newPwd=document.getElementById('cpwd-new').value;
+  const confirm=document.getElementById('cpwd-confirm').value;
+  const errEl=document.getElementById('cpwd-error');
+  errEl.textContent='';
+  if(!current||!newPwd||!confirm){ errEl.textContent='All fields are required.'; return; }
+  if(newPwd.length<6){ errEl.textContent='New password must be at least 6 characters.'; return; }
+  if(newPwd!==confirm){ errEl.textContent='New passwords do not match.'; return; }
+  if(!loggedInUser){ errEl.textContent='Session error. Please log in again.'; return; }
+  if(loggedInUser.password!==current){ errEl.textContent='Current password is incorrect.'; return; }
+  try{
+    await setDoc(doc(accessCol, loggedInUser.id), { password: newPwd }, { merge: true });
+    loggedInUser.password = newPwd;
+    closeChangePwd();
+    showToast('Password updated successfully','success');
+  }catch(e){
+    errEl.textContent='Failed to update password. Try again.';
+  }
+}
+
+
+// ── LOGIN ACTIVITY LOG ──
+let allLoginLogs = [];
+
+async function logLoginEntry(user){
+  try {
+    const now = new Date();
+    const ua = navigator.userAgent;
+    const device = /Mobi|Android/i.test(ua) ? 'Mobile' : 'Desktop';
+    const browser = /Chrome/i.test(ua) ? 'Chrome' : /Firefox/i.test(ua) ? 'Firefox' : /Safari/i.test(ua) ? 'Safari' : /Edge/i.test(ua) ? 'Edge' : 'Browser';
+    const logId = 'log_' + now.getTime() + '_' + Math.random().toString(36).slice(2,7);
+    await setDoc(doc(loginLogsCol, logId), {
+      userId: user.id,
+      username: user.username,
+      display: user.display || user.username,
+      role: user.role,
+      timestamp: now.toISOString(),
+      date: now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),
+      time: now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),
+      month: now.toLocaleString('default',{month:'long',year:'numeric'}),
+      monthKey: `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,
+      device: device + ' / ' + browser,
+    });
+  } catch(e){ console.warn('Login log failed:', e); }
+}
+
+async function loadLoginLogs(){
+  try {
+    const snap = await getDocs(query(loginLogsCol, orderBy('timestamp','desc')));
+    allLoginLogs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    populateLoginMonthFilter();
+    filterLoginLog();
+  } catch(e){
+    const tb=document.getElementById('login-log-tbody');
+    if(tb) tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--slate);padding:1.5rem;">Failed to load logs.</td></tr>';
+  }
+}
+
+function populateLoginMonthFilter(){
+  const sel=document.getElementById('login-log-month-filter');
+  if(!sel) return;
+  const months=[...new Set(allLoginLogs.map(l=>l.monthKey))].sort().reverse();
+  sel.innerHTML='<option value="">All Time</option>'+months.map(mk=>{
+    const [y,m]=mk.split('-');
+    const label=new Date(y,m-1).toLocaleString('default',{month:'long',year:'numeric'});
+    return `<option value="${mk}">${label}</option>`;
+  }).join('');
+  // default to current month
+  const now=new Date();
+  const curKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  if(months.includes(curKey)) sel.value=curKey;
+}
+
+function filterLoginLog(){
+  const sel=document.getElementById('login-log-month-filter');
+  const filter=sel?sel.value:'';
+  const filtered=filter?allLoginLogs.filter(l=>l.monthKey===filter):allLoginLogs;
+  renderLoginLog(filtered);
+  const meta=document.getElementById('login-log-meta');
+  if(meta) meta.textContent=`${filtered.length} entr${filtered.length===1?'y':'ies'}${filter?' this month':''}`;
+}
+
+function renderLoginLog(logs){
+  const tb=document.getElementById('login-log-tbody');
+  if(!tb) return;
+  if(!logs.length){
+    tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--slate);padding:2rem;">No login entries found.</td></tr>';
+    return;
+  }
+  const roleLabel=r=>r==='superadmin'?'Super Admin':r==='admin'?'Admin':r==='attendance'?'Attendance Only':'Read Only';
+  const roleClass=r=>r==='superadmin'?'superadmin':r==='admin'?'admin':r==='attendance'?'attendance':'readonly';
+  tb.innerHTML=logs.map(l=>`
+    <tr>
+      <td style="font-weight:600;">${escapeHtml(l.username||'-')}</td>
+      <td>${escapeHtml(l.display||'-')}</td>
+      <td><span class="access-role-badge ${roleClass(l.role)}">${roleLabel(l.role)}</span></td>
+      <td style="color:var(--text-secondary);font-size:.82rem;">${l.date||'-'}</td>
+      <td style="color:var(--text-secondary);font-size:.82rem;">${l.time||'-'}</td>
+      <td style="color:var(--text-secondary);font-size:.78rem;">${escapeHtml(l.device||'-')}</td>
+    </tr>`).join('');
+}
+
+function exportLoginLog(){
+  const sel=document.getElementById('login-log-month-filter');
+  const filter=sel?sel.value:'';
+  const filtered=filter?allLoginLogs.filter(l=>l.monthKey===filter):allLoginLogs;
+  if(!filtered.length){ showToast('No entries to export','error'); return; }
+  const rows=[['Username','Display Name','Role','Date','Time','Device/Browser','Month']];
+  filtered.forEach(l=>rows.push([
+    l.username||'',l.display||'',l.role||'',l.date||'',l.time||'',l.device||'',l.month||''
+  ]));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const label=filter?filtered[0]?.month?.replace(' ','-')||filter:'all-time';
+  a.download=`kg-login-activity-${label}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Login log exported','success');
+}
+
 // ---- init: restore session or show login ----
 (async function(){
   await seedDefaults();
@@ -6382,7 +6663,7 @@ document.addEventListener('click',function(e){
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('app-layout').style.display='flex';
     applyRoleVisibility();
-    showPage('overview');
+    showPage(isAttendanceOnly()?'attendance':'overview');
   } else {
     document.getElementById('app-layout').style.display='none';
     document.getElementById('mobile-nav').style.display='none';
@@ -6390,6 +6671,53 @@ document.addEventListener('click',function(e){
 })();
 
 </script>
+
+
+<!-- CHANGE PASSWORD MODAL -->
+<div id="change-pwd-overlay" onclick="if(event.target===this)closeChangePwd()" style="display:none;position:fixed;inset:0;z-index:2000;align-items:center;justify-content:center;padding:1rem;background:rgba(5,8,18,0.82);backdrop-filter:blur(6px);">
+  <div class="modal-content" style="max-width:400px;width:100%;background:var(--surface);border-radius:18px;box-shadow:0 24px 64px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.08);">
+    <div class="modal-header">
+      <span class="modal-head-title">Change Password</span>
+      <button class="modal-close" onclick="closeChangePwd()">
+        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding:1.5rem;">
+      <div class="field" style="margin-bottom:14px;">
+        <label>Current Password</label>
+        <div style="position:relative;">
+          <input type="password" id="cpwd-current" placeholder="Enter current password" autocomplete="current-password">
+          <button type="button" onclick="toggleCpwdVis('cpwd-current','eye-current')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--slate);cursor:pointer;padding:4px;">
+            <svg id="eye-current" width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>New Password</label>
+        <div style="position:relative;">
+          <input type="password" id="cpwd-new" placeholder="Min 6 characters" autocomplete="new-password" minlength="6">
+          <button type="button" onclick="toggleCpwdVis('cpwd-new','eye-new')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--slate);cursor:pointer;padding:4px;">
+            <svg id="eye-new" width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:6px;">
+        <label>Confirm New Password</label>
+        <div style="position:relative;">
+          <input type="password" id="cpwd-confirm" placeholder="Re-enter new password" autocomplete="new-password">
+          <button type="button" onclick="toggleCpwdVis('cpwd-confirm','eye-confirm')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--slate);cursor:pointer;padding:4px;">
+            <svg id="eye-confirm" width="15" height="15" fill="none" viewBox="0 0 20 20"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="cpwd-error" style="color:var(--red);font-size:.78rem;min-height:1.2em;margin-top:6px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeChangePwd()">Cancel</button>
+      <button class="btn-save" onclick="saveChangePwd()">Update Password</button>
+    </div>
+  </div>
+</div>
 
 <!-- MOBILE BOTTOM NAV -->
 <nav class="mobile-nav" id="mobile-nav">
