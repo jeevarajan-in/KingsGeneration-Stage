@@ -941,6 +941,11 @@ tbody td {
 .att-filter-btn.active{background:var(--gold);color:#0D0F14;}
 .att-tier-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;}
 
+/* Venue Picker */
+.venue-pick-btn{display:flex;align-items:center;gap:12px;padding:.85rem 1rem;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:#1C2030;cursor:pointer;transition:all .15s;width:100%;text-align:left;font-family:inherit;}
+.venue-pick-btn:hover{border-color:var(--gold);background:var(--gold-pale);}
+.venue-pick-icon{width:40px;height:40px;border-radius:10px;background:var(--gold-light);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;}
+
 /* Mark Attendance */
 .mark-att-modal{background:var(--surface);border-radius:0;width:100%;max-width:100%;height:100vh;max-height:100vh;box-shadow:none;overflow:hidden;animation:popIn .2s ease;border:none;display:flex;flex-direction:column;}
 .mark-att-body{padding:1rem 1.5rem;overflow-y:auto;flex:1;}
@@ -2026,13 +2031,25 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
   <div class="topbar">
     <div class="page-title">Attendance</div>
     <div style="flex:1"></div>
-    <button class="top-btn" onclick="exportAttCSV()">
-      <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Export
-    </button>
+    <div style="position:relative;" id="export-att-wrap">
+      <button class="top-btn" onclick="toggleExportAttMenu()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Export
+        <svg width="10" height="10" fill="none" viewBox="0 0 10 10" style="margin-left:2px;"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div id="export-att-menu" style="display:none;position:absolute;top:calc(100% + 6px);left:0;background:#10121A;border:1px solid rgba(255,255,255,0.10);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:200;min-width:180px;overflow:hidden;">
+        <button onclick="exportAttCSV('city')" style="display:flex;align-items:center;gap:8px;width:100%;padding:.65rem 1rem;background:none;border:none;font-family:inherit;font-size:.83rem;font-weight:500;color:var(--text-primary);cursor:pointer;text-align:left;" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background='none'">
+          <span style="font-size:.9rem;">🏙</span> City Church
+        </button>
+        <div style="border-top:1px solid rgba(255,255,255,0.06);"></div>
+        <button onclick="exportAttCSV('airport')" style="display:flex;align-items:center;gap:8px;width:100%;padding:.65rem 1rem;background:none;border:none;font-family:inherit;font-size:.83rem;font-weight:500;color:var(--text-primary);cursor:pointer;text-align:left;" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background='none'">
+          <span style="font-size:.9rem;">✈</span> Airport Church
+        </button>
+      </div>
+    </div>
     <button class="top-btn admin-only" onclick="openVisitor()">
       <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M7 9c1.7 0 3-1.3 3-3S8.7 3 7 3 4 4.3 4 6s1.3 3 3 3zM2 14c0-2.2 2.2-3.5 5-3.5M12 10v4M10 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Welcome Visitor
+      Welcome New Comer
     </button>
     <button class="top-btn primary" onclick="openMarkAttendance()">
       <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path d="M6 8l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="1" y="1" width="14" height="14" rx="2" stroke="#fff" stroke-width="1.6"/></svg>
@@ -2850,6 +2867,40 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 </div>
 
 <!-- MARK ATTENDANCE MODAL -->
+<!-- VENUE PICKER MODAL -->
+<div class="overlay" id="venue-pick-overlay" onclick="if(event.target===this)closeVenuePicker()" style="z-index:500;">
+  <div style="background:#10121A;border-radius:20px;width:100%;max-width:360px;box-shadow:var(--shadow-lg);border:1px solid rgba(255,255,255,0.08);animation:popIn .2s ease;overflow:hidden;">
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <span style="font-family:'Lora',serif;font-size:1.05rem;font-weight:600;color:#fff;">Select Location</span>
+      <button class="modal-close" onclick="closeVenuePicker()" style="float:right;margin-top:-2px;">
+        <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div style="padding:1.25rem;display:flex;flex-direction:column;gap:10px;background:#10121A;">
+      <button onclick="selectVenue('City Church','MSN Hall')" class="venue-pick-btn">
+        <div class="venue-pick-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 21V15h6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:.95rem;color:var(--text-primary);">City Church</div>
+          <div style="font-size:.78rem;color:var(--text-secondary);margin-top:2px;">MSN Hall</div>
+        </div>
+        <svg style="margin-left:auto;color:var(--slate-light);" width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M5 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button onclick="selectVenue('Airport Church','Joy Auditorium')" class="venue-pick-btn">
+        <div class="venue-pick-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 21V15h6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:.95rem;color:var(--text-primary);">Airport Church</div>
+          <div style="font-size:.78rem;color:var(--text-secondary);margin-top:2px;">Joy Auditorium</div>
+        </div>
+        <svg style="margin-left:auto;color:var(--slate-light);" width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M5 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="mark-att-overlay" onclick="if(event.target===this)closeMarkAttendance()">
   <div class="mark-att-modal">
     <div class="modal-head">
@@ -2857,6 +2908,12 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
       <button class="modal-close" onclick="closeMarkAttendance()">
         <svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       </button>
+    </div>
+    <div id="mark-att-venue-bar" style="display:none;padding:.5rem 1.5rem;background:var(--gold-pale);border-bottom:1px solid var(--gold-light);font-size:.78rem;font-weight:600;color:var(--gold);">
+      <div style="display:flex;align-items:center;gap:6px;">
+      <svg width="13" height="13" fill="none" viewBox="0 0 20 20"><path d="M10 2C7 2 4 4.5 4 8c0 4.5 6 10 6 10s6-5.5 6-10c0-3.5-3-6-6-6z" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="8" r="2" stroke="currentColor" stroke-width="1.6"/></svg>
+      <span id="mark-att-venue-label">—</span>
+      </div>
     </div>
     <div style="padding:1rem 1.5rem 0;">
       <div class="field-row">
@@ -3020,11 +3077,11 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
 <div class="overlay" id="visitor-overlay" onclick="if(event.target===this)closeVisitor()">
   <div class="modal" style="max-width:440px;">
     <div class="modal-head">
-      <span class="modal-head-title">Welcome a First-Time Visitor</span>
+      <span class="modal-head-title">Welcome New Comer</span>
       <button class="modal-close" onclick="closeVisitor()"><svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     </div>
     <div style="padding:1.25rem 1.5rem;">
-      <div style="font-size:.8rem;color:var(--text-secondary);margin-bottom:1rem;">Quick capture at the door. Saves as a <b style="color:var(--text-primary)">Visitor</b> with a follow-up next step so they don't fall through.</div>
+      <div style="font-size:.8rem;color:var(--text-secondary);margin-bottom:1rem;">Quick capture at the door. Saves as a <b style="color:var(--text-primary)">New Comer</b> with a follow-up next step so they don't fall through.</div>
       <div class="field"><label>Name *</label><input id="v-name" placeholder="Full name" onkeydown="if(event.key==='Enter')document.getElementById('v-phone').focus()"></div>
       <div class="field-row">
         <div class="field"><label>Phone</label><input id="v-phone" placeholder="+91…"></div>
@@ -3042,7 +3099,7 @@ thead th.sortable.sorted .sort-ind{opacity:1;color:var(--gold);}
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeVisitor()">Cancel</button>
       <button class="btn-cancel" onclick="saveVisitor(true)">Save &amp; add another</button>
-      <button class="btn-save" onclick="saveVisitor(false)">Save Visitor</button>
+      <button class="btn-save" onclick="saveVisitor(false)">Save New Comer</button>
     </div>
   </div>
 </div>
@@ -4029,8 +4086,42 @@ function renderAttendance(){
 }
 // ── Mark Attendance ──
 let editingRecordId = null;
+let selectedVenue = '';  // e.g. "City Church – MSN Hall"
+
+function openVenuePicker(){ document.getElementById('venue-pick-overlay').classList.add('open'); }
+function closeVenuePicker(){ document.getElementById('venue-pick-overlay').classList.remove('open'); }
+
+function selectVenue(church, hall){
+  selectedVenue = church + ' – ' + hall;
+  closeVenuePicker();
+  setTimeout(()=>{ _doOpenMarkAttendance(null); }, 150);
+}
+
 function openMarkAttendance(recordId){
+  if(recordId){
+    // Editing existing — skip venue picker
+    selectedVenue = '';
+    _doOpenMarkAttendance(recordId);
+  } else {
+    // New attendance — show venue picker first
+    openVenuePicker();
+  }
+}
+
+// per-member location map: docId -> 'city' | 'airport' | ''
+const markAttVenue = new Map();
+// per-member type map: docId -> 'regular' | 'visitor' | ''
+const markAttType = new Map();
+
+function _doOpenMarkAttendance(recordId){
   markAttPresent.clear();
+  markAttVenue.clear();
+  markAttType.clear();
+  // pre-load saved defaults from member data
+  members.forEach(m=>{
+    if(m.defaultVenue) markAttVenue.set(m._docId, m.defaultVenue);
+    if(m.defaultAttType) markAttType.set(m._docId, m.defaultAttType);
+  });
   editingRecordId = recordId || null;
   const titleEl = document.querySelector('#mark-att-overlay .modal-head-title');
   if(editingRecordId){
@@ -4039,6 +4130,12 @@ function openMarkAttendance(recordId){
       (rec.presentIds||[]).forEach(id=>markAttPresent.add(id));
       document.getElementById('mark-att-date').value = rec.date;
       document.getElementById('mark-att-event').value = rec.event||'Sunday Service';
+      // restore venue if present
+      if(rec.venue){ selectedVenue=rec.venue; }
+      // restore per-member venues
+      if(rec.memberVenues){ Object.entries(rec.memberVenues).forEach(([k,v])=>markAttVenue.set(k,v)); }
+      // restore per-member types
+      if(rec.memberTypes){ Object.entries(rec.memberTypes).forEach(([k,v])=>markAttType.set(k,v)); }
     }
     if(titleEl) titleEl.textContent='Edit Attendance';
   } else {
@@ -4046,13 +4143,20 @@ function openMarkAttendance(recordId){
     document.getElementById('mark-att-event').value='Sunday Service';
     if(titleEl) titleEl.textContent='Mark Attendance';
   }
+  // Show venue bar
+  const venueBar=document.getElementById('mark-att-venue-bar');
+  const venueLabel=document.getElementById('mark-att-venue-label');
+  if(venueBar && venueLabel){
+    if(selectedVenue){ venueBar.style.display='flex'; venueLabel.textContent=selectedVenue; }
+    else { venueBar.style.display='none'; }
+  }
   document.getElementById('mark-att-search').value='';
   document.getElementById('mark-att-overlay').classList.add('open');
   updateMarkGroupBtn();
   renderMarkAttList();
 }
 function editAttRecord(docId){ showPage('attendance'); openMarkAttendance(docId); }
-function closeMarkAttendance(){ document.getElementById('mark-att-overlay').classList.remove('open'); editingRecordId=null; }
+function closeMarkAttendance(){ document.getElementById('mark-att-overlay').classList.remove('open'); editingRecordId=null; selectedVenue=''; }
 
 const MARK_CHECK_SVG='<svg width="12" height="12" fill="none" viewBox="0 0 12 12"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#0D0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 let markAttGrouped=(()=>{ try{ return localStorage.getItem('kg-markatt-grouped')==='1'; }catch(e){ return false; } })();
@@ -4076,15 +4180,66 @@ function markFamilyKeys(list){
   const keys=[...groups.keys()].filter(h=>groups.get(h).length>=2).sort((a,b)=>a.localeCompare(b));
   return {groups, keys};
 }
+function memberVenueLabel(v){ return v==='city'?'🏙 City':v==='airport'?'✈ Airport':''; }
+
 function markMemberRow(m){
   const checked=markAttPresent.has(m._docId);
   const hhTag=m.household?`<span style="background:var(--surface3);padding:1px 6px;border-radius:4px;font-size:.66rem;color:var(--gold);margin-left:4px;">🏠 ${escapeHtml(m.household)}</span>`:'';
+  const mv=markAttVenue.get(m._docId)||'';
+  const mt=markAttType.get(m._docId)||'';
+  const citySel=mv==='city'?'selected':'';
+  const airSel=mv==='airport'?'selected':'';
+  const regSel=mt==='regular'?'selected':'';
+  const visSel=mt==='visitor'?'selected':'';
+  const venueDisabled = checked ? '' : 'disabled';
+  const venueOpacity = checked ? '1' : '0.35';
+  const dropBg=mv==='city'?'rgba(96,165,250,0.18)':mv==='airport'?'rgba(167,139,250,0.18)':checked?'var(--surface3)':'var(--surface2)';
+  const dropColor=mv==='city'?'var(--blue)':mv==='airport'?'var(--purple)':'var(--slate-light)';
+  const typeBg=mt==='regular'?'rgba(74,222,128,0.15)':mt==='visitor'?'rgba(251,191,36,0.15)':checked?'var(--surface3)':'var(--surface2)';
+  const typeColor=mt==='regular'?'var(--green)':mt==='visitor'?'var(--amber)':'var(--slate-light)';
   return `<div class="mark-att-item ${checked?'checked':''}" onclick="toggleAttMember('${m._docId}')">
       <div class="mark-att-check">${checked?MARK_CHECK_SVG:''}</div>
       ${avatarHtml(m, 32)}
       <div style="flex:1"><div style="font-weight:600;font-size:.85rem;">${m.name}${hhTag}</div><div style="font-size:.72rem;color:var(--slate-light);">${m.id||''} ${m.ministry?'· '+m.ministry:''}</div></div>
+      <div onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" style="margin-right:6px;">
+      <select ${venueDisabled} onchange="setMemberVenue('${m._docId}',this.value)" style="border:1px solid var(--border-strong);border-radius:6px;padding:4px 8px;font-size:.72rem;font-weight:600;font-family:inherit;cursor:${checked?'pointer':'not-allowed'};outline:none;background:${dropBg};color:${dropColor};min-width:96px;opacity:${venueOpacity};transition:opacity .2s;">
+        <option value="" ${!mv?'selected':''} style="background:#1C2030;color:var(--text-secondary);">📍 Venue</option>
+        <option value="city" ${citySel} style="background:#1C2030;color:var(--blue);">🏙 City</option>
+        <option value="airport" ${airSel} style="background:#1C2030;color:var(--purple);">✈ Airport</option>
+      </select>
+      </div>
+      <div onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" style="margin-right:6px;">
+      <select ${venueDisabled} onchange="setMemberType('${m._docId}',this.value)" style="border:1px solid var(--border-strong);border-radius:6px;padding:4px 8px;font-size:.72rem;font-weight:600;font-family:inherit;cursor:${checked?'pointer':'not-allowed'};outline:none;background:${typeBg};color:${typeColor};min-width:90px;opacity:${venueOpacity};transition:opacity .2s;">
+        <option value="" ${!mt?'selected':''} style="background:#1C2030;color:var(--text-secondary);">🏷 Type</option>
+        <option value="regular" ${regSel} style="background:#1C2030;color:var(--green);">✅ Regular</option>
+        <option value="visitor" ${visSel} style="background:#1C2030;color:var(--amber);">👤 Visitor</option>
+      </select>
+      </div>
       <span class="badge ${checked?'badge-active':'badge-inactive'}" style="font-size:.68rem;">${checked?'Present':'Absent'}</span>
     </div>`;
+}
+
+function setMemberType(docId, val){
+  if(val) markAttType.set(docId, val); else markAttType.delete(docId);
+  // persist as default type on the member document
+  try{
+    setDoc(doc(membersCol, docId), {defaultAttType: val||'', updatedAt: new Date().toISOString()}, {merge:true});
+    const m = members.find(x=>x._docId===docId);
+    if(m) m.defaultAttType = val||'';
+  }catch(e){ console.warn('type save failed',e); }
+  renderMarkAttList();
+}
+
+function setMemberVenue(docId, val){
+  if(val) markAttVenue.set(docId, val); else markAttVenue.delete(docId);
+  // persist as default venue on the member document
+  try{
+    setDoc(doc(membersCol, docId), {defaultVenue: val||'', updatedAt: new Date().toISOString()}, {merge:true});
+    // also update local members array so re-renders pick it up
+    const m = members.find(x=>x._docId===docId);
+    if(m) m.defaultVenue = val||'';
+  }catch(e){ console.warn('venue save failed',e); }
+  renderMarkAttList();
 }
 
 function renderMarkAttList(){
@@ -4195,6 +4350,9 @@ async function saveAttendanceRecord(){
   const record={
     date,
     event,
+    venue: selectedVenue||'',
+    memberVenues: Object.fromEntries(markAttVenue),
+    memberTypes: Object.fromEntries(markAttType),
     presentIds,
     absentIds,
     presentNames:presentIds.map(id=>{const m=members.find(x=>x._docId===id);return m?m.name:'Unknown';}),
@@ -4291,25 +4449,78 @@ async function deleteAttRecord(docId){
 // Load records on init
 loadAttendanceRecords();
 
-function exportAttCSV(){
-  const rows=[['Name','ID','Ministry','Status','Attendance%','Tier']];
-  members.forEach(m=>{
-    const p=m.attendance||0;
-    const tier=p>80?'High':p>=30?'Moderate':'Low';
-    rows.push([m.name,m.id||'',m.ministry||'',m.status,p,tier]);
+function toggleExportAttMenu(){
+  const menu = document.getElementById('export-att-menu');
+  if(!menu) return;
+  const isOpen = menu.style.display === 'block';
+  menu.style.display = isOpen ? 'none' : 'block';
+  if(!isOpen){
+    // close on outside click
+    setTimeout(()=>{
+      document.addEventListener('click', function handler(e){
+        if(!document.getElementById('export-att-wrap').contains(e.target)){
+          menu.style.display='none';
+          document.removeEventListener('click', handler);
+        }
+      });
+    }, 0);
+  }
+}
+
+function exportAttCSV(venueFilter){
+  const menu = document.getElementById('export-att-menu');
+  if(menu) menu.style.display='none';
+  const venueKey = venueFilter==='city'?'city':'airport';
+  const filtered = members.filter(m=>(m.defaultVenue||'')===venueKey);
+  if(!filtered.length){ showToast('No members tagged for '+(venueFilter==='city'?'City Church':'Airport Church'),'error'); return; }
+
+  // Get the most recent attendance record to determine Present/Absent
+  const latestRec = attendanceRecords.length ? attendanceRecords[0] : null;
+  const presentSet = new Set(latestRec ? (latestRec.presentIds||[]) : []);
+
+  const venueLabel = v => v==='city'?'City Church':v==='airport'?'Airport Church':'';
+  const typeLabel  = t => t==='regular'?'Regular':t==='visitor'?'Visitor':'';
+
+  const attDate = latestRec ? (latestRec.date || '') : '';
+  const attDateLabel = attDate ? fmtDate(attDate) : 'Unknown Date';
+
+  const rows=[['Name','Phone','Age','Family Tag','Relation','Place','Venue','Type','Status','Attendance Date']];
+  filtered.forEach(m=>{
+    const status = presentSet.has(m._docId) ? 'Present' : 'Absent';
+    rows.push([
+      m.name||'',
+      m.phone||'',
+      m.age||'',
+      m.household||'',
+      m.relationship||'',
+      m.city||m.address||'',
+      venueLabel(m.defaultVenue||''),
+      typeLabel(m.defaultAttType||''),
+      status,
+      attDateLabel
+    ]);
   });
-  const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const label = venueFilter==='city'?'City-Church':'Airport-Church';
+  const date = attDate || new Date().toISOString().slice(0,10);
   const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download='kings-generation-attendance.csv';
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=`KG-${label}-${date}.csv`;
   a.click();
+  showToast('Exported '+filtered.length+' members','success');
 }
 
 window.exportAttCSV=exportAttCSV;
+window.toggleExportAttMenu=toggleExportAttMenu;
 window.handlePhotoUpload=handlePhotoUpload;
 window.removePhoto=removePhoto;
 window.openMarkAttendance=openMarkAttendance;
 window.closeMarkAttendance=closeMarkAttendance;
+window.openVenuePicker=openVenuePicker;
+window.closeVenuePicker=closeVenuePicker;
+window.selectVenue=selectVenue;
+window.setMemberVenue=setMemberVenue;
+window.setMemberType=setMemberType;
 window.toggleAttMember=toggleAttMember;
 window.markAllPresent=markAllPresent;
 window.markAllAbsent=markAllAbsent;
@@ -5431,20 +5642,24 @@ async function handleLogin(){
   const pwd=document.getElementById('login-password').value;
   const errEl=document.getElementById('login-error');
   if(!uname||!pwd){ errEl.textContent='Please enter username and password.'; return; }
-  const users=await getAccessUsers();
-  const match=users.find(u=>u.username.toLowerCase()===uname.toLowerCase()&&u.password===pwd);
-  if(!match){ errEl.textContent='Invalid username or password.'; return; }
-  errEl.textContent='';
-  loggedInUser=match;
-  currentRole=match.role;
-  currentUser={email:match.username, uid:match.id};
-  sessionStorage.setItem('kg_session',JSON.stringify({id:match.id,username:match.username,role:match.role}));
-  logLoginEntry(match);
-  document.getElementById('login-screen').classList.add('hidden');
-  document.getElementById('app-layout').style.display='flex';
-  document.getElementById('mobile-nav').style.display='';
-  applyRoleVisibility();
-  showPage(isAttendanceOnly()?'attendance':'overview');
+  try{
+    const users=await getAccessUsers();
+    const match=users.find(u=>u.username.toLowerCase()===uname.toLowerCase()&&u.password===pwd);
+    if(!match){ errEl.textContent='Invalid username or password.'; return; }
+    errEl.textContent='';
+    loggedInUser=match;
+    currentRole=match.role;
+    currentUser={email:match.username, uid:match.id};
+    sessionStorage.setItem('kg_session',JSON.stringify({id:match.id,username:match.username,role:match.role}));
+    logLoginEntry(match);
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-layout').style.display='flex';
+    document.getElementById('mobile-nav').style.display='';
+    applyRoleVisibility();
+    showPage(isAttendanceOnly()?'attendance':'overview');
+  }catch(e){
+    errEl.textContent='Connection error — check network and try again. ('+e.message+')';
+  }
 }
 
 function handleLogout(){
@@ -5514,19 +5729,21 @@ async function getAccessUsers(){
 
 // Seed defaults if Firestore collection is empty
 async function seedDefaults(){
-  const users = await getAccessUsers();
-  if(users.length) return;
-  const now=new Date().toISOString();
-  const defaults=[
-    {id:'1', username:'readonly', display:'Read Only User', password:'readonly123', role:'readonly', created:now},
-    {id:'2', username:'admin', display:'Admin User', password:'admin1234', role:'admin', created:now},
-    {id:'3', username:'superadmin', display:'Super Admin', password:'super12345', role:'superadmin', created:now},
-    {id:'4', username:'attendance', display:'Attendance User', password:'attend123', role:'attendance', created:now}
-  ];
-  for(const u of defaults){
-    await setDoc(doc(accessCol, u.id), { username:u.username, display:u.display, password:u.password, role:u.role, created:u.created });
-  }
-  await getAccessUsers();
+  try{
+    const users = await getAccessUsers();
+    if(users.length) return;
+    const now=new Date().toISOString();
+    const defaults=[
+      {id:'1', username:'readonly', display:'Read Only User', password:'readonly123', role:'readonly', created:now},
+      {id:'2', username:'admin', display:'Admin User', password:'admin1234', role:'admin', created:now},
+      {id:'3', username:'superadmin', display:'Super Admin', password:'super12345', role:'superadmin', created:now},
+      {id:'4', username:'attendance', display:'Attendance User', password:'attend123', role:'attendance', created:now}
+    ];
+    for(const u of defaults){
+      await setDoc(doc(accessCol, u.id), { username:u.username, display:u.display, password:u.password, role:u.role, created:u.created });
+    }
+    await getAccessUsers();
+  }catch(e){ console.warn('seedDefaults failed:',e); }
 }
 
 async function renderAccessPage(){
